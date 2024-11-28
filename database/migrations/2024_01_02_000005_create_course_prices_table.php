@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('course_prices', function (Blueprint $table) {
             $table->id();
             $table->foreignId("course_id")->constrained('courses', 'id');
-            $table->decimal("price", 5, 2);
+            $table->decimal("price", 10, 2);
             $table->dateTime("date_start");
             $table->dateTime("date_end");
             $table->timestamps();

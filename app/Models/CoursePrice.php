@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CoursePrice extends Model
 {
     protected $table = 'course_prices';
-    protected $fillable = ['price', 'date_start', 'date_end', 'created_at', 'updated_at'];
+    protected $fillable = ['course_id', 'price', 'date_start', 'date_end'];
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class, 'course_id');

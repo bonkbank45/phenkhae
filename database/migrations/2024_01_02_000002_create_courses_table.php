@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("course_category_id")->constrained('course_categorys', 'id');
+            $table->foreignId("course_category_id")->constrained('course_categories', 'id');
             $table->foreignId("course_category_bill_id")->constrained('course_category_bills', 'id');
             $table->string("course_name");
             $table->text("course_description");

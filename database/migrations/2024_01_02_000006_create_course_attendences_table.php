@@ -12,12 +12,15 @@ return new class extends Migration {
     {
         Schema::create('course_attendences', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('course_opening_id');
+            $table->unsignedBigInteger('course_group_id');
             $table->unsignedBigInteger('student_id');
             $table->dateTime('attendance_date');
             $table->tinyInteger('status');
 
-            $table->foreign(['course_opening_id', 'student_id'])->references(['course_opening_id', 'student_id'])->on('enrollments')->onDelete('cascade');
+            $table->foreign(['course_group_id', 'student_id'])
+                ->references(['course_group_id', 'student_id'])
+                ->on('enrollments')
+                ->onDelete('cascade');
         });
     }
 

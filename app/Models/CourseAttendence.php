@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CourseAttendence extends Model
 {
     protected $table = 'course_attendences';
-    protected $fillable = ['attendence_date', 'status'];
+    protected $fillable = ['course_group_id', 'student_id', 'attendence_date', 'status'];
     public $timestamps = false;
     public function enrollment(): BelongsTo
     {

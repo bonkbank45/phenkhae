@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class CourseGroup extends Model
 {
     protected $table = 'course_groups';
-    protected $fillable = ['max_students', 'batch', 'date_start', 'date_end'];
-    public $timestamps = false;
+    protected $fillable = ['course_id', 'max_students', 'batch', 'date_start', 'date_end'];
 
     public function course(): BelongsTo
     {
