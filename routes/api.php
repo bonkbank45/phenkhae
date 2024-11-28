@@ -1,13 +1,15 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseCategoryBillController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseGroupController;
 use App\Http\Controllers\CoursePriceController;
 use App\Http\Controllers\CourseAttendenceController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MedicalConditionController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -53,5 +55,12 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/{courseAttendence}', [CourseAttendenceController::class, 'show']);
         Route::put('/{courseAttendence}', [CourseAttendenceController::class, 'update']);
         Route::delete('/{courseAttendence}', [CourseAttendenceController::class, 'destroy']);
+    });
+    Route::prefix('medical_condition')->group(function () {
+        Route::get('/', [MedicalConditionController::class, 'index']);
+        Route::post('/', [MedicalConditionController::class, 'store']);
+        Route::get('/{medicalCondition}', [MedicalConditionController::class, 'show']);
+        Route::put('/{medicalCondition}', [MedicalConditionController::class, 'update']);
+        Route::delete('/{medicalCondition}', [MedicalConditionController::class, 'destroy']);
     });
 });
