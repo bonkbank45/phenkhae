@@ -20,7 +20,7 @@ class CourseAttendenceController extends Controller
     public function index(): JsonResponse
     {
         $course_attendences = CourseAttendence::all();
-        return $this->successResponse($course_attendences, 'Course attendences fetched successfully');
+        return $this->successResponse($course_attendences, 'Course attendences fetched successfully', 200);
     }
 
     /**
@@ -37,7 +37,7 @@ class CourseAttendenceController extends Controller
     public function store(StoreCourseAttendenceRequest $request): JsonResponse
     {
         $course_attendence = CourseAttendence::create($request->all());
-        return $this->successResponse($course_attendence, 'Course attendence created successfully');
+        return $this->successResponse($course_attendence, 'Course attendence created successfully', 201);
     }
 
     /**
@@ -49,7 +49,7 @@ class CourseAttendenceController extends Controller
         try {
             $course_attendence = CourseAttendence::findOrFail($id);
             DB::commit();
-            return $this->successResponse($course_attendence, 'Course attendence fetched successfully');
+            return $this->successResponse($course_attendence, 'Course attendence fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course attendence not found', 404);
@@ -74,7 +74,7 @@ class CourseAttendenceController extends Controller
             $course_attendence = CourseAttendence::findOrFail($id);
             $course_attendence->update($request->all());
             DB::commit();
-            return $this->successResponse($course_attendence, 'Course attendence updated successfully');
+            return $this->successResponse($course_attendence, 'Course attendence updated successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course attendence not found', 404);
@@ -91,7 +91,7 @@ class CourseAttendenceController extends Controller
             $course_attendence = CourseAttendence::findOrFail($id);
             $course_attendence->delete();
             DB::commit();
-            return $this->successResponse(null, 'Course attendence deleted successfully');
+            return $this->successResponse(null, 'Course attendence deleted successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course attendence not found', 404);

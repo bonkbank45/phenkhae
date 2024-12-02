@@ -16,7 +16,7 @@ class CourseCategoryController extends Controller
     {
         try {
             $courseCategory = CourseCategory::findOrFail($id);
-            return $this->successResponse($courseCategory, 'Course category retrieved successfully');
+            return $this->successResponse($courseCategory, 'Course category retrieved successfully', 200);
         } catch (ModelNotFoundException $exception) {
             return $this->errorResponse('Course category not found', 404);
         }
@@ -28,7 +28,7 @@ class CourseCategoryController extends Controller
             $courseCategory = CourseCategory::findOrFail($id);
             $courseCategory->update($request->all());
             DB::commit();
-            return $this->successResponse($courseCategory, 'Course category updated successfully');
+            return $this->successResponse($courseCategory, 'Course category updated successfully', 200);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse('Failed to update course category', 500);
@@ -40,7 +40,7 @@ class CourseCategoryController extends Controller
         try {
             $courseCategory = CourseCategory::create($request->all());
             DB::commit();
-            return $this->successResponse($courseCategory, 'Course category created successfully');
+            return $this->successResponse($courseCategory, 'Course category created successfully', 201);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse('Failed to create course category', 500);
@@ -53,7 +53,7 @@ class CourseCategoryController extends Controller
             $courseCategory = CourseCategory::findOrFail($id);
             $courseCategory->delete();
             DB::commit();
-            return $this->successResponse($courseCategory, 'Course category deleted successfully');
+            return $this->successResponse($courseCategory, 'Course category deleted successfully', 200);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse('Failed to delete course category', 500);

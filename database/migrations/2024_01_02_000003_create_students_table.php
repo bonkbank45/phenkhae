@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('citizenid_card');
             $table->date('birthdate');
             $table->integer('birth_province_id');
+            $table->string('father_fname');
             $table->string('father_lname');
             $table->string('mother_fname');
             $table->string('mother_lname');
@@ -36,9 +37,9 @@ return new class extends Migration {
             // $table->foreignId('edu_qual_id')->constrained('edu_quals', 'id');
             // $table->foreignId('edu_ins_id')->constrained('edu_inses', 'id');
             $table->tinyInteger('learn_massage');
-            $table->string('learn_massage_des')->nullable();
+            $table->text('learn_massage_desc')->nullable();
             $table->tinyInteger('work_massage');
-            $table->string('work_massage_des')->nullable();
+            $table->text('work_massage_desc')->nullable();
 
             $table->foreign('birth_province_id')->references('id')->on('provinces')->onDelete('cascade');
             $table->foreign('address_subdistrict_id')->references('id')->on('subdistricts')->onDelete('cascade');

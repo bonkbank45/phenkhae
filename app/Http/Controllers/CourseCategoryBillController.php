@@ -17,7 +17,7 @@ class CourseCategoryBillController extends Controller
     {
         try {
             $courseCategoryBill = CourseCategoryBill::findOrFail($id);
-            return $this->successResponse($courseCategoryBill, 'Course category bill retrieved successfully');
+            return $this->successResponse($courseCategoryBill, 'Course category bill retrieved successfully', 200);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse('Course category bill not found', 404);
         }
@@ -29,7 +29,7 @@ class CourseCategoryBillController extends Controller
             $courseCategoryBill = CourseCategoryBill::findOrFail($id);
             $courseCategoryBill->update($request->all());
             DB::commit();
-            return $this->successResponse($courseCategoryBill, 'Course category bill updated successfully');
+            return $this->successResponse($courseCategoryBill, 'Course category bill updated successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course category bill not found', 404);
@@ -41,7 +41,7 @@ class CourseCategoryBillController extends Controller
         try {
             $courseCategoryBill = CourseCategoryBill::create($request->all());
             DB::commit();
-            return $this->successResponse($courseCategoryBill, 'Course category bill created successfully');
+            return $this->successResponse($courseCategoryBill, 'Course category bill created successfully', 201);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse('Failed to create course category bill', 500);
@@ -54,7 +54,7 @@ class CourseCategoryBillController extends Controller
             $courseCategoryBill = CourseCategoryBill::findOrFail($id);
             $courseCategoryBill->delete();
             DB::commit();
-            return $this->successResponse(null, 'Course category bill deleted successfully');
+            return $this->successResponse(null, 'Course category bill deleted successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Failed to delete course category bill', 500);

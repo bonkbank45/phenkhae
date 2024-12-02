@@ -10,7 +10,9 @@ use App\Http\Controllers\CourseGroupController;
 use App\Http\Controllers\CoursePriceController;
 use App\Http\Controllers\CourseAttendenceController;
 use App\Http\Controllers\MedicalConditionController;
-
+use App\Http\Controllers\OccupationController;
+use App\Http\Controllers\StudentLicenseCompleteController;
+use App\Http\Controllers\StudentController;
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -62,5 +64,22 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/{medicalCondition}', [MedicalConditionController::class, 'show']);
         Route::put('/{medicalCondition}', [MedicalConditionController::class, 'update']);
         Route::delete('/{medicalCondition}', [MedicalConditionController::class, 'destroy']);
+    });
+    Route::prefix('occupation')->group(function () {
+        Route::get('/', [OccupationController::class, 'index']);
+        Route::post('/', [OccupationController::class, 'store']);
+        Route::get('/{occupation}', [OccupationController::class, 'show']);
+        Route::put('/{occupation}', [OccupationController::class, 'update']);
+        Route::delete('/{occupation}', [OccupationController::class, 'destroy']);
+    });
+    Route::prefix('student_license_complete')->group(function () {
+        Route::get('/', [StudentLicenseCompleteController::class, 'index']);
+        Route::post('/', [StudentLicenseCompleteController::class, 'store']);
+        Route::get('/{studentLicenseComplete}', [StudentLicenseCompleteController::class, 'show']);
+        Route::put('/{studentLicenseComplete}', [StudentLicenseCompleteController::class, 'update']);
+        Route::delete('/{studentLicenseComplete}', [StudentLicenseCompleteController::class, 'destroy']);
+    });
+    Route::prefix('student')->group(function () {
+        Route::post('/', [StudentController::class, 'store']);
     });
 });

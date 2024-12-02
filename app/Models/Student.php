@@ -9,13 +9,14 @@ class Student extends Model
 {
     protected $table = 'students';
     protected $fillable = [
+        'prename_id',
         'firstname_tha',
         'lastname_tha',
         'firstname_eng',
         'lastname_eng',
         'citizenid_card',
         'birthdate',
-        'birth_province',
+        'birth_province_id',
         'father_fname',
         'father_lname',
         'mother_fname',

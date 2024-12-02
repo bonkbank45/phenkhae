@@ -37,7 +37,7 @@ class MedicalConditionController extends Controller
     public function store(StoreMedicalConditionRequest $request): JsonResponse
     {
         $medical_condition = MedicalCondition::create($request->all());
-        return $this->successResponse($medical_condition, 'Medical condition created successfully');
+        return $this->successResponse($medical_condition, 'Medical condition created successfully', 201);
     }
 
     /**
@@ -47,7 +47,7 @@ class MedicalConditionController extends Controller
     {
         try {
             $medical_condition = MedicalCondition::findOrFail($id);
-            return $this->successResponse($medical_condition, 'Medical condition retrieved successfully');
+            return $this->successResponse($medical_condition, 'Medical condition retrieved successfully', 200);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse('Medical condition not found', 404);
         }
@@ -71,7 +71,7 @@ class MedicalConditionController extends Controller
             $medical_condition = MedicalCondition::findOrFail($id);
             $medical_condition->update($request->all());
             DB::commit();
-            return $this->successResponse($medical_condition, 'Medical condition updated successfully');
+            return $this->successResponse($medical_condition, 'Medical condition updated successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Medical condition not found', 404);
@@ -88,7 +88,7 @@ class MedicalConditionController extends Controller
             $medical_condition = MedicalCondition::findOrFail($id);
             $medical_condition->delete();
             DB::commit();
-            return $this->successResponse(null, 'Medical condition deleted successfully');
+            return $this->successResponse(null, 'Medical condition deleted successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Medical condition not found', 404);

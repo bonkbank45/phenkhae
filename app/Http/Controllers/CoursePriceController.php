@@ -35,7 +35,7 @@ class CoursePriceController extends Controller
     public function store(Request $request): JsonResponse
     {
         $course_price = CoursePrice::create($request->all());
-        return $this->successResponse($course_price, 'Course price created successfully');
+        return $this->successResponse($course_price, 'Course price created successfully', 201);
     }
 
     /**
@@ -45,7 +45,7 @@ class CoursePriceController extends Controller
     {
         try {
             $course_price = CoursePrice::findOrFail($id);
-            return $this->successResponse($course_price, 'Course price fetched successfully');
+            return $this->successResponse($course_price, 'Course price fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse('Course price not found', 404);
         }
@@ -60,7 +60,7 @@ class CoursePriceController extends Controller
         try {
             $course_price = CoursePrice::findOrFail($id);
             DB::commit();
-            return $this->successResponse($course_price, 'Course price fetched successfully');
+            return $this->successResponse($course_price, 'Course price fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course price not found', 404);
@@ -77,7 +77,7 @@ class CoursePriceController extends Controller
             $course_price = CoursePrice::findOrFail($id);
             $course_price->update($request->all());
             DB::commit();
-            return $this->successResponse($course_price, 'Course price updated successfully');
+            return $this->successResponse($course_price, 'Course price updated successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course price not found', 404);
@@ -94,7 +94,7 @@ class CoursePriceController extends Controller
             $course_price = CoursePrice::findOrFail($id);
             $course_price->delete();
             DB::commit();
-            return $this->successResponse(null, 'Course price deleted successfully');
+            return $this->successResponse(null, 'Course price deleted successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course price not found', 404);

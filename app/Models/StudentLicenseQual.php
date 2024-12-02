@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class StudentLicenseQual extends Model
 {
     protected $table = 'student_license_quals';
-    protected $fillable = ['date_qualified', 'created_at', 'updated_at'];
+    protected $fillable = ['student_id', 'course_id', 'date_qualified', 'created_at', 'updated_at'];
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class, 'student_id');

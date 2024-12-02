@@ -19,7 +19,7 @@ class CourseGroupController extends Controller
     public function index(): JsonResponse
     {
         $course_groups = CourseGroup::all();
-        return $this->successResponse($course_groups, 'Course groups fetched successfully');
+        return $this->successResponse($course_groups, 'Course groups fetched successfully', 200);
     }
 
     /**
@@ -36,7 +36,7 @@ class CourseGroupController extends Controller
     public function store(StoreCourseGroupRequest $request): JsonResponse
     {
         $course_group = CourseGroup::create($request->all());
-        return $this->successResponse($course_group, 'Course group created successfully');
+        return $this->successResponse($course_group, 'Course group created successfully', 201);
     }
 
     /**
@@ -46,7 +46,7 @@ class CourseGroupController extends Controller
     {
         try {
             $course_group = CourseGroup::findOrFail($id);
-            return $this->successResponse($course_group, 'Course group fetched successfully');
+            return $this->successResponse($course_group, 'Course group fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse('Course group not found', 404);
         }
@@ -70,7 +70,7 @@ class CourseGroupController extends Controller
             $course_group = CourseGroup::findOrFail($id);
             $course_group->update($request->all());
             DB::commit();
-            return $this->successResponse($course_group, 'Course group updated successfully');
+            return $this->successResponse($course_group, 'Course group updated successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course group not found', 404);

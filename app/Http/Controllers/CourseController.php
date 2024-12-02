@@ -19,7 +19,7 @@ class CourseController extends Controller
     public function index(): JsonResponse
     {
         $courses = Course::all();
-        return $this->successResponse($courses, 'Courses fetched successfully');
+        return $this->successResponse($courses, 'Courses fetched successfully', 200);
     }
 
     /**
@@ -36,7 +36,7 @@ class CourseController extends Controller
     public function store(StoreCourseRequest $request): JsonResponse
     {
         $course = Course::create($request->all());
-        return $this->successResponse($course, 'Course created successfully');
+        return $this->successResponse($course, 'Course created successfully', 201);
     }
 
     /**
@@ -46,7 +46,7 @@ class CourseController extends Controller
     {
         try {
             $course = Course::findOrFail($id);
-            return $this->successResponse($course, 'Course fetched successfully');
+            return $this->successResponse($course, 'Course fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse('Course not found', 404);
         }
@@ -59,7 +59,7 @@ class CourseController extends Controller
     {
         try {
             $course = Course::findOrFail($id);
-            return $this->successResponse($course, 'Course fetched successfully');
+            return $this->successResponse($course, 'Course fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse('Course not found', 404);
         }
@@ -75,7 +75,7 @@ class CourseController extends Controller
             $course = Course::findOrFail($id);
             $course->update($request->all());
             DB::commit();
-            return $this->successResponse($course, 'Course updated successfully');
+            return $this->successResponse($course, 'Course updated successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course not found', 404);
@@ -92,7 +92,7 @@ class CourseController extends Controller
             $course = Course::findOrFail($id);
             $course->delete();
             DB::commit();
-            return $this->successResponse(null, 'Course deleted successfully');
+            return $this->successResponse(null, 'Course deleted successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course not found', 404);
