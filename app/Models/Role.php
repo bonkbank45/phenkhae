@@ -11,4 +11,9 @@ class Role extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function getNameAttribute()
+    {
+        return $this->role_name;
+    }
 }

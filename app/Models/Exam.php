@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Exam extends Model
 {
     protected $table = 'exams';
-    protected $fillable = ['year', 'term', 'exam_period', 'score_full', 'score_real', 'date_exam'];
+    protected $fillable = ['course_group_id', 'student_id', 'year', 'term', 'exam_type_id', 'exam_period', 'score_full', 'score_real', 'date_exam'];
     public $timestamps = false;
     public function enrollment(): BelongsTo
     {

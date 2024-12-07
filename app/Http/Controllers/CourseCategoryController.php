@@ -12,6 +12,11 @@ use App\Http\Requests\UpdateCourseCategoryRequest;
 class CourseCategoryController extends Controller
 {
     use JsonResponseTrait;
+    public function index(): JsonResponse
+    {
+        $courseCategories = CourseCategory::all();
+        return $this->successResponse($courseCategories, 'Course categories retrieved successfully', 200);
+    }
     public function show(int $id): JsonResponse
     {
         try {

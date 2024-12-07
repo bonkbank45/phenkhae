@@ -12,13 +12,26 @@ use App\Http\Controllers\CourseAttendenceController;
 use App\Http\Controllers\MedicalConditionController;
 use App\Http\Controllers\OccupationController;
 use App\Http\Controllers\StudentLicenseCompleteController;
+use App\Http\Controllers\StudentLicenseQualController;
 use App\Http\Controllers\StudentController;
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\ExamTypeController;
+use App\Http\Controllers\ExamController;
+use App\Http\Controllers\AuthController;
+
+// Public routes
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+
+// Protected routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [AuthController::class, 'user']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 Route::group(['middleware' => ['api']], function () {
     Route::prefix('course_category')->group(function () {
+        Route::get('/', [CourseCategoryController::class, 'index']);
         Route::get('/{courseCategory}', [CourseCategoryController::class, 'show']);
         Route::post('/', [CourseCategoryController::class, 'store']);
         Route::put('/{courseCategory}', [CourseCategoryController::class, 'update']);
@@ -79,7 +92,39 @@ Route::group(['middleware' => ['api']], function () {
         Route::put('/{studentLicenseComplete}', [StudentLicenseCompleteController::class, 'update']);
         Route::delete('/{studentLicenseComplete}', [StudentLicenseCompleteController::class, 'destroy']);
     });
+    Route::prefix('student_license_qual')->group(function () {
+        Route::get('/', [StudentLicenseQualController::class, 'index']);
+        Route::post('/', [StudentLicenseQualController::class, 'store']);
+        Route::get('/{studentLicenseQual}', [StudentLicenseQualController::class, 'show']);
+        Route::put('/{studentLicenseQual}', [StudentLicenseQualController::class, 'update']);
+        Route::delete('/{studentLicenseQual}', [StudentLicenseQualController::class, 'destroy']);
+    });
     Route::prefix('student')->group(function () {
+        Route::get('/', [StudentController::class, 'index']);
         Route::post('/', [StudentController::class, 'store']);
+        Route::get('/{student}', [StudentController::class, 'show']);
+        Route::put('/{student}', [StudentController::class, 'update']);
+        Route::delete('/{student}', [StudentController::class, 'destroy']);
+    });
+    Route::prefix('enrollment')->group(function () {
+        Route::get('/', [EnrollmentController::class, 'index']);
+        Route::post('/', [EnrollmentController::class, 'store']);
+        Route::get('/{enrollment}', [EnrollmentController::class, 'show']);
+        Route::put('/{enrollment}', [EnrollmentController::class, 'update']);
+        Route::delete('/{enrollment}', [EnrollmentController::class, 'destroy']);
+    });
+    Route::prefix('exam_type')->group(function () {
+        Route::get('/', [ExamTypeController::class, 'index']);
+        Route::post('/', [ExamTypeController::class, 'store']);
+        Route::get('/{examType}', [ExamTypeController::class, 'show']);
+        Route::put('/{examType}', [ExamTypeController::class, 'update']);
+        Route::delete('/{examType}', [ExamTypeController::class, 'destroy']);
+    });
+    Route::prefix('exam')->group(function () {
+        Route::get('/', [ExamController::class, 'index']);
+        Route::post('/', [ExamController::class, 'store']);
+        Route::get('/{exam}', [ExamController::class, 'show']);
+        Route::put('/{exam}', [ExamController::class, 'update']);
+        Route::delete('/{exam}', [ExamController::class, 'destroy']);
     });
 });

@@ -9,10 +9,13 @@ class Enrollment extends Model
 {
     protected $table = 'enrollments';
     protected $fillable = [
+        'course_group_id',
+        'student_id',
         'activity_case_status',
         'enrollment_date',
         'date_start',
         'date_end',
+        'course_price_id',
         'created_at',
         'updated_at'
     ];
