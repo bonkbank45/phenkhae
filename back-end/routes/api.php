@@ -18,6 +18,9 @@ use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\ExamTypeController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MaritalStatusController;
+use App\Http\Controllers\ProvinceController;
+use App\Http\Controllers\PrenameController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -126,5 +129,14 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/{exam}', [ExamController::class, 'show']);
         Route::put('/{exam}', [ExamController::class, 'update']);
         Route::delete('/{exam}', [ExamController::class, 'destroy']);
+    });
+    Route::prefix('marital_status')->group(function () {
+        Route::get('/', [MaritalStatusController::class, 'index']);
+    });
+    Route::prefix('province')->group(function () {
+        Route::get('/', [ProvinceController::class, 'index']);
+    });
+    Route::prefix('prefix_name')->group(function () {
+        Route::get('/', [PrenameController::class, 'index']);
     });
 });

@@ -20,7 +20,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['error' => 'Email or password is incorrect'], 401);
         }
 
         if (Auth::attempt($credentials)) {
@@ -40,7 +40,7 @@ class AuthController extends Controller
             ]);
         }
 
-        return response()->json(['error' => 'Invalid credentials'], 401);
+        return response()->json(['error' => 'Email or password is incorrect'], 401);
     }
     public function logout(Request $request)
     {

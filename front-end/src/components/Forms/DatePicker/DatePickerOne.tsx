@@ -1,32 +1,53 @@
 import flatpickr from 'flatpickr';
 import { useEffect } from 'react';
 
-const DatePickerOne = () => {
+interface DatePickerOneProps {
+  label: string;
+  name: string;
+  placeholder: string;
+  includeRegister: any;
+  error: string;
+}
+
+const DatePickerOne: React.FC<DatePickerOneProps> = ({
+  label = '',
+  name = '',
+  placeholder = '',
+  includeRegister,
+  error = '',
+}) => {
   useEffect(() => {
     // Init flatpickr
     flatpickr('.form-datepicker', {
       mode: 'single',
       static: true,
       monthSelectorType: 'static',
-      dateFormat: 'M j, Y',
+      dateFormat: 'd/m/Y',
       prevArrow:
         '<svg className="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M5.4 10.8l1.4-1.4-4-4 4-4L5.4 0 0 5.4z" /></svg>',
       nextArrow:
         '<svg className="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M1.4 10.8L0 9.4l4-4-4-4L1.4 0l5.4 5.4z" /></svg>',
     });
-
-    
   }, []);
 
   return (
-    <div>
-      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-        Date picker
+    <div className="mb-4">
+      <label className="mb-2.5 block font-medium text-gray-500 dark:text-white">
+        {label ? label : 'Date picker'}
       </label>
       <div className="relative">
         <input
-          className="form-datepicker w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-          placeholder="mm/dd/yyyy"
+          className={`form-datepicker w-full rounded-lg border bg-transparent py-4 pl-6 pr-10 bg-white text-black outline-none focus-visible:shadow-none dark:bg-form-input dark:text-white ${
+            error ? 'border-red-500' : 'border-stroke'
+          }`}
+          style={{
+            appearance: 'none',
+            WebkitAppearance: 'none',
+            MozAppearance: 'none',
+          }}
+          placeholder={placeholder}
+          name={name}
+          {...(includeRegister && includeRegister(name))}
           data-class="flatpickr-right"
         />
 
@@ -45,6 +66,7 @@ const DatePickerOne = () => {
           </svg>
         </div>
       </div>
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 };

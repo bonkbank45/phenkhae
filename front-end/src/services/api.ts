@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 const api = axios.create({
   baseURL: 'http://localhost:8000/api',
@@ -29,6 +29,28 @@ export const fetchUser = () => {
       Authorization: `Bearer ${token}`,
     },
   });
+};
+
+export const fetchMaritalStatuses = () => {
+  return api.get('/marital_status');
+};
+
+export const fetchProvinces = () => {
+  return api.get('/province');
+};
+
+export const fetchPrefixNames = async (): Promise<
+  AxiosResponse<
+    {
+      id: number;
+      prename_tha: string;
+      prename_eng: string;
+      prename_short_tha?: string;
+      prename_short_eng?: string;
+    }[]
+  >
+> => {
+  return api.get('/prefix_name');
 };
 
 export default api;

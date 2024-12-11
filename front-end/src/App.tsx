@@ -17,6 +17,7 @@ import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
+import { DefaultStepper } from './components/StepperForm';
 
 function App() {
   const { pathname } = useLocation();
@@ -152,6 +153,7 @@ function App() {
             </>
           }
         />
+        <Route path="/stepper" element={<DefaultStepper />} />
       </Route>
     </Routes>
   );

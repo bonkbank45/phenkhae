@@ -12,12 +12,18 @@ import {
   fetchUser,
 } from '../services/api';
 
+import { AxiosError } from 'axios';
+
 interface AuthContextType {
   isAuthenticated: boolean;
   user: any;
-  login: (email: string, password: string) => void;
+  login: (email: string, password: string) => Promise<string | null>;
   logout: () => void;
   authLoading: boolean;
+}
+
+interface ErrorResponse {
+  error: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -42,16 +48,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkUser();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (
+    email: string,
+    password: string,
+  ): Promise<string | null> => {
     try {
       const response = await loginUser(email, password);
       const { token, user } = response.data;
       localStorage.setItem('authToken', token);
       setUser(user);
       setIsAuthenticated(true);
+      return null;
     } catch (error) {
-      console.error('Login failed:', error);
       setIsAuthenticated(false);
+      const axiosError = error as AxiosError<ErrorResponse>;
+      return axiosError.response?.data?.error || 'An error occurred';
     }
   };
 
