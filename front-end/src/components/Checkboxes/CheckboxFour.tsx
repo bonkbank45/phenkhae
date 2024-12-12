@@ -1,22 +1,32 @@
-import { useState } from 'react';
+interface CheckboxFourProps {
+  label: string;
+  isChecked: boolean;
+  name: string;
+  onChange: () => void;
+}
 
-const CheckboxFour = () => {
-  const [isChecked, setIsChecked] = useState<boolean>(false);
-
+const CheckboxFour = ({
+  label,
+  isChecked,
+  name,
+  onChange,
+}: CheckboxFourProps) => {
   return (
     <div>
       <label
-        htmlFor="checkboxLabelFour"
-        className="flex cursor-pointer select-none items-center"
+        htmlFor={`checkboxLabelFour-${label}`}
+        className={`flex cursor-pointer select-none items-center ${
+          isChecked ? 'text-black' : 'text-gray-500'
+        }`}
       >
         <div className="relative">
           <input
             type="checkbox"
-            id="checkboxLabelFour"
+            name={name}
+            id={`checkboxLabelFour-${label}`}
             className="sr-only"
-            onChange={() => {
-              setIsChecked(!isChecked);
-            }}
+            checked={isChecked}
+            onChange={onChange}
           />
           <div
             className={`mr-4 flex h-5 w-5 items-center justify-center rounded-full border ${
@@ -32,7 +42,7 @@ const CheckboxFour = () => {
             </span>
           </div>
         </div>
-        Checkbox Text
+        {label}
       </label>
     </div>
   );

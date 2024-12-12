@@ -25,7 +25,6 @@ interface PersonalInformationProps {
     marital_status: number;
     birth_province: number;
   }>;
-  header: string;
 }
 
 interface MaritalStatus {
@@ -49,7 +48,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
     control,
     formState: { errors },
   },
-  header,
 }) => {
   const [maritalStatuses, setMaritalStatuses] = useState<MaritalStatus[]>([]);
   const [provinces, setProvinces] = useState<Province[]>([]);
@@ -105,7 +103,9 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 
   return (
     <>
-      <h1 className="mt-6 mb-6 text-4xl font-bold text-black">{header}</h1>
+      <h1 className="mt-6 mb-6 text-4xl font-bold text-black">
+        ประวัติส่วนตัว
+      </h1>
       <div className="mt-4 md:grid grid-cols-2 gap-4">
         <DropdownSearchWithController
           className="col-span-2 lg:w-[49.3%]"

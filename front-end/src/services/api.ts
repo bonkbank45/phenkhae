@@ -35,6 +35,10 @@ export const fetchMaritalStatuses = () => {
   return api.get('/marital_status');
 };
 
+export const fetchMedicalConditions = () => {
+  return api.get('/medical_condition');
+};
+
 export const fetchProvinces = () => {
   return api.get('/province');
 };

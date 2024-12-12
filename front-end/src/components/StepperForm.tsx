@@ -10,8 +10,9 @@ import MassageExperience from './AddStudentForm/MassageExperience';
 import CourseTraining from './AddStudentForm/CourseTraining';
 import UploadImage from './AddStudentForm/UploadImage';
 
-import { personalInformationSchema } from '../schema/personalInformationSchema';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { personalInformationSchema } from '../schema/personalInformationSchema';
+import { additionalPersonalInformationSchema } from '../schema/additionalPersonalInformationSchema';
 
 function getSteps() {
   return [
@@ -36,6 +37,17 @@ type PersonalInformationFormSchema = {
   birth_province: number;
 };
 
+type AdditionalPersonalInformationFormSchema = {
+  father_fname: string;
+  father_lname: string;
+  mother_fname: string;
+  mother_lname: string;
+  medical_condition?: number;
+  surgery_history?: string;
+  has_medical_condition: string;
+  has_surgery_history: string;
+};
+
 export function DefaultStepper() {
   const [activeStep, setActiveStep] = useState(0);
   const [isLastStep, setIsLastStep] = useState(false);
@@ -45,11 +57,14 @@ export function DefaultStepper() {
     resolver: yupResolver(personalInformationSchema),
   });
 
-  const additionalInformationForm = useForm<PersonalInformationFormSchema>({
-    resolver: yupResolver(personalInformationSchema),
-  });
+  const additionalInformationForm =
+    useForm<AdditionalPersonalInformationFormSchema>({
+      resolver: yupResolver(additionalPersonalInformationSchema),
+    });
 
-  const { trigger } = informationForm;
+  const { trigger: triggerInformationForm } = informationForm;
+  const { trigger: triggerAdditionalInformationForm } =
+    additionalInformationForm;
 
   const handleSubmit = (data: any) => {
     console.log(data);
@@ -57,11 +72,20 @@ export function DefaultStepper() {
 
   const steps = getSteps();
 
-  // const handleNext = () => !isLastStep && setActiveStep((cur) => cur + 1);
   const handleNext = async () => {
-    const isValid = await trigger();
-    if (isValid && !isLastStep) {
-      setActiveStep((cur) => cur + 1);
+    switch (activeStep) {
+      case 0:
+        const isValid0 = await triggerInformationForm();
+        if (isValid0 && !isLastStep) {
+          setActiveStep((cur) => cur + 1);
+        }
+        break;
+      case 1:
+        const isValid1 = await triggerAdditionalInformationForm();
+        if (isValid1 && !isLastStep) {
+          setActiveStep((cur) => cur + 1);
+        }
+        break;
     }
   };
   const handlePrev = () => !isFirstStep && setActiveStep((cur) => cur - 1);
@@ -69,17 +93,11 @@ export function DefaultStepper() {
   function getStepContent(step: number) {
     switch (step) {
       case 0:
-        return (
-          <PersonalInformation
-            header={getSteps()[step]}
-            formProps={informationForm}
-          />
-        );
+        return <PersonalInformation formProps={informationForm} />;
       case 1:
         return (
           <AdditionalPersonalInformation
-            header={getSteps()[step]}
-            formProps={informationForm}
+            formProps={additionalInformationForm}
           />
         );
       case 2:
@@ -91,18 +109,19 @@ export function DefaultStepper() {
       case 5:
         return <UploadImage />;
       default:
-        return (
-          <PersonalInformation
-            header={getSteps()[step]}
-            formProps={informationForm}
-          />
-        );
+        return <PersonalInformation formProps={informationForm} />;
     }
   }
 
   return (
     <div className="w-full py-4 px-8">
-      <form onSubmit={informationForm.handleSubmit(handleSubmit)}>
+      <form
+        onSubmit={
+          activeStep === 1
+            ? informationForm.handleSubmit(handleSubmit)
+            : additionalInformationForm.handleSubmit(handleSubmit)
+        }
+      >
         <Stepper
           lineClassName="bg-zinc-300"
           activeLineClassName="bg-black"

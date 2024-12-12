@@ -35,7 +35,7 @@ const DropdownIndicator = (props: any) => {
 };
 
 const DropdownSearchWithController = ({
-  label,
+  label = '',
   name,
   placeholder,
   error,

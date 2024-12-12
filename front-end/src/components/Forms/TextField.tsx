@@ -16,7 +16,7 @@ const TextField = ({
   type = 'text',
   placeholder,
   error,
-  includeRegister,
+  includeRegister = {},
   className,
 }: TextFieldProps) => {
   return (
