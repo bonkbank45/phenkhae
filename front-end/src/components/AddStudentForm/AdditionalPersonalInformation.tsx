@@ -69,38 +69,40 @@ const AdditionalPersonalInformation: React.FC<
 
   return (
     <>
-      <h1 className="mt-6 mb-6 text-4xl font-bold text-black">
-        ประวัติส่วนตัวเพิ่มเติม
-      </h1>
-      <div className="mt-4 md:grid grid-cols-2 gap-4">
-        <TextField
-          label="ชื่อบิดา"
-          name="father_fname"
-          placeholder="ชื่อบิดา"
-          includeRegister={register}
-          error={errors.father_fname?.message}
-        />
-        <TextField
-          label="นามสกุลบิดา"
-          name="father_lname"
-          placeholder="นามสกุลบิดา"
-          includeRegister={register}
-          error={errors.father_lname?.message}
-        />
-        <TextField
-          label="ชื่อมารดา"
-          name="mother_fname"
-          placeholder="ชื่อมารดา"
-          includeRegister={register}
-          error={errors.mother_fname?.message}
-        />
-        <TextField
-          label="นามสกุลมารดา"
-          name="mother_lname"
-          placeholder="นามสกุลมารดา"
-          includeRegister={register}
-          error={errors.mother_lname?.message}
-        />
+      <div className="mt-4">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black">
+          ประวัติส่วนตัวเพิ่มเติม
+        </h1>
+        <div className="mt-4 md:grid grid-cols-2 gap-4">
+          <TextField
+            label="ชื่อบิดา"
+            name="father_fname"
+            placeholder="ชื่อบิดา"
+            includeRegister={register}
+            error={errors.father_fname?.message}
+          />
+          <TextField
+            label="นามสกุลบิดา"
+            name="father_lname"
+            placeholder="นามสกุลบิดา"
+            includeRegister={register}
+            error={errors.father_lname?.message}
+          />
+          <TextField
+            label="ชื่อมารดา"
+            name="mother_fname"
+            placeholder="ชื่อมารดา"
+            includeRegister={register}
+            error={errors.mother_fname?.message}
+          />
+          <TextField
+            label="นามสกุลมารดา"
+            name="mother_lname"
+            placeholder="นามสกุลมารดา"
+            includeRegister={register}
+            error={errors.mother_lname?.message}
+          />
+        </div>
       </div>
       <div className="mt-4">
         <h1 className="mt-6 mb-6 text-4xl font-bold text-black">โรคประจำตัว</h1>

@@ -13,7 +13,7 @@ import UploadImage from './AddStudentForm/UploadImage';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { personalInformationSchema } from '../schema/personalInformationSchema';
 import { additionalPersonalInformationSchema } from '../schema/additionalPersonalInformationSchema';
-
+import { currentAddressSchema } from '../schema/currentAddressSchema';
 function getSteps() {
   return [
     'ประวัติส่วนตัว',
@@ -48,6 +48,13 @@ type AdditionalPersonalInformationFormSchema = {
   has_surgery_history: string;
 };
 
+type CurrentAddressFormSchema = {
+  address: string;
+  sub_district: string;
+  district: string;
+  province: string;
+};
+
 export function DefaultStepper() {
   const [activeStep, setActiveStep] = useState(0);
   const [isLastStep, setIsLastStep] = useState(false);
@@ -62,9 +69,14 @@ export function DefaultStepper() {
       resolver: yupResolver(additionalPersonalInformationSchema),
     });
 
+  const currentAddressForm = useForm<CurrentAddressFormSchema>({
+    resolver: yupResolver(currentAddressSchema),
+  });
+
   const { trigger: triggerInformationForm } = informationForm;
   const { trigger: triggerAdditionalInformationForm } =
     additionalInformationForm;
+  const { trigger: triggerCurrentAddressForm } = currentAddressForm;
 
   const handleSubmit = (data: any) => {
     console.log(data);
@@ -101,7 +113,7 @@ export function DefaultStepper() {
           />
         );
       case 2:
-        return <CurrentAddress />;
+        return <CurrentAddress formProps={currentAddressForm} />;
       case 3:
         return <MassageExperience />;
       case 4:
