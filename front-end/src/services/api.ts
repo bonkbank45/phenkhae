@@ -43,6 +43,10 @@ export const fetchProvinces = () => {
   return api.get('/province');
 };
 
+export const fetchDistricts = () => {
+  return api.get('/district');
+};
+
 export const fetchPrefixNames = async (): Promise<
   AxiosResponse<
     {

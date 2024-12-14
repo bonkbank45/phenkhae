@@ -9,6 +9,7 @@ interface DropdownSearchProps {
   options: { value: number; label: string }[];
   control: Control<any>;
   className?: string;
+  disabled?: boolean;
 }
 
 const DropdownIndicator = (props: any) => {
@@ -42,6 +43,7 @@ const DropdownSearchWithController = ({
   options,
   control,
   className,
+  disabled = false,
 }: DropdownSearchProps) => {
   return (
     <div className={`mb-4 ${className}`}>
@@ -53,11 +55,17 @@ const DropdownSearchWithController = ({
         control={control}
         render={({ field }) => (
           <Select
-            onChange={(option) => field.onChange(option?.value)}
+            onChange={(option) => {
+              field.onChange(option?.value || '');
+            }}
+            value={
+              options.find((option) => option.value === field.value) || null
+            }
             options={options}
             placeholder={placeholder}
-            className="rounded-lg"
+            className={`${disabled ? 'opacity-50' : ''}`}
             classNamePrefix="select"
+            isDisabled={disabled}
             styles={{
               control: (base) => ({
                 ...base,

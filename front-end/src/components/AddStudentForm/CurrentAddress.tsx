@@ -1,15 +1,38 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import TextField from '../Forms/TextField';
 import DropdownSearchWithController from '../Forms/DropdownSearchWithController';
+
+import { useAddressData } from '../../services/useAddressData';
 
 const CurrentAddress = ({
   formProps: {
     register,
     control,
     setValue,
+    watch,
     formState: { errors },
   },
 }) => {
+  const provinceId = watch('address_province');
+  const districtId = watch('address_district');
+  const { provinces, districts, subDistricts } = useAddressData(
+    provinceId,
+    districtId,
+  );
+
+  useEffect(() => {
+    if (provinceId) {
+      setValue('address_district', '');
+      setValue('address_sub_district', '');
+    }
+  }, [provinceId, setValue]);
+
+  useEffect(() => {
+    if (districtId) {
+      setValue('address_sub_district', '');
+    }
+  }, [districtId, setValue]);
+
   return (
     <>
       <div className="mt-4">
@@ -46,28 +69,30 @@ const CurrentAddress = ({
             error={errors.address_road?.message}
           />
           <DropdownSearchWithController
-            label="แขวง/ตำบล"
-            name="address_sub_district"
-            placeholder="ตำบล"
-            options={[]}
+            label="จังหวัด"
+            name="address_province"
+            placeholder="จังหวัด"
+            options={provinces || []}
             control={control}
-            error={errors.address_sub_district?.message}
+            error={errors.address_province?.message}
           />
           <DropdownSearchWithController
             label="เขต/อำเภอ"
             name="address_district"
             placeholder="เขต/อำเภอ"
-            options={[]}
+            options={districts || []}
             control={control}
             error={errors.address_district?.message}
+            disabled={!provinceId}
           />
           <DropdownSearchWithController
-            label="จังหวัด"
-            name="address_province"
-            placeholder="จังหวัด"
-            options={[]}
+            label="แขวง/ตำบล"
+            name="address_sub_district"
+            placeholder="ตำบล"
+            options={subDistricts || []}
             control={control}
-            error={errors.address_province?.message}
+            error={errors.address_sub_district?.message}
+            disabled={!districtId}
           />
           <TextField
             label="รหัสไปรษณีย์"

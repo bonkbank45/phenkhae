@@ -14,6 +14,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { personalInformationSchema } from '../schema/personalInformationSchema';
 import { additionalPersonalInformationSchema } from '../schema/additionalPersonalInformationSchema';
 import { currentAddressSchema } from '../schema/currentAddressSchema';
+import { massageExperienceSchema } from '../schema/massageExperienceSchema';
+
 function getSteps() {
   return [
     'ประวัติส่วนตัว',
@@ -55,6 +57,13 @@ type CurrentAddressFormSchema = {
   province: string;
 };
 
+type MassageExperienceFormSchema = {
+  has_massage_experience_learn: string;
+  has_massage_experience_work: string;
+  massage_experience_learn_detail: string;
+  massage_experience_work_detail: string;
+};
+
 export function DefaultStepper() {
   const [activeStep, setActiveStep] = useState(0);
   const [isLastStep, setIsLastStep] = useState(false);
@@ -73,10 +82,15 @@ export function DefaultStepper() {
     resolver: yupResolver(currentAddressSchema),
   });
 
+  const massageExperienceForm = useForm<MassageExperienceFormSchema>({
+    resolver: yupResolver(massageExperienceSchema),
+  });
+
   const { trigger: triggerInformationForm } = informationForm;
   const { trigger: triggerAdditionalInformationForm } =
     additionalInformationForm;
   const { trigger: triggerCurrentAddressForm } = currentAddressForm;
+  const { trigger: triggerMassageExperienceForm } = massageExperienceForm;
 
   const handleSubmit = (data: any) => {
     console.log(data);
@@ -98,6 +112,18 @@ export function DefaultStepper() {
           setActiveStep((cur) => cur + 1);
         }
         break;
+      case 2:
+        const isValid2 = await triggerCurrentAddressForm();
+        if (isValid2 && !isLastStep) {
+          setActiveStep((cur) => cur + 1);
+        }
+        break;
+      case 3:
+        const isValid3 = await triggerMassageExperienceForm();
+        if (isValid3 && !isLastStep) {
+          setActiveStep((cur) => cur + 1);
+        }
+        break;
     }
   };
   const handlePrev = () => !isFirstStep && setActiveStep((cur) => cur - 1);
@@ -115,7 +141,7 @@ export function DefaultStepper() {
       case 2:
         return <CurrentAddress formProps={currentAddressForm} />;
       case 3:
-        return <MassageExperience />;
+        return <MassageExperience formProps={massageExperienceForm} />;
       case 4:
         return <CourseTraining />;
       case 5:
@@ -131,7 +157,9 @@ export function DefaultStepper() {
         onSubmit={
           activeStep === 1
             ? informationForm.handleSubmit(handleSubmit)
-            : additionalInformationForm.handleSubmit(handleSubmit)
+            : activeStep === 2
+            ? additionalInformationForm.handleSubmit(handleSubmit)
+            : currentAddressForm.handleSubmit(handleSubmit)
         }
       >
         <Stepper

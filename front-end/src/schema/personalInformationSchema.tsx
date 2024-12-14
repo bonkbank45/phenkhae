@@ -10,34 +10,34 @@ const englishCharacterPattern = /^[A-Za-z\s]+$/;
 const numericPattern = /^[0-9]+$/;
 
 export const personalInformationSchema = yup.object().shape({
-  prename_tha: yup.number().required('Prefix name is required'),
+  prename_tha: yup.number().required('กรุณาเลือกคำนำหน้า'),
   firstname_tha: yup
     .string()
-    .matches(thaiCharacterPattern, 'First name must be in Thai')
-    .required('First name is required'),
+    .matches(thaiCharacterPattern, 'ชื่อต้องเป็นภาษาไทย')
+    .required('กรุณากรอกชื่อ'),
   lastname_tha: yup
     .string()
-    .matches(thaiCharacterPattern, 'Last name must be in Thai')
-    .required('Last name is required'),
+    .matches(thaiCharacterPattern, 'นามสกุลต้องเป็นภาษาไทย')
+    .required('กรุณากรอกนามสกุล'),
   firstname_eng: yup
     .string()
-    .matches(englishCharacterPattern, 'First name must be in English')
-    .required('First name is required'),
+    .matches(englishCharacterPattern, 'ชื่อต้องเป็นภาษาอังกฤษ')
+    .required('กรุณากรอกชื่อ'),
   lastname_eng: yup
     .string()
-    .matches(englishCharacterPattern, 'Last name must be in English')
-    .required('Last name is required'),
+    .matches(englishCharacterPattern, 'นามสกุลต้องเป็นภาษาอังกฤษ')
+    .required('กรุณากรอกนามสกุล'),
   citizenid_card: yup
     .string()
-    .matches(numericPattern, 'Citizen ID must be numeric')
-    .required('Citizen ID is required'),
-  birthdate: yup.string().required('Birthday is required'),
+    .matches(numericPattern, 'รหัสประชาชนต้องเป็นตัวเลข')
+    .required('กรุณากรอกรหัสประชาชน'),
+  birthdate: yup.string().required('กรุณากรอกวันเกิด'),
   marital_status: yup
     .number()
     .transform((value, originalValue) =>
       String(originalValue).trim() === '' ? null : value,
     )
     .nullable()
-    .required('Marital status is required'),
-  birth_province: yup.number().required('Birth province is required'),
+    .required('กรุณาเลือกสถานภาพปัจจุบัน'),
+  birth_province: yup.number().required('กรุณาเลือกจังหวัดที่เกิด'),
 });
