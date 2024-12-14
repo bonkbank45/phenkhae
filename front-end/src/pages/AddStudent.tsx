@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import StepperForm from '../components/StepperForm';
 import AddStudentForm from '../components/AddStudentForm/AddStudentForm';
@@ -8,6 +8,7 @@ import { personalInformationSchema } from '../schema/personalInformationSchema';
 import { additionalPersonalInformationSchema } from '../schema/additionalPersonalInformationSchema';
 import { currentAddressSchema } from '../schema/currentAddressSchema';
 import { massageExperienceSchema } from '../schema/massageExperienceSchema';
+import { trainingCourseSchema } from '../schema/trainingCourseSchema';
 
 const AddStudent = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -16,6 +17,7 @@ const AddStudent = () => {
     'ข้อมูลส่วนตัวเพิ่มเติม',
     'ที่อยู่ปัจจุบัน',
     'ประสบการณ์การนวด',
+    'การอบรมหลักสูตร',
   ];
 
   const schemas = [
@@ -23,6 +25,7 @@ const AddStudent = () => {
     additionalPersonalInformationSchema,
     currentAddressSchema,
     massageExperienceSchema,
+    trainingCourseSchema,
   ];
 
   const methods = useForm({
@@ -49,21 +52,15 @@ const AddStudent = () => {
 
   return (
     <FormProvider {...methods}>
-      <div className="container mx-auto p-4 h-screen flex flex-col justify-center items-center">
-        <div className="w-full h-full flex flex-col">
-          <StepperForm
-            Form={
-              <AddStudentForm activeStep={activeStep} formProps={methods} />
-            }
-            steps={steps}
-            isLastStep={activeStep === steps.length - 1}
-            isFirstStep={activeStep === 0}
-            activeStep={activeStep}
-            handleNext={handleNext}
-            handlePrev={handlePrev}
-          />
-        </div>
-      </div>
+      <StepperForm
+        Form={<AddStudentForm activeStep={activeStep} />}
+        steps={steps}
+        isLastStep={activeStep === steps.length - 1}
+        isFirstStep={activeStep === 0}
+        activeStep={activeStep}
+        handleNext={handleNext}
+        handlePrev={handlePrev}
+      />
     </FormProvider>
   );
 };

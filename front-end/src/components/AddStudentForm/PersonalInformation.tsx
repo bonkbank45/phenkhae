@@ -13,20 +13,6 @@ import {
   fetchPrefixNames,
 } from '../../services/api';
 
-interface PersonalInformationProps {
-  formProps: UseFormReturn<{
-    prename_tha: number;
-    firstname_tha: string;
-    lastname_tha: string;
-    firstname_eng: string;
-    lastname_eng: string;
-    citizenid_card: string;
-    birthdate: string;
-    marital_status: number;
-    birth_province: number;
-  }>;
-}
-
 interface MaritalStatus {
   id: number;
   name: string;
@@ -42,7 +28,7 @@ interface PrefixName {
   label: string;
 }
 
-const PersonalInformation: React.FC<PersonalInformationProps> = ({}) => {
+const PersonalInformation: React.FC = ({}) => {
   const {
     register,
     control,

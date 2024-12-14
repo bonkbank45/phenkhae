@@ -8,22 +8,20 @@ import UploadImage from './UploadImage';
 
 interface AddStudentFormProps {
   activeStep: number;
-  formProps: any;
 }
 
-const AddStudentForm: React.FC<AddStudentFormProps> = ({
-  activeStep,
-  formProps,
-}) => {
+const AddStudentForm: React.FC<AddStudentFormProps> = ({ activeStep }) => {
   switch (activeStep) {
     case 0:
-      return <PersonalInformation formProps={formProps} />;
+      return <PersonalInformation />;
     case 1:
-      return <AdditionalPersonalInformation formProps={formProps} />;
+      return <AdditionalPersonalInformation />;
     case 2:
-      return <CurrentAddress formProps={formProps} />;
+      return <CurrentAddress />;
     case 3:
-      return <MassageExperience formProps={formProps} />;
+      return <MassageExperience />;
+    case 4:
+      return <CourseTraining />;
   }
 };
 

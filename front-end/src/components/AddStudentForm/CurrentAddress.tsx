@@ -3,16 +3,17 @@ import TextField from '../Forms/TextField';
 import DropdownSearchWithController from '../Forms/DropdownSearchWithController';
 
 import { useAddressData } from '../../services/useAddressData';
+import { useFormContext } from 'react-hook-form';
 
-const CurrentAddress = ({
-  formProps: {
-    register,
-    control,
-    setValue,
+const CurrentAddress = ({}) => {
+  const {
     watch,
+    setValue,
+    control,
+    register,
     formState: { errors },
-  },
-}) => {
+  } = useFormContext();
+
   const provinceId = watch('address_province');
   const districtId = watch('address_district');
   const { provinces, districts, subDistricts } = useAddressData(
@@ -22,14 +23,14 @@ const CurrentAddress = ({
 
   useEffect(() => {
     if (provinceId) {
-      setValue('address_district', '');
-      setValue('address_sub_district', '');
+      setValue('address_district', null);
+      setValue('address_sub_district', null);
     }
   }, [provinceId, setValue]);
 
   useEffect(() => {
     if (districtId) {
-      setValue('address_sub_district', '');
+      setValue('address_sub_district', null);
     }
   }, [districtId, setValue]);
 
@@ -45,28 +46,28 @@ const CurrentAddress = ({
             name="address_num"
             placeholder="เลขที่"
             includeRegister={register}
-            error={errors.address_num?.message}
+            error={errors.address_num?.message as string}
           />
           <TextField
             label="หมู่ที่"
             name="address_moo"
             placeholder="หมู่ที่"
             includeRegister={register}
-            error={errors.address_moo?.message}
+            error={errors.address_moo?.message as string}
           />
           <TextField
             label="ตรอก/ซอย"
             name="address_soi"
             placeholder="ตรอก/ซอย"
             includeRegister={register}
-            error={errors.address_soi?.message}
+            error={errors.address_soi?.message as string}
           />
           <TextField
             label="ถนน"
             name="address_road"
             placeholder="ถนน"
             includeRegister={register}
-            error={errors.address_road?.message}
+            error={errors.address_road?.message as string}
           />
           <DropdownSearchWithController
             label="จังหวัด"
@@ -74,7 +75,7 @@ const CurrentAddress = ({
             placeholder="จังหวัด"
             options={provinces || []}
             control={control}
-            error={errors.address_province?.message}
+            error={errors.address_province?.message as string}
           />
           <DropdownSearchWithController
             label="เขต/อำเภอ"
@@ -82,7 +83,7 @@ const CurrentAddress = ({
             placeholder="เขต/อำเภอ"
             options={districts || []}
             control={control}
-            error={errors.address_district?.message}
+            error={errors.address_district?.message as string}
             disabled={!provinceId}
           />
           <DropdownSearchWithController
@@ -91,7 +92,7 @@ const CurrentAddress = ({
             placeholder="ตำบล"
             options={subDistricts || []}
             control={control}
-            error={errors.address_sub_district?.message}
+            error={errors.address_sub_district?.message as string}
             disabled={!districtId}
           />
           <TextField
@@ -99,7 +100,7 @@ const CurrentAddress = ({
             name="address_zip_code"
             placeholder="รหัสไปรษณีย์"
             includeRegister={register}
-            error={errors.address_zip_code?.message}
+            error={errors.address_zip_code?.message as string}
           />
         </div>
       </div>
@@ -114,7 +115,7 @@ const CurrentAddress = ({
             placeholder="วุฒิการศึกษาสูงสุด"
             options={[]}
             control={control}
-            error={errors.edu_qual_id?.message}
+            error={errors.edu_qual_id?.message as string}
           />
           <DropdownSearchWithController
             label="จากสถานศึกษา"
@@ -122,7 +123,7 @@ const CurrentAddress = ({
             placeholder="สถานศึกษา"
             options={[]}
             control={control}
-            error={errors.edu_ins_id?.message}
+            error={errors.edu_ins_id?.message as string}
           />
         </div>
       </div>
