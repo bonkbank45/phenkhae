@@ -19,8 +19,10 @@ use App\Http\Controllers\ExamTypeController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MaritalStatusController;
-use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\PrenameController;
+use App\Http\Controllers\ProvinceController;
+use App\Http\Controllers\DistrictController;
+use App\Http\Controllers\SubDistrictController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -135,6 +137,12 @@ Route::group(['middleware' => ['api']], function () {
     });
     Route::prefix('province')->group(function () {
         Route::get('/', [ProvinceController::class, 'index']);
+    });
+    Route::prefix('province/{provinceId}/district')->group(function () {
+        Route::get('/', [DistrictController::class, 'index']);
+    });
+    Route::prefix('district/{districtId}/sub_district')->group(function () {
+        Route::get('/', [SubDistrictController::class, 'index']);
     });
     Route::prefix('prefix_name')->group(function () {
         Route::get('/', [PrenameController::class, 'index']);

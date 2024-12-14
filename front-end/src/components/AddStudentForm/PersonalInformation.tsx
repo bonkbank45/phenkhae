@@ -3,6 +3,7 @@ import TextField from '../Forms/TextField';
 import DatePickerOne from '../Forms/DatePicker/DatePickerOne';
 import SelectGroupTwo from '../Forms/SelectGroup/SelectGroupTwo';
 import DropdownSearchWithController from '../Forms/DropdownSearchWithController';
+import { UseFormReturn, useFormContext } from 'react-hook-form';
 
 import { AxiosResponse } from 'axios';
 
@@ -11,7 +12,6 @@ import {
   fetchProvinces,
   fetchPrefixNames,
 } from '../../services/api';
-import { UseFormReturn } from 'react-hook-form';
 
 interface PersonalInformationProps {
   formProps: UseFormReturn<{
@@ -42,13 +42,12 @@ interface PrefixName {
   label: string;
 }
 
-const PersonalInformation: React.FC<PersonalInformationProps> = ({
-  formProps: {
+const PersonalInformation: React.FC<PersonalInformationProps> = ({}) => {
+  const {
     register,
     control,
     formState: { errors },
-  },
-}) => {
+  } = useFormContext();
   const [maritalStatuses, setMaritalStatuses] = useState<MaritalStatus[]>([]);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [prefixNames, setPrefixNames] = useState<PrefixName[]>([]);
