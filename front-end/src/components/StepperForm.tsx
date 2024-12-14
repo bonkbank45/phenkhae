@@ -22,7 +22,7 @@ const StepperForm: React.FC<StepperFormProps> = ({
   handlePrev,
 }) => {
   return (
-    <div className="w-full py-4 px-8">
+    <div className="py-1 px-8">
       <form>
         <Stepper
           lineClassName="bg-zinc-300"
@@ -45,7 +45,9 @@ const StepperForm: React.FC<StepperFormProps> = ({
 
         <div className="mt-7 flex justify-between">
           <Button
-            className={`${isFirstStep ? 'bg-gray-500' : 'bg-black'}`}
+            className={`${
+              isFirstStep ? 'bg-gray-500' : 'bg-black'
+            } font-notoRegular`}
             onClick={handlePrev}
             disabled={isFirstStep}
           >
@@ -53,7 +55,9 @@ const StepperForm: React.FC<StepperFormProps> = ({
           </Button>
           <Button
             type="button"
-            className={`${isLastStep ? 'bg-gray-500' : 'bg-black'}`}
+            className={`${
+              isLastStep ? 'bg-gray-500' : 'bg-black'
+            } font-notoRegular`}
             onClick={handleNext}
             disabled={isLastStep}
           >

@@ -37,7 +37,7 @@ const CurrentAddress = ({}) => {
   return (
     <>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
           ที่อยู่ปัจจุบัน
         </h1>
         <div className="mt-4 md:grid grid-cols-2 gap-4">
@@ -45,6 +45,7 @@ const CurrentAddress = ({}) => {
             label="เลขที่"
             name="address_num"
             placeholder="เลขที่"
+            required={true}
             includeRegister={register}
             error={errors.address_num?.message as string}
           />
@@ -73,6 +74,7 @@ const CurrentAddress = ({}) => {
             label="จังหวัด"
             name="address_province"
             placeholder="จังหวัด"
+            required={true}
             options={provinces || []}
             control={control}
             error={errors.address_province?.message as string}
@@ -81,6 +83,7 @@ const CurrentAddress = ({}) => {
             label="เขต/อำเภอ"
             name="address_district"
             placeholder="เขต/อำเภอ"
+            required={true}
             options={districts || []}
             control={control}
             error={errors.address_district?.message as string}
@@ -90,6 +93,7 @@ const CurrentAddress = ({}) => {
             label="แขวง/ตำบล"
             name="address_sub_district"
             placeholder="ตำบล"
+            required={true}
             options={subDistricts || []}
             control={control}
             error={errors.address_sub_district?.message as string}
@@ -99,13 +103,14 @@ const CurrentAddress = ({}) => {
             label="รหัสไปรษณีย์"
             name="address_zip_code"
             placeholder="รหัสไปรษณีย์"
+            required={true}
             includeRegister={register}
             error={errors.address_zip_code?.message as string}
           />
         </div>
       </div>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
           วุฒิการศึกษา
         </h1>
         <div className="mt-4 md:grid grid-cols-2 gap-4">

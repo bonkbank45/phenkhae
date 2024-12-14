@@ -9,6 +9,7 @@ const TextArea = ({
   error,
   className = '',
   includeRegister,
+  required = false,
 }: {
   label: string;
   name: string;
@@ -17,15 +18,17 @@ const TextArea = ({
   className?: string;
   error?: string;
   includeRegister: UseFormRegister<any>;
+  required?: boolean;
 }) => {
   return (
     <div className={className}>
       <label
-        className={`mb-3 block text-black dark:text-white ${
+        className={`mb-3 block text-black dark:text-white font-notoLoopThaiRegular ${
           isDisabled ? 'text-gray-500' : 'text-black'
         }`}
       >
         {label}
+        {required && <span className="text-red-500"> *</span>}
       </label>
       <textarea
         rows={6}
@@ -33,7 +36,7 @@ const TextArea = ({
         placeholder={placeholder}
         name={name}
         {...includeRegister(name)}
-        className={`w-full rounded-lg border-[1.5px] ${
+        className={`w-full rounded-lg border-[1.5px] font-notoLoopThaiRegular ${
           isDisabled
             ? 'border-gray-300 bg-gray-100'
             : error
@@ -41,7 +44,7 @@ const TextArea = ({
             : 'border-primary bg-white'
         } py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white`}
       ></textarea>
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
     </div>
   );
 };

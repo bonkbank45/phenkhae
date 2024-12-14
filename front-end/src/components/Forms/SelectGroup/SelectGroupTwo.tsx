@@ -7,6 +7,8 @@ interface SelectGroupTwoProps {
   placeholder: string;
   error: string;
   options: { id: number; name: string }[];
+  className?: string;
+  required?: boolean;
 }
 
 const SelectGroupTwo: React.FC<SelectGroupTwoProps> = ({
@@ -16,6 +18,8 @@ const SelectGroupTwo: React.FC<SelectGroupTwoProps> = ({
   placeholder = '',
   error = '',
   options = [],
+  className = '',
+  required = false,
 }) => {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
@@ -25,12 +29,13 @@ const SelectGroupTwo: React.FC<SelectGroupTwoProps> = ({
   };
 
   return (
-    <div className="mb-4">
-      <label className="mb-2.5 block font-medium text-gray-500 dark:text-white">
+    <div className={`${className} mb-6 md:mb-0`}>
+      <label className="font-notoLoopThaiRegular mb-1 block font-medium text-gray-500 dark:text-white">
         {label}
+        {required && <span className="text-red-500"> *</span>}
       </label>
 
-      <div className="w-full rounded-lg relative z-20 bg-white dark:bg-form-input">
+      <div className="relative z-20">
         <select
           {...(includeRegister && includeRegister(name))}
           name={name}
@@ -39,7 +44,7 @@ const SelectGroupTwo: React.FC<SelectGroupTwoProps> = ({
             setSelectedOption(e.target.value);
             changeTextColor();
           }}
-          className={`w-full rounded-lg border bg-transparent py-4 pl-6 pr-10 bg-white text-black outline-none focus-visible:border-primary dark:bg-form-input dark:text-white ${
+          className={`font-notoLoopThaiRegular w-full rounded-lg border bg-transparent py-2 pl-4 pr-10 bg-white text-black outline-none focus-visible:border-primary dark:bg-form-input dark:text-white ${
             error ? 'border-red-500' : 'border-stroke'
           } appearance-none`}
         >
@@ -76,7 +81,7 @@ const SelectGroupTwo: React.FC<SelectGroupTwoProps> = ({
           </svg>
         </span>
       </div>
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
     </div>
   );
 };

@@ -27,7 +27,7 @@ const MassageExperience = ({}) => {
   return (
     <>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
           ประสบการณ์ในการนวด
         </h1>
         <div className="mt-4">

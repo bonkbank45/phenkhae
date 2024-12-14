@@ -88,7 +88,7 @@ const PersonalInformation: React.FC = ({}) => {
 
   return (
     <>
-      <h1 className="mt-6 mb-6 text-4xl font-bold text-black">
+      <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
         ประวัติส่วนตัว
       </h1>
       <div className="mt-4 md:grid grid-cols-2 gap-4">
@@ -97,6 +97,7 @@ const PersonalInformation: React.FC = ({}) => {
           label="คำนำหน้า"
           name="prename_tha"
           placeholder="คำนำหน้า"
+          required={true}
           options={prefixNames}
           control={control}
           error={
@@ -110,6 +111,7 @@ const PersonalInformation: React.FC = ({}) => {
           name="firstname_tha"
           includeRegister={register}
           placeholder="ชื่อนักเรียน"
+          required={true}
           error={
             typeof errors.firstname_tha?.message === 'string'
               ? errors.firstname_tha.message
@@ -121,6 +123,7 @@ const PersonalInformation: React.FC = ({}) => {
           name="lastname_tha"
           includeRegister={register}
           placeholder="นามสกุลนักเรียน"
+          required={true}
           error={
             typeof errors.lastname_tha?.message === 'string'
               ? errors.lastname_tha.message
@@ -132,6 +135,7 @@ const PersonalInformation: React.FC = ({}) => {
           name="firstname_eng"
           includeRegister={register}
           placeholder="ชื่อนักเรียน"
+          required={true}
           error={
             typeof errors.firstname_eng?.message === 'string'
               ? errors.firstname_eng.message
@@ -143,6 +147,7 @@ const PersonalInformation: React.FC = ({}) => {
           name="lastname_eng"
           includeRegister={register}
           placeholder="นามสกุลนักเรียน"
+          required={true}
           error={
             typeof errors.lastname_eng?.message === 'string'
               ? errors.lastname_eng.message
@@ -154,6 +159,7 @@ const PersonalInformation: React.FC = ({}) => {
           name="citizenid_card"
           includeRegister={register}
           placeholder="เลขประจำตัวประชาชน"
+          required={true}
           error={
             typeof errors.citizenid_card?.message === 'string'
               ? errors.citizenid_card.message
@@ -165,6 +171,7 @@ const PersonalInformation: React.FC = ({}) => {
           name="birthdate"
           includeRegister={register}
           placeholder="วันเกิด"
+          required={true}
           error={
             typeof errors.birthdate?.message === 'string'
               ? errors.birthdate.message
@@ -176,6 +183,7 @@ const PersonalInformation: React.FC = ({}) => {
           name="marital_status"
           includeRegister={register}
           options={maritalStatuses}
+          required={true}
           placeholder="โปรดเลือกสถานภาพปัจจุบัน"
           error={
             typeof errors.marital_status?.message === 'string'
@@ -189,6 +197,7 @@ const PersonalInformation: React.FC = ({}) => {
           placeholder="สถานที่เกิด"
           options={provinces}
           control={control}
+          required={true}
           error={
             typeof errors.birth_province?.message === 'string'
               ? errors.birth_province.message

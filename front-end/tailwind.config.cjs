@@ -7,6 +7,9 @@ module.exports = {
   darkMode: 'class',
   theme: {
     fontFamily: {
+      notoRegular: ['Noto Serif Thai Regular', 'sans-serif'],
+      notoExtraBold: ['Noto Serif Thai ExtraBold', 'sans-serif'],
+      notoLoopThaiRegular: ['Noto Sans Thai Looped Regular', 'sans-serif'],
       satoshi: ['Satoshi', 'sans-serif'],
     },
     screens: {

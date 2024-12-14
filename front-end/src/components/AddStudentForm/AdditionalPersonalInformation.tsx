@@ -56,7 +56,7 @@ const AdditionalPersonalInformation: React.FC = ({}) => {
   return (
     <>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
           ประวัติส่วนตัวเพิ่มเติม
         </h1>
         <div className="mt-4 md:grid grid-cols-2 gap-4">
@@ -64,6 +64,7 @@ const AdditionalPersonalInformation: React.FC = ({}) => {
             label="ชื่อบิดา"
             name="father_fname"
             placeholder="ชื่อบิดา"
+            required={true}
             includeRegister={register}
             error={errors.father_fname?.message as string}
           />
@@ -72,6 +73,7 @@ const AdditionalPersonalInformation: React.FC = ({}) => {
             name="father_lname"
             placeholder="นามสกุลบิดา"
             includeRegister={register}
+            required={true}
             error={errors.father_lname?.message as string}
           />
           <TextField
@@ -79,6 +81,7 @@ const AdditionalPersonalInformation: React.FC = ({}) => {
             name="mother_fname"
             placeholder="ชื่อมารดา"
             includeRegister={register}
+            required={true}
             error={errors.mother_fname?.message as string}
           />
           <TextField
@@ -86,12 +89,15 @@ const AdditionalPersonalInformation: React.FC = ({}) => {
             name="mother_lname"
             placeholder="นามสกุลมารดา"
             includeRegister={register}
+            required={true}
             error={errors.mother_lname?.message as string}
           />
         </div>
       </div>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black">โรคประจำตัว</h1>
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
+          โรคประจำตัว
+        </h1>
         <CheckboxFour
           label="ไม่มี"
           name="has_medical_condition"
@@ -134,13 +140,16 @@ const AdditionalPersonalInformation: React.FC = ({}) => {
               />
             )}
           />
-          <p className="text-red-500">
+          <span className="text-red-500"> *</span>
+          <p className="text-xs text-red-500">
             {errors.medical_condition?.message as string}
           </p>
         </div>
       </div>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black">การผ่าตัด</h1>
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
+          การผ่าตัด
+        </h1>
         <CheckboxFour
           name="has_surgery_history"
           label="ไม่เคยผ่าตัด"
@@ -166,6 +175,7 @@ const AdditionalPersonalInformation: React.FC = ({}) => {
           isDisabled={surgeryHistoryCheckBox === 'ไม่เคยผ่าตัด'}
           placeholder="ระบุประวัติการผ่าตัด (ถ้ามี)"
           className="ml-8 mt-4"
+          required={true}
           includeRegister={register}
           error={errors.surgery_history?.message as string}
         />

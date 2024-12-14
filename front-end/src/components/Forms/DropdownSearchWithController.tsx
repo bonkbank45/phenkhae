@@ -1,8 +1,9 @@
+import { ReactElement } from 'react';
 import { Controller, Control } from 'react-hook-form';
 import Select, { components } from 'react-select';
 
 interface DropdownSearchProps {
-  label: string;
+  label: ReactElement | string;
   name: string;
   placeholder?: string;
   error?: string;
@@ -10,6 +11,7 @@ interface DropdownSearchProps {
   control: Control<any>;
   className?: string;
   disabled?: boolean;
+  required?: boolean;
 }
 
 const DropdownIndicator = (props: any) => {
@@ -43,12 +45,14 @@ const DropdownSearchWithController = ({
   options,
   control,
   className,
+  required = false,
   disabled = false,
 }: DropdownSearchProps) => {
   return (
-    <div className={`mb-4 ${className}`}>
-      <label className="mb-2.5 block font-medium text-gray-500 dark:text-white">
+    <div className={`${className} mb-6 md:mb-0`}>
+      <label className="font-notoLoopThaiRegular mb-1 block font-medium text-gray-500 dark:text-white">
         {label}
+        {required && <span className="text-red-500"> *</span>}
       </label>
       <Controller
         name={name}
@@ -63,13 +67,16 @@ const DropdownSearchWithController = ({
             }
             options={options}
             placeholder={placeholder}
-            className={`${disabled ? 'opacity-50' : ''}`}
+            className={`${
+              disabled ? 'opacity-50' : ''
+            } font-notoLoopThaiRegular`}
             classNamePrefix="select"
             isDisabled={disabled}
             styles={{
               control: (base) => ({
                 ...base,
-                padding: '0.5rem',
+                padding: '0.25rem',
+                minHeight: '40px',
                 borderRadius: '0.5rem',
                 borderColor: error ? '#EF4444' : '#E2E8F0',
                 backgroundColor: 'white',
@@ -82,12 +89,20 @@ const DropdownSearchWithController = ({
                 ...base,
                 display: 'none',
               }),
+              valueContainer: (base) => ({
+                ...base,
+                padding: '0 0.5rem',
+              }),
+              dropdownIndicator: (base) => ({
+                ...base,
+                padding: '0 0.5rem',
+              }),
             }}
             components={{ DropdownIndicator }}
           />
         )}
       />
-      {error && <div className="text-red-500">{error}</div>}
+      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
     </div>
   );
 };

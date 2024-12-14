@@ -1,0 +1,20 @@
+@font-face {
+  font-family: 'Noto Serif Thai Regular';
+  src: url('../fonts/NotoSerifThai-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Noto Serif Thai Bold';
+  src: url('../fonts/NotoSerifThai-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Noto Serif Thai ExtraBold';
+  src: url('../fonts/NotoSerifThai-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}

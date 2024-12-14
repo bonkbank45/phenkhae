@@ -7,6 +7,7 @@ interface DatePickerOneProps {
   placeholder: string;
   includeRegister: any;
   error: string;
+  required?: boolean;
 }
 
 const DatePickerOne: React.FC<DatePickerOneProps> = ({
@@ -15,6 +16,7 @@ const DatePickerOne: React.FC<DatePickerOneProps> = ({
   placeholder = '',
   includeRegister,
   error = '',
+  required = false,
 }) => {
   useEffect(() => {
     // Init flatpickr
@@ -31,13 +33,14 @@ const DatePickerOne: React.FC<DatePickerOneProps> = ({
   }, []);
 
   return (
-    <div className="mb-4">
-      <label className="mb-2.5 block font-medium text-gray-500 dark:text-white">
-        {label ? label : 'Date picker'}
+    <div className="mb-6 md:mb-0">
+      <label className="font-notoLoopThaiRegular mb-1 block font-medium text-gray-500 dark:text-white">
+        {label}
+        {required && <span className="text-red-500"> *</span>}
       </label>
       <div className="relative">
         <input
-          className={`form-datepicker w-full rounded-lg border bg-transparent py-4 pl-6 pr-10 bg-white text-black outline-none focus-visible:shadow-none dark:bg-form-input dark:text-white ${
+          className={`form-datepicker w-full rounded-lg border bg-transparent py-2 pl-4 pr-10 bg-white text-black outline-none focus-visible:shadow-none dark:bg-form-input dark:text-white ${
             error ? 'border-red-500' : 'border-stroke'
           }`}
           style={{
@@ -66,7 +69,7 @@ const DatePickerOne: React.FC<DatePickerOneProps> = ({
           </svg>
         </div>
       </div>
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
     </div>
   );
 };
