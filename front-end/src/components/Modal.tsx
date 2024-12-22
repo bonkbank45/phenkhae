@@ -18,10 +18,10 @@ export const Modal: React.FC<ModalProps> = ({
   return (
     <>
       {/* Overlay */}
-      <div className="fixed inset-0 z-50 bg-black bg-opacity-50 transition-opacity" />
+      <div className="fixed inset-0 z-[9999] bg-black bg-opacity-50 transition-opacity" />
 
       {/* Modal */}
-      <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="fixed inset-0 z-[10000] overflow-y-auto">
         <div className="flex min-h-full items-center justify-center p-4 text-center">
           <div className="relative w-full max-w-lg transform overflow-hidden rounded-lg bg-white p-6 text-left shadow-xl transition-all dark:bg-boxdark">
             {/* Header */}

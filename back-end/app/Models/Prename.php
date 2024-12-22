@@ -8,8 +8,8 @@ class Prename extends Model
 {
     protected $table = 'prenames';
     public $incrementing = false;
-    protected $keyType = 'string';
-    protected $fillable = ['prename_tha', 'prename_eng', 'prename_short_tha', 'prename_short_eng'];
+    protected $keyType = 'integer';
+    protected $fillable = ['prename_tha', 'prename_eng', 'prename_short_tha', 'prename_short_eng', 'show_status'];
     public $timestamps = false;
     public function students(): HasMany
     {

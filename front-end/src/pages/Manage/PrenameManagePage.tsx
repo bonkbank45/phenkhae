@@ -17,6 +17,7 @@ interface Prename {
   prename_eng: string;
   prename_short_tha?: string;
   prename_short_eng?: string;
+  show_status: number;
 }
 
 const Prename = () => {
@@ -44,6 +45,11 @@ const Prename = () => {
 
   const columns = [
     {
+      header: 'ไอดี',
+      key: 'id',
+      render: (item: Prename) => item.id || '-',
+    },
+    {
       header: 'คำนำหน้าชื่อไทย',
       key: 'prename_tha',
       render: (item: Prename) => item.prename_tha || '-',
@@ -62,6 +68,16 @@ const Prename = () => {
       header: 'คำนำหน้าชื่ออังกฤษสั้น',
       key: 'prename_short_eng',
       render: (item: Prename) => item.prename_short_eng || '-',
+    },
+    {
+      header: 'การแสดงผล',
+      key: 'show_status',
+      render: (item: Prename) =>
+        item.show_status ? (
+          <span className="text-green-500">แสดง</span>
+        ) : (
+          <span className="text-red-500">ไม่แสดง</span>
+        ),
     },
     {
       header: 'จัดการ',
