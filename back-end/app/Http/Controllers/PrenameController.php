@@ -21,6 +21,8 @@ class PrenameController extends Controller
 
     public function store(Request $request)
     {
+        \Log::info('Received data:', $request->all()); // เพิ่มบรรทัดนี้เพื่อ debug
+
         $prefixName = Prename::create($request->all());
         return response()->json($prefixName, 201);
     }

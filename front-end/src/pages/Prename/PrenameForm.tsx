@@ -1,6 +1,4 @@
 import { useForm } from 'react-hook-form';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
 import TextField from '../../components/Forms/TextField';
 import CheckboxOne from '../../components/Checkboxes/CheckboxOne';
 import { useState } from 'react';
@@ -31,7 +29,10 @@ const PrenameForm = ({
     setValue,
     formState: { errors },
   } = useForm<PrenameFormData>({
-    defaultValues: initialData,
+    defaultValues: {
+      ...initialData,
+      show_status: initialData?.show_status || 0,
+    },
   });
 
   const [showStatus, setShowStatus] = useState(initialData?.show_status || 0);
@@ -41,12 +42,33 @@ const PrenameForm = ({
     setValue('show_status', showStatus === 1 ? 0 : 1);
   };
 
+  const handleSubmitForm = (data: PrenameFormData) => {
+    onSubmit({
+      ...data,
+      show_status: showStatus,
+    });
+  };
+
   return (
     <div className="max-w-2xl mx-auto p-4">
       <h1 className="text-2xl text-black font-bold mb-4 font-notoLoopThaiRegular">
         {initialData ? 'แก้ไขคำนำหน้าชื่อ' : 'เพิ่มคำนำหน้าชื่อ'}
       </h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-4">
+        {initialData ? null : (
+          <TextField
+            name="id"
+            label="ไอดี"
+            type="number"
+            placeholder="ไอดี"
+            includeRegister={() =>
+              register('id', {
+                valueAsNumber: true,
+              })
+            }
+            error={errors.id?.message}
+          />
+        )}
         <TextField
           name="prename_tha"
           label="คำนำหน้าชื่อภาษาไทย"

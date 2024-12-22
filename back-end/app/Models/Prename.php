@@ -9,7 +9,7 @@ class Prename extends Model
     protected $table = 'prenames';
     public $incrementing = false;
     protected $keyType = 'integer';
-    protected $fillable = ['prename_tha', 'prename_eng', 'prename_short_tha', 'prename_short_eng', 'show_status'];
+    protected $fillable = ['id', 'prename_tha', 'prename_eng', 'prename_short_tha', 'prename_short_eng', 'show_status'];
     public $timestamps = false;
     public function students(): HasMany
     {
