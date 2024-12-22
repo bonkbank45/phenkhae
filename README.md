@@ -3,7 +3,7 @@
 Final Project - @CPE RMUTT
 ## Tech Stack
 
-**Client:** React, Redux, TailwindCSS
+**Client:** React, TailwindCSS
 
 **Server:** Laravel 11
 
