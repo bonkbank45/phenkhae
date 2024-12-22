@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import TextField from '../Forms/TextField';
 import DatePickerOne from '../Forms/DatePicker/DatePickerOne';
-import SelectGroupTwo from '../Forms/SelectGroup/SelectGroupTwo';
 import DropdownSearchWithController from '../Forms/DropdownSearchWithController';
-import { UseFormReturn, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 import { AxiosResponse } from 'axios';
 
@@ -13,22 +12,27 @@ import {
   fetchPrefixNames,
 } from '../../services/api';
 
-interface MaritalStatus {
-  id: number;
-  name: string;
-}
-
-interface Province {
+interface SelectOption {
   value: number;
   label: string;
 }
 
-interface PrefixName {
-  value: number;
-  label: string;
+type MaritalStatus = SelectOption;
+type Province = SelectOption;
+type PrefixName = SelectOption;
+
+interface ProvinceResponse {
+  status: string;
+  message: string;
+  data: {
+    id: number;
+    code: number;
+    name_in_thai: string;
+    name_in_english: string;
+  }[];
 }
 
-const PersonalInformation: React.FC = ({}) => {
+const PersonalInformation = () => {
   const {
     register,
     control,
@@ -43,22 +47,15 @@ const PersonalInformation: React.FC = ({}) => {
       const response: AxiosResponse<{ id: number; marital_name: string }[]> =
         await fetchMaritalStatuses();
       const formattedStatuses = response.data.map((status) => ({
-        id: status.id,
-        name: status.marital_name,
+        value: status.id,
+        label: status.marital_name,
       }));
       setMaritalStatuses(formattedStatuses);
     };
 
     const fetchProvinceList = async () => {
-      const response: AxiosResponse<
-        {
-          id: number;
-          code: number;
-          name_in_thai: string;
-          name_in_english: string;
-        }[]
-      > = await fetchProvinces();
-      const formattedProvinces = response.data.map((province) => ({
+      const response: AxiosResponse<ProvinceResponse> = await fetchProvinces();
+      const formattedProvinces = response.data.data.map((province) => ({
         value: province.id,
         label: province.name_in_thai,
       }));
@@ -88,11 +85,11 @@ const PersonalInformation: React.FC = ({}) => {
 
   return (
     <>
-      <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
+      <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
         ประวัติส่วนตัว
       </h1>
       <div className="mt-4 md:grid grid-cols-2 gap-4">
-        <DropdownSearchWithController
+        <DropdownSearchWithController<SelectOption['value']>
           className="col-span-2 lg:w-[49.3%]"
           label="คำนำหน้า"
           name="prename_tha"
@@ -178,11 +175,11 @@ const PersonalInformation: React.FC = ({}) => {
               : ''
           }
         />
-        <SelectGroupTwo
+        <DropdownSearchWithController<SelectOption['value']>
           label="สถานภาพปัจจุบัน"
           name="marital_status"
-          includeRegister={register}
           options={maritalStatuses}
+          control={control}
           required={true}
           placeholder="โปรดเลือกสถานภาพปัจจุบัน"
           error={
@@ -191,7 +188,7 @@ const PersonalInformation: React.FC = ({}) => {
               : ''
           }
         />
-        <DropdownSearchWithController
+        <DropdownSearchWithController<SelectOption['value']>
           label="สถานที่เกิด"
           name="birth_province"
           placeholder="สถานที่เกิด"

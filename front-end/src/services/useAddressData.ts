@@ -1,14 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-
-axios.defaults.baseURL = 'http://localhost:8000';
+import api from './axios/axiosClient';
 
 export const useAddressData = (provinceId?: string, districtId?: string) => {
-  const { data: provinces } = useQuery({
+  const {
+    data: provinces,
+    isLoading: isLoadingProvinces,
+    error: provinceError,
+  } = useQuery({
     queryKey: ['provinces'],
-    queryFn: () =>
-      axios.get('/api/province').then((res) => {
-        return res.data.map(
+    queryFn: async () => {
+      try {
+        const res = await api.get('/province');
+        const provinceData = Array.isArray(res.data) ? res.data : res.data.data;
+
+        return provinceData.map(
           (province: {
             id: number;
             code: number;
@@ -19,7 +24,11 @@ export const useAddressData = (provinceId?: string, districtId?: string) => {
             value: province.id,
           }),
         );
-      }),
+      } catch (error) {
+        console.error('Province fetch error:', error);
+        throw error;
+      }
+    },
     staleTime: 1000 * 60 * 60 * 24,
     gcTime: 1000 * 60 * 60 * 24,
   });
@@ -27,9 +36,9 @@ export const useAddressData = (provinceId?: string, districtId?: string) => {
   const { data: districts } = useQuery({
     queryKey: ['districts', provinceId],
     queryFn: () =>
-      axios.get(`/api/province/${provinceId}/district`).then((res) => {
-        console.log(res.data);
-        return res.data.map(
+      api.get(`/province/${provinceId}/district`).then((res) => {
+        const districtData = Array.isArray(res.data) ? res.data : res.data.data;
+        return districtData.map(
           (district: {
             id: number;
             code: number;
@@ -50,8 +59,11 @@ export const useAddressData = (provinceId?: string, districtId?: string) => {
   const { data: subDistricts } = useQuery({
     queryKey: ['subDistricts', districtId],
     queryFn: () =>
-      axios.get(`/api/district/${districtId}/sub_district`).then((res) => {
-        return res.data.map(
+      api.get(`/district/${districtId}/sub_district`).then((res) => {
+        const subDistrictData = Array.isArray(res.data)
+          ? res.data
+          : res.data.data;
+        return subDistrictData.map(
           (subDistrict: {
             id: number;
             name_in_thai: string;

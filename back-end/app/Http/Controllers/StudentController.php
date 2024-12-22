@@ -10,6 +10,8 @@ use App\Traits\JsonResponseTrait;
 
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
+use Illuminate\Support\Facades\Log;
+
 class StudentController extends Controller
 {
     use JsonResponseTrait;
@@ -35,6 +37,7 @@ class StudentController extends Controller
      */
     public function store(StoreStudentRequest $request): JsonResponse
     {
+        Log::info($request->all());
         $student = Student::create($request->all());
         return $this->successResponse($student, 'Student created successfully', 201);
     }

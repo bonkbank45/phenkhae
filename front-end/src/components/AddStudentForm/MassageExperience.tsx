@@ -3,7 +3,7 @@ import CheckboxFour from '../Checkboxes/CheckboxFour';
 import { useFormContext } from 'react-hook-form';
 import TextArea from '../Forms/TextArea';
 
-const MassageExperience = ({}) => {
+const MassageExperience = () => {
   const {
     register,
     control,
@@ -27,7 +27,7 @@ const MassageExperience = ({}) => {
   return (
     <>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
           ประสบการณ์ในการนวด
         </h1>
         <div className="mt-4">

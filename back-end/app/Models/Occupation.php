@@ -8,6 +8,8 @@ class Occupation extends Model
 {
     protected $table = 'occupations';
     protected $fillable = ['occupation_name'];
+    public $incrementing = false;
+    public $keyType = 'string';
     public $timestamps = false;
     public function students(): HasMany
     {

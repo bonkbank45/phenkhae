@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Role extends Model
 {
     protected $table = 'roles';
+    public $timestamps = false;
     public function users(): HasMany
     {
         return $this->hasMany(User::class);

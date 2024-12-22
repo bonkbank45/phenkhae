@@ -1,15 +1,17 @@
 <?php
 
+
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-
+use App\Traits\JsonResponseTrait;
 use App\Models\Province;
 
 class ProvinceController extends Controller
 {
+    use JsonResponseTrait;
     public function index()
     {
         $provinces = Province::all();
-        return response()->json($provinces);
+        return $this->successResponse($provinces, 'Provinces retrieved successfully');
     }
 }

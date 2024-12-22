@@ -1,10 +1,5 @@
-import axios, { AxiosResponse } from 'axios';
-
-const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
-  withCredentials: true,
-});
-
+import { AxiosResponse } from 'axios';
+import api from './axios/axiosClient';
 export const login = (email: string, password: string) => {
   return api.post('/login', { email, password });
 };
@@ -58,7 +53,7 @@ export const fetchPrefixNames = async (): Promise<
     }[]
   >
 > => {
-  return api.get('/prefix_name');
+  return await api.get('/prename');
 };
 
 export default api;

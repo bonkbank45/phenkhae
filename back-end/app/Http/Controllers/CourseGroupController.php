@@ -22,6 +22,35 @@ class CourseGroupController extends Controller
         return $this->successResponse($course_groups, 'Course groups fetched successfully', 200);
     }
 
+    public function available(): JsonResponse
+    {
+        $course_groups = CourseGroup::where(
+            'date_start',
+            '>=',
+            date('Y-m-d H:i:s')
+        )
+            ->with('course', 'enrollments')
+            ->get()
+            ->groupBy(function ($course_group) {
+                return $course_group->course->course_category->category_name;
+            })
+            ->map(function ($grouped_course_groups) {
+                return $grouped_course_groups->map(function ($course_group) {
+                    return [
+                        'course_name' => $course_group->course->course_name,
+                        'course_batch' => $course_group->batch,
+                        'max_students' => $course_group->max_students,
+                        'students_enrolled' => $course_group->enrollments->count(),
+                    ];
+                });
+            });
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Course data categories retrieved successfully',
+            'data' => $course_groups
+        ], 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

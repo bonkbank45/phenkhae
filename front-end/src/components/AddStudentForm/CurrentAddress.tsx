@@ -1,11 +1,16 @@
 import React, { useEffect } from 'react';
 import TextField from '../Forms/TextField';
 import DropdownSearchWithController from '../Forms/DropdownSearchWithController';
-
+import { useEducationQual } from '../../services/useEducationQual';
 import { useAddressData } from '../../services/useAddressData';
 import { useFormContext } from 'react-hook-form';
 
-const CurrentAddress = ({}) => {
+type provinceValue = number;
+type districtValue = number;
+type subDistrictValue = number;
+type educationQualValue = string;
+
+const CurrentAddress = () => {
   const {
     watch,
     setValue,
@@ -20,6 +25,21 @@ const CurrentAddress = ({}) => {
     provinceId,
     districtId,
   );
+
+  const { data: educationQualData, isLoading: isLoadingEducationQual } =
+    useEducationQual();
+
+  const formattedEducationQual =
+    educationQualData?.data?.map((educationQual) => ({
+      value: educationQual.id,
+      label: educationQual.edu_qual_name,
+    })) || [];
+
+  console.log({
+    provinces,
+    isArray: Array.isArray(provinces),
+    length: provinces?.length,
+  });
 
   useEffect(() => {
     if (provinceId) {
@@ -37,7 +57,7 @@ const CurrentAddress = ({}) => {
   return (
     <>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
           ที่อยู่ปัจจุบัน
         </h1>
         <div className="mt-4 md:grid grid-cols-2 gap-4">
@@ -70,7 +90,7 @@ const CurrentAddress = ({}) => {
             includeRegister={register}
             error={errors.address_road?.message as string}
           />
-          <DropdownSearchWithController
+          <DropdownSearchWithController<provinceValue>
             label="จังหวัด"
             name="address_province"
             placeholder="จังหวัด"
@@ -79,7 +99,7 @@ const CurrentAddress = ({}) => {
             control={control}
             error={errors.address_province?.message as string}
           />
-          <DropdownSearchWithController
+          <DropdownSearchWithController<districtValue>
             label="เขต/อำเภอ"
             name="address_district"
             placeholder="เขต/อำเภอ"
@@ -89,7 +109,7 @@ const CurrentAddress = ({}) => {
             error={errors.address_district?.message as string}
             disabled={!provinceId}
           />
-          <DropdownSearchWithController
+          <DropdownSearchWithController<subDistrictValue>
             label="แขวง/ตำบล"
             name="address_sub_district"
             placeholder="ตำบล"
@@ -110,26 +130,33 @@ const CurrentAddress = ({}) => {
         </div>
       </div>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
           วุฒิการศึกษา
         </h1>
         <div className="mt-4 md:grid grid-cols-2 gap-4">
-          <DropdownSearchWithController
+          <DropdownSearchWithController<educationQualValue>
             label="วุฒิการศึกษาสูงสุด"
             name="edu_qual"
             placeholder="วุฒิการศึกษาสูงสุด"
-            options={[]}
+            options={formattedEducationQual || []}
             control={control}
-            error={errors.edu_qual_id?.message as string}
+            error={errors.edu_qual?.message as string}
           />
-          <DropdownSearchWithController
+          <TextField
+            label="จากสถานศึกษา"
+            name="edu_ins"
+            placeholder="สถานศึกษา"
+            includeRegister={register}
+            error={errors.edu_ins?.message as string}
+          />
+          {/* <DropdownSearchWithController
             label="จากสถานศึกษา"
             name="edu_inses"
             placeholder="สถานศึกษา"
             options={[]}
             control={control}
             error={errors.edu_ins_id?.message as string}
-          />
+          /> */}
         </div>
       </div>
     </>

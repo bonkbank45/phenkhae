@@ -11,21 +11,30 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('exams', function (Blueprint $table) {
+            // $table->id();
+            // $table->unsignedBigInteger('course_group_id');
+            // $table->unsignedBigInteger('student_id');
+            // $table->year('year');
+            // $table->tinyInteger('term');
+            // $table->integer('exam_type_id');
+            // $table->integer('exam_period');
+            // $table->integer('score_full');
+            // $table->integer('score_real');
+            // $table->dateTime('date_exam');
+
+            // $table->foreign(['course_group_id', 'student_id'])
+            //     ->references(['course_group_id', 'student_id'])
+            //     ->on('enrollments')
+            //     ->onDelete('cascade');
             $table->id();
-            $table->unsignedBigInteger('course_group_id');
-            $table->unsignedBigInteger('student_id');
+            $table->foreignId('course_group_id')->constrained('course_groups', 'id');
             $table->year('year');
             $table->tinyInteger('term');
             $table->integer('exam_type_id');
             $table->integer('exam_period');
             $table->integer('score_full');
             $table->integer('score_real');
-            $table->dateTime('date_exam');
-
-            $table->foreign(['course_group_id', 'student_id'])
-                ->references(['course_group_id', 'student_id'])
-                ->on('enrollments')
-                ->onDelete('cascade');
+            $table->dateTime('date_start_exam');
         });
     }
 

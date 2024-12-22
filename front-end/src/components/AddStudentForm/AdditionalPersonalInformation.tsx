@@ -1,48 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import { UseFormReturn, Controller, useFormContext } from 'react-hook-form';
-import Select from 'react-select';
-import { AxiosResponse } from 'axios';
-import { fetchMedicalConditions } from '../../services/api';
+import { useState, useEffect } from 'react';
+import DropdownSearchWithController from '../Forms/DropdownSearchWithController';
 import CheckboxFour from '../Checkboxes/CheckboxFour';
 import TextField from '../Forms/TextField';
 import TextArea from '../Forms/TextArea';
+import { useOccupationData } from '../../services/useOccupationData';
+import { useFormContext } from 'react-hook-form';
+import { useMedicalConditionData } from '../../services/useMedicalConditionData';
+import { useEducationQual } from '../../services/useEducationQual';
 
-interface MedicalCondition {
+interface SelectOptionMedicalCondition {
   value: number;
   label: string;
 }
+interface SelectOptionOccupation {
+  value: string;
+  label: string;
+}
 
-const AdditionalPersonalInformation: React.FC = ({}) => {
+const AdditionalPersonalInformation = () => {
   const {
     register,
     control,
     setValue,
     formState: { errors },
   } = useFormContext();
+
+  const {
+    data: occupationData,
+    isLoading: isLoadingOccupation,
+    error: errorOccupation,
+  } = useOccupationData();
+
+  const {
+    data: medicalConditionData,
+    isLoading: isLoadingMedicalCondition,
+    error: errorMedicalCondition,
+  } = useMedicalConditionData();
+
+  const { data: educationQualData, isLoading: isLoadingEducationQual } =
+    useEducationQual();
+
+  const formattedEducationQual =
+    educationQualData?.data?.map((educationQual) => ({
+      value: educationQual.id,
+      label: educationQual.edu_qual_name,
+    })) || [];
+
+  const formattedOccupations =
+    occupationData?.data?.map((occupation) => ({
+      value: occupation.id,
+      label: occupation.occupation_name,
+    })) || [];
+
+  const formattedMedicalConditions =
+    medicalConditionData?.data?.map((medicalCondition) => ({
+      value: medicalCondition.id,
+      label: medicalCondition.name,
+    })) || [];
+
   const [medicalConditionCheckBox, setMedicalConditionCheckBox] =
     useState<string>('ไม่มี');
   const [surgeryHistoryCheckBox, setSurgeryHistoryCheckBox] =
     useState<string>('ไม่เคยผ่าตัด');
   const [medicalConditionList, setMedicalConditionList] = useState<
-    MedicalCondition[]
+    SelectOptionMedicalCondition[]
   >([]);
-
-  useEffect(() => {
-    const fetchMedicalConditionList = async () => {
-      const response: AxiosResponse<{
-        status: string;
-        message: string;
-        data: { id: number; name: string }[];
-      }> = await fetchMedicalConditions();
-      console.log(response.data);
-      const formattedConditions = response.data.data.map((condition) => ({
-        value: condition.id,
-        label: condition.name,
-      }));
-      setMedicalConditionList(formattedConditions);
-    };
-    fetchMedicalConditionList();
-  }, []);
 
   useEffect(() => {
     setMedicalConditionCheckBox('ไม่มี');
@@ -56,10 +78,41 @@ const AdditionalPersonalInformation: React.FC = ({}) => {
   return (
     <>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
           ประวัติส่วนตัวเพิ่มเติม
         </h1>
         <div className="mt-4 md:grid grid-cols-2 gap-4">
+          <TextField
+            label="อีเมล์นักเรียน"
+            name="email"
+            placeholder="อีเมล์นักเรียน"
+            required={true}
+            includeRegister={register}
+            error={errors.email?.message as string}
+          />
+          <TextField
+            label="เบอร์โทรศัพท์นักเรียน"
+            name="phone_number"
+            placeholder="เบอร์โทรศัพท์นักเรียน"
+            required={true}
+            includeRegister={register}
+            error={errors.phone_number?.message as string}
+          />
+          <DropdownSearchWithController<SelectOptionOccupation['value']>
+            label="อาชีพปัจจุบันของนักเรียน"
+            name="occupation_student"
+            className="col-span-2"
+            options={formattedOccupations}
+            control={control}
+            required={true}
+            isLoading={isLoadingOccupation}
+            placeholder="โปรดเลือกอาชีพปัจจุบันของนักเรียน"
+            error={
+              typeof errors.occupation_student?.message === 'string'
+                ? errors.occupation_student.message
+                : ''
+            }
+          />
           <TextField
             label="ชื่อบิดา"
             name="father_fname"
@@ -95,7 +148,7 @@ const AdditionalPersonalInformation: React.FC = ({}) => {
         </div>
       </div>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
           โรคประจำตัว
         </h1>
         <CheckboxFour
@@ -108,7 +161,7 @@ const AdditionalPersonalInformation: React.FC = ({}) => {
             setValue('medical_condition', null);
           }}
         />
-        <div className="flex flex-row gap-4 items-center">
+        <div className="flex flex-row gap-4 items-end">
           <CheckboxFour
             label="มี"
             name="has_medical_condition"
@@ -118,36 +171,22 @@ const AdditionalPersonalInformation: React.FC = ({}) => {
               setValue('has_medical_condition', 'มี');
             }}
           />
-          <Controller
-            control={control}
+          <DropdownSearchWithController<SelectOptionMedicalCondition['value']>
+            label="โรคประจำตัว"
             name="medical_condition"
-            render={({ field }) => (
-              <Select
-                onChange={(e) => {
-                  field.onChange(e?.value);
-                }}
-                options={medicalConditionList}
-                isDisabled={medicalConditionCheckBox === 'ไม่มี'}
-                isClearable
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    borderColor: errors.medical_condition
-                      ? 'red'
-                      : base.borderColor,
-                  }),
-                }}
-              />
-            )}
+            className={medicalConditionCheckBox === 'ไม่มี' ? 'hidden' : 'mt-4'}
+            options={formattedMedicalConditions}
+            control={control}
+            disabled={medicalConditionCheckBox === 'ไม่มี'}
+            required={true}
+            isLoading={isLoadingMedicalCondition}
+            placeholder="โปรดเลือกโรคประจำตัว"
+            error={errors.medical_condition?.message as string}
           />
-          <span className="text-red-500"> *</span>
-          <p className="text-xs text-red-500">
-            {errors.medical_condition?.message as string}
-          </p>
         </div>
       </div>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
           การผ่าตัด
         </h1>
         <CheckboxFour

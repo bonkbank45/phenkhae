@@ -1,4 +1,5 @@
 import React from 'react';
+import { UseFormRegister } from 'react-hook-form';
 
 interface TextFieldProps {
   label: string;
@@ -6,7 +7,7 @@ interface TextFieldProps {
   type?: string;
   placeholder?: string;
   error?: string;
-  includeRegister?: any;
+  includeRegister?: UseFormRegister<any>;
   className?: string;
   required?: boolean;
 }
@@ -17,7 +18,7 @@ const TextField = ({
   type = 'text',
   placeholder,
   error,
-  includeRegister = {},
+  includeRegister,
   className,
   required = false,
 }: TextFieldProps) => {

@@ -10,7 +10,7 @@ interface AddStudentFormProps {
   activeStep: number;
 }
 
-const AddStudentForm: React.FC<AddStudentFormProps> = ({ activeStep }) => {
+const AddStudentForm = ({ activeStep }: AddStudentFormProps) => {
   switch (activeStep) {
     case 0:
       return <PersonalInformation />;
@@ -22,6 +22,8 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ activeStep }) => {
       return <MassageExperience />;
     case 4:
       return <CourseTraining />;
+    case 5:
+      return <UploadImage />;
   }
 };
 

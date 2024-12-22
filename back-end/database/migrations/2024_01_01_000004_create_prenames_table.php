@@ -13,9 +13,10 @@ return new class extends Migration {
         Schema::create('prenames', function (Blueprint $table) {
             $table->id();
             $table->string("prename_tha");
-            $table->string("prename_eng");
+            $table->string("prename_eng")->nullable();
             $table->string("prename_short_tha")->nullable();
             $table->string("prename_short_eng")->nullable();
+            $table->integer("show_status");
         });
     }
 

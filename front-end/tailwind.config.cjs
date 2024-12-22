@@ -10,6 +10,7 @@ module.exports = {
       notoRegular: ['Noto Serif Thai Regular', 'sans-serif'],
       notoExtraBold: ['Noto Serif Thai ExtraBold', 'sans-serif'],
       notoLoopThaiRegular: ['Noto Sans Thai Looped Regular', 'sans-serif'],
+      notoBold: ['Noto Sans Thai Looped Bold', 'sans-serif'],
       satoshi: ['Satoshi', 'sans-serif'],
     },
     screens: {

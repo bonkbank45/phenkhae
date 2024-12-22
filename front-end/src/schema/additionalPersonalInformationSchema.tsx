@@ -1,6 +1,17 @@
 import * as yup from 'yup';
 
 export const additionalPersonalInformationSchema = yup.object().shape({
+  email: yup
+    .string()
+    .required('กรุณากรอกอีเมล์')
+    .email('รูปแบบอีเมล์ไม่ถูกต้อง'),
+  phone_number: yup
+    .string()
+    .required('กรุณากรอกเบอร์โทรศัพท์')
+    .matches(/^[0-9]+$/, 'รูปแบบเบอร์โทรศัพท์ไม่ถูกต้อง'),
+  occupation_student: yup
+    .number()
+    .required('กรุณาเลือกอาชีพปัจจุบันของนักเรียน'),
   father_fname: yup.string().required('กรุณากรอกชื่อบิดา'),
   father_lname: yup.string().required('กรุณากรอกนามสกุลบิดา'),
   mother_fname: yup.string().required('กรุณากรอกชื่อมารดา'),

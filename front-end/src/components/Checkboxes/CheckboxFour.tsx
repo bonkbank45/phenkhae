@@ -16,7 +16,7 @@ const CheckboxFour = ({
       <label
         htmlFor={`checkboxLabelFour-${label}`}
         className={`flex cursor-pointer select-none items-center font-notoLoopThaiRegular ${
-          isChecked ? 'text-black' : 'text-gray-500'
+          isChecked ? 'text-black dark:text-white' : 'text-gray-500'
         }`}
       >
         <div className="relative">

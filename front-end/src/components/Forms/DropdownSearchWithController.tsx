@@ -1,17 +1,22 @@
-import { ReactElement } from 'react';
 import { Controller, Control } from 'react-hook-form';
 import Select, { components } from 'react-select';
 
-interface DropdownSearchProps {
-  label: ReactElement | string;
+interface DropdownSearchOption<Type> {
+  value: Type;
+  label: string;
+}
+
+interface DropdownSearchProps<Type> {
+  label: string;
   name: string;
   placeholder?: string;
   error?: string;
-  options: { value: number; label: string }[];
+  options: DropdownSearchOption<Type>[];
   control: Control<any>;
   className?: string;
   disabled?: boolean;
   required?: boolean;
+  isLoading?: boolean;
 }
 
 const DropdownIndicator = (props: any) => {
@@ -37,7 +42,7 @@ const DropdownIndicator = (props: any) => {
   );
 };
 
-const DropdownSearchWithController = ({
+const DropdownSearchWithController = <Type,>({
   label = '',
   name,
   placeholder,
@@ -47,7 +52,8 @@ const DropdownSearchWithController = ({
   className,
   required = false,
   disabled = false,
-}: DropdownSearchProps) => {
+  isLoading = false,
+}: DropdownSearchProps<Type>) => {
   return (
     <div className={`${className} mb-6 md:mb-0`}>
       <label className="font-notoLoopThaiRegular mb-1 block font-medium text-gray-500 dark:text-white">
@@ -59,7 +65,7 @@ const DropdownSearchWithController = ({
         control={control}
         render={({ field }) => (
           <Select
-            onChange={(option) => {
+            onChange={(option: DropdownSearchOption<Type> | null) => {
               field.onChange(option?.value || '');
             }}
             value={
@@ -69,9 +75,10 @@ const DropdownSearchWithController = ({
             placeholder={placeholder}
             className={`${
               disabled ? 'opacity-50' : ''
-            } font-notoLoopThaiRegular`}
+            } font-notoLoopThaiRegular `}
             classNamePrefix="select"
             isDisabled={disabled}
+            isLoading={isLoading}
             styles={{
               control: (base) => ({
                 ...base,
@@ -79,11 +86,15 @@ const DropdownSearchWithController = ({
                 minHeight: '40px',
                 borderRadius: '0.5rem',
                 borderColor: error ? '#EF4444' : '#E2E8F0',
-                backgroundColor: 'white',
+                backgroundColor: 'white dark:bg-form-input',
               }),
               input: (base) => ({
                 ...base,
                 color: 'black',
+              }),
+              singleValue: (base) => ({
+                ...base,
+                color: 'black dark:text-white',
               }),
               indicatorSeparator: (base) => ({
                 ...base,

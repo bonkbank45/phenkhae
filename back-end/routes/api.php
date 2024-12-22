@@ -23,6 +23,7 @@ use App\Http\Controllers\PrenameController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\SubDistrictController;
+use App\Http\Controllers\EducationQualController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -57,6 +58,7 @@ Route::group(['middleware' => ['api']], function () {
     });
     Route::prefix('course_group')->group(function () {
         Route::get('/', [CourseGroupController::class, 'index']);
+        Route::get('/available', [CourseGroupController::class, 'available']);
         Route::post('/', [CourseGroupController::class, 'store']);
         Route::get('/{courseGroup}', [CourseGroupController::class, 'show']);
         Route::put('/{courseGroup}', [CourseGroupController::class, 'update']);
@@ -118,13 +120,6 @@ Route::group(['middleware' => ['api']], function () {
         Route::put('/{enrollment}', [EnrollmentController::class, 'update']);
         Route::delete('/{enrollment}', [EnrollmentController::class, 'destroy']);
     });
-    Route::prefix('exam_type')->group(function () {
-        Route::get('/', [ExamTypeController::class, 'index']);
-        Route::post('/', [ExamTypeController::class, 'store']);
-        Route::get('/{examType}', [ExamTypeController::class, 'show']);
-        Route::put('/{examType}', [ExamTypeController::class, 'update']);
-        Route::delete('/{examType}', [ExamTypeController::class, 'destroy']);
-    });
     Route::prefix('exam')->group(function () {
         Route::get('/', [ExamController::class, 'index']);
         Route::post('/', [ExamController::class, 'store']);
@@ -144,7 +139,16 @@ Route::group(['middleware' => ['api']], function () {
     Route::prefix('district/{districtId}/sub_district')->group(function () {
         Route::get('/', [SubDistrictController::class, 'index']);
     });
-    Route::prefix('prefix_name')->group(function () {
+    Route::prefix('prename')->group(function () {
         Route::get('/', [PrenameController::class, 'index']);
+        Route::get('/table', [PrenameController::class, 'table']);
+        Route::post('/', [PrenameController::class, 'store']);
+        Route::get('/{prename}', [PrenameController::class, 'show']);
+        Route::put('/{prename}', [PrenameController::class, 'update']);
+        Route::delete('/{prename}', [PrenameController::class, 'destroy']);
+    });
+
+    Route::prefix('education_qual')->group(function () {
+        Route::get('/', [EducationQualController::class, 'index']);
     });
 });

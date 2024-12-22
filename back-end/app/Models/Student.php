@@ -33,11 +33,12 @@ class Student extends Model
         'medical_condition_id',
         'surgery_history',
         'edu_qual_id',
-        'edu_ins_id',
+        'edu_ins',
         'learn_massage',
-        'learn_massage_desc',
+        'learn_massage_description',
         'work_massage',
-        'work_massage_desc',
+        'work_massage_description',
+        'profile_image',
         'created_at',
         'updated_at'
     ];
