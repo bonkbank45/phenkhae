@@ -73,43 +73,36 @@ const DropdownSearchWithController = <Type,>({
             }
             options={options}
             placeholder={placeholder}
-            className={`${
-              disabled ? 'opacity-50' : ''
-            } font-notoLoopThaiRegular `}
-            classNamePrefix="select"
-            isDisabled={disabled}
-            isLoading={isLoading}
-            styles={{
-              control: (base) => ({
-                ...base,
-                padding: '0.25rem',
-                minHeight: '40px',
-                borderRadius: '0.5rem',
-                borderColor: error ? '#EF4444' : '#E2E8F0',
-                backgroundColor: 'white dark:bg-form-input',
-              }),
-              input: (base) => ({
-                ...base,
-                color: 'black',
-              }),
-              singleValue: (base) => ({
-                ...base,
-                color: 'black dark:text-white',
-              }),
-              indicatorSeparator: (base) => ({
-                ...base,
-                display: 'none',
-              }),
-              valueContainer: (base) => ({
-                ...base,
-                padding: '0 0.5rem',
-              }),
-              dropdownIndicator: (base) => ({
-                ...base,
-                padding: '0 0.5rem',
-              }),
+            className={`
+              ${disabled ? 'opacity-50' : ''} 
+              font-notoLoopThaiRegular
+            `}
+            classNames={{
+              control: (state) => `
+                !min-h-[40px] !p-1 !rounded-lg
+                !border
+                ${error && '!border-red-500'}
+                !bg-white dark:!bg-gray-800
+                ${
+                  state.isFocused
+                    ? '!border-blue-500 !border-2 !shadow-none'
+                    : ''
+                }
+                ${state.isDisabled ? 'opacity-50' : ''}
+              `,
+              valueContainer: () => '!px-2',
+              dropdownIndicator: () => '!px-2',
+              singleValue: () => 'text-gray-900 dark:text-white',
+              placeholder: () => 'text-gray-400',
+              menu: () => '!bg-white dark:!bg-gray-800',
+              option: (state) => `
+                py-2 px-3
+                ${state.isFocused ? 'bg-gray-100 dark:bg-gray-700' : ''}
+                ${state.isSelected ? 'bg-blue-500 text-white' : ''}
+              `,
             }}
             components={{ DropdownIndicator }}
+            unstyled
           />
         )}
       />
