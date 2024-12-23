@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import TextField from '../../components/Forms/TextField';
 import CheckboxOne from '../../components/Checkboxes/CheckboxOne';
-import { useState } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { addPrenameSchema } from '../../schema/addPrename/addPrename';
 
 interface PrenameFormData {
   id: number;
@@ -33,6 +35,7 @@ const PrenameForm = ({
       ...initialData,
       show_status: initialData?.show_status || 0,
     },
+    resolver: yupResolver(addPrenameSchema),
   });
 
   const [showStatus, setShowStatus] = useState(initialData?.show_status || 0);
