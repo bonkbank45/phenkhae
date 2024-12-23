@@ -18,12 +18,14 @@ interface PrenameFormProps {
   initialData?: PrenameFormData;
   onSubmit: (data: PrenameFormData) => void;
   isLoading?: boolean;
+  formOptions?: any;
 }
 
 const PrenameForm = ({
   initialData,
   onSubmit,
   isLoading = false,
+  formOptions,
 }: PrenameFormProps) => {
   const {
     register,
@@ -35,7 +37,7 @@ const PrenameForm = ({
       ...initialData,
       show_status: initialData?.show_status || 0,
     },
-    resolver: yupResolver(addPrenameSchema),
+    resolver: formOptions?.resolver || yupResolver(addPrenameSchema),
   });
 
   const [showStatus, setShowStatus] = useState(initialData?.show_status || 0);
