@@ -7,9 +7,10 @@ use Illuminate\Http\Request;
 
 class PrenameController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $prefixNames = Prename::all();
+        $prefixNames = Prename::filterByStatus($request->show_status)
+            ->get();
         return response()->json($prefixNames);
     }
 

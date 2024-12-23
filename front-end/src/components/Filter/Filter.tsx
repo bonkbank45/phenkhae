@@ -23,8 +23,8 @@ const Filter = ({
   return (
     <div className="flex items-center gap-0">
       <IconFilter3Fill
-        width={40}
-        height={40}
+        width={45}
+        height={45}
         className="rounded-l-lg border border-stroke dark:border-strokedark"
       />
       <select
