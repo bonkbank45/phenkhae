@@ -26,7 +26,8 @@ class Prename extends Model
                 $query->where('prename_tha', 'like', '%' . $searchTerm . '%')
                     ->orWhere('prename_eng', 'like', '%' . $searchTerm . '%')
                     ->orWhere('prename_short_tha', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('prename_short_eng', 'like', '%' . $searchTerm . '%');
+                    ->orWhere('prename_short_eng', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('id', $searchTerm);
             });
         });
     }
