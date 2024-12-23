@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDeletePrename } from '../../services/usePrenameData';
 import { toast } from 'react-toastify';
 
@@ -25,9 +24,9 @@ const DeletePrename = ({ id, prenameThai, onSuccess }: DeletePrenameProps) => {
         toast.success('ลบคำนำหน้าชื่อสำเร็จ');
         onSuccess?.();
       },
-      onError: (error: ApiError) => {
+      onError: (error: Error) => {
         toast.error(
-          error.response?.data?.message ||
+          error.message ||
             'ไม่สามารถลบคำนำหน้าชื่อนี้ได้เนื่องจากมีการใช้งานอยู่',
         );
       },

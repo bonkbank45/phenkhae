@@ -48,7 +48,7 @@ const PaginatedTable = <Type extends object>({
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className="py-4 px-4 font-medium text-black dark:text-white"
+                  className="py-4 px-4 font-medium font-notoExtraBold text-gray-500 dark:text-white"
                 >
                   {column.header}
                 </th>
@@ -61,7 +61,7 @@ const PaginatedTable = <Type extends object>({
                 {columns.map((column, colIndex) => (
                   <td
                     key={colIndex}
-                    className="border-b border-[#eee] py-3 px-4 dark:border-strokedark"
+                    className="border-b border-[#eee] py-3 px-4 dark:border-strokedark font-notoLoopThaiRegular"
                   >
                     {column.render
                       ? column.render(item)

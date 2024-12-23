@@ -13,16 +13,16 @@ class PrenameController extends Controller
         return response()->json($prefixNames);
     }
 
-    public function table()
+    public function table(Request $request)
     {
-        $prefixNames = Prename::paginate(10);
+        $prefixNames = Prename::filterByStatus($request->show_status)
+            ->search($request->search)
+            ->paginate(10);
         return response()->json($prefixNames);
     }
 
     public function store(Request $request)
     {
-        \Log::info('Received data:', $request->all()); // เพิ่มบรรทัดนี้เพื่อ debug
-
         $prefixName = Prename::create($request->all());
         return response()->json($prefixName, 201);
     }

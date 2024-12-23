@@ -10,6 +10,9 @@ import DeletePrename from '../Prename/DeletePrename';
 import IconEdit from '../../common/EditPen';
 import IconCrossCircled from '../../common/CrossCircle';
 import Modal from '../../components/Modal';
+import Search from '../../components/Search/Search';
+import Filter from '../../components/Filter/Filter';
+import useDebounce from '../../hooks/useDebounce';
 
 interface Prename {
   id: number;
@@ -21,6 +24,9 @@ interface Prename {
 }
 
 const Prename = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showStatus, setShowStatus] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [page, setPage] = useState(1);
   const [isEditModal, setIsEditModal] = useState(false);
   const [isDeleteModal, setIsDeleteModal] = useState(false);
@@ -28,20 +34,35 @@ const Prename = () => {
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   const { data, isLoading, isError, isFetching, refetch } = useQuery({
-    queryKey: ['prename', page],
+    queryKey: ['prename', page, debouncedSearchTerm, showStatus],
     queryFn: async () => {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
+        ...(showStatus && { show_status: showStatus }),
+      });
       const { data } = await axios
         .create({
           baseURL: 'http://localhost:8000/api',
           withCredentials: true,
         })
-        .get(`prename/table?page=${page}`);
+        .get(`prename/table?${params}`);
       setHasLoadedOnce(true);
       return data;
     },
     staleTime: 1000 * 60 * 5,
     placeholderData: (previousData) => previousData,
   });
+
+  const handleSearch = (input: string) => {
+    setSearchTerm(input);
+    setPage(1);
+  };
+
+  const handleStatusFilter = (input: string) => {
+    setShowStatus(input);
+    setPage(1);
+  };
 
   const columns = [
     {
@@ -105,6 +126,11 @@ const Prename = () => {
     },
   ];
 
+  const statusOptions = [
+    { label: 'แสดง', value: 1 },
+    { label: 'ไม่แสดง', value: 0 },
+  ];
+
   if (isLoading && !hasLoadedOnce)
     return (
       <div className="flex h-screen items-center justify-center">
@@ -116,6 +142,19 @@ const Prename = () => {
 
   return (
     <>
+      <div className="mb-4 flex justify-between gap-4">
+        <Search
+          value={searchTerm}
+          onChange={handleSearch}
+          placeholder="ค้นหาคำนำหน้าชื่อ..."
+        />
+        <Filter
+          value={showStatus}
+          onChange={handleStatusFilter}
+          options={statusOptions}
+          placeholder="สถานะทั้งหมด"
+        />
+      </div>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <PaginatedTable<Prename>
           data={data}

@@ -45,7 +45,8 @@ const Pagination = ({
   return (
     <div className="flex items-center justify-between p-4">
       <div className="text-sm text-gray-500 font-notoLoopThaiRegular">
-        กำลังแสดงข้อมูล {from} ถึง {to} จาก {total} ทั้งหมด
+        กำลังแสดงข้อมูล {from === null ? '0' : from} ถึง{' '}
+        {to === null ? '0' : to} จาก {total === null ? '0' : total} ทั้งหมด
       </div>
       <div className="flex gap-2">
         <button
@@ -53,11 +54,11 @@ const Pagination = ({
           disabled={!hasPrevPage || isFetching}
           className={`px-4 py-2 rounded ${
             !hasPrevPage
-              ? 'bg-gray-100 text-gray-400'
-              : 'bg-primary text-white hover:bg-primary/80'
+              ? 'bg-gray-100 dark:bg-boxdark text-gray-400'
+              : 'bg-primary dark:bg-boxdark text-white hover:bg-primary/80'
           }`}
         >
-          Previous
+          ก่อนหน้า
         </button>
         {getPageNumbers().map((pageNum, index) => (
           <button
@@ -66,8 +67,8 @@ const Pagination = ({
             disabled={pageNum === '...'}
             className={`px-4 py-2 rounded ${
               pageNum === currentPage
-                ? 'bg-primary text-white'
-                : 'bg-gray-100 hover:bg-gray-200'
+                ? 'bg-primary dark:bg-boxdark text-white'
+                : 'bg-gray-100 hover:bg-gray-200 dark:bg-boxdark dark:hover:bg-gray-250'
             }`}
           >
             {pageNum}
@@ -78,11 +79,11 @@ const Pagination = ({
           disabled={!hasNextPage || isFetching}
           className={`px-4 py-2 rounded ${
             !hasNextPage
-              ? 'bg-gray-100 text-gray-400'
-              : 'bg-primary text-white hover:bg-primary/80'
+              ? 'bg-gray-100 dark:bg-boxdark text-gray-400'
+              : 'bg-primary dark:bg-boxdark text-white hover:bg-primary/80'
           }`}
         >
-          Next
+          ถัดไป
         </button>
       </div>
     </div>

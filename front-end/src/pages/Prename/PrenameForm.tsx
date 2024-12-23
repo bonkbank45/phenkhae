@@ -51,7 +51,7 @@ const PrenameForm = ({
 
   return (
     <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl text-black font-bold mb-4 font-notoLoopThaiRegular">
+      <h1 className="text-2xl text-black dark:text-white font-bold mb-4 font-notoLoopThaiRegular">
         {initialData ? 'แก้ไขคำนำหน้าชื่อ' : 'เพิ่มคำนำหน้าชื่อ'}
       </h1>
       <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-4">
