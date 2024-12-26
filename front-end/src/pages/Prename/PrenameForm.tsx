@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Button, Spinner } from '@material-tailwind/react';
+import { useNavigate } from 'react-router-dom';
+import IconArrowLeft from '../../common/ArrowLeft';
 import TextField from '../../components/Forms/TextField';
 import CheckboxOne from '../../components/Checkboxes/CheckboxOne';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { addPrenameSchema } from '../../schema/addPrename/addPrename';
-
 interface PrenameFormData {
   id: number;
   prename_tha: string;
@@ -27,6 +29,7 @@ const PrenameForm = ({
   isLoading = false,
   formOptions,
 }: PrenameFormProps) => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -56,6 +59,16 @@ const PrenameForm = ({
 
   return (
     <div className="max-w-2xl mx-auto p-4">
+      <Button
+        variant="text"
+        type="button"
+        className="underline px-0 flex items-center gap-2"
+        onClick={() => {
+          navigate(-1);
+        }}
+      >
+        <IconArrowLeft className="w-4 h-4" /> ย้อนกลับ
+      </Button>
       <h1 className="text-2xl text-black dark:text-white font-bold mb-4 font-notoLoopThaiRegular">
         {initialData ? 'แก้ไขคำนำหน้าชื่อ' : 'เพิ่มคำนำหน้าชื่อ'}
       </h1>
@@ -106,18 +119,22 @@ const PrenameForm = ({
           name="show_status"
           label="แสดงผล"
           id="show_status"
+          className="font-notoLoopThaiRegular"
           checked={showStatus === 1}
           onChange={() => {
             handleCheckboxChange('show_status');
           }}
         />
-        <button
+
+        <Button
           type="submit"
-          disabled={isLoading}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
+          className="bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
         >
-          {isLoading ? 'กำลังบันทึก...' : 'บันทึก'}
-        </button>
+          <div className="flex items-center gap-2">
+            {isLoading && <Spinner className="w-4 h-4" color="blue" />}
+            {isLoading ? 'กำลังบันทึก...' : 'บันทึก'}
+          </div>
+        </Button>
       </form>
     </div>
   );

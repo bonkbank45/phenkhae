@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
-const prenameEngRegex = /^[a-zA-Z]+$/;
-const prenameThaiRegex = /^[ก-๙]+$/;
+const prenameEngRegex = /^[a-zA-Z\.]+$/;
+const prenameThaiRegex = /^[ก-๙\.]+$/;
 
 export const addPrenameSchema = yup.object().shape({
   id: yup

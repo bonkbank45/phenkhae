@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import Button from '@material-tailwind/react/components/Button';
 import Spinner from '../../common/Spinner';
 import axios from 'axios';
 import Pagination from '../../components/Pagination';
-
 import PaginatedTable from '../../components/Tables/PaginatedTable';
 import EditPrename from '../Prename/EditPrename';
 import DeletePrename from '../Prename/DeletePrename';
@@ -13,6 +14,7 @@ import Modal from '../../components/Modal';
 import Search from '../../components/Search/Search';
 import Filter from '../../components/Filter/Filter';
 import useDebounce from '../../hooks/useDebounce';
+import PlusCircle from '../../common/PlusCircle';
 
 interface Prename {
   id: number;
@@ -24,6 +26,7 @@ interface Prename {
 }
 
 const Prename = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [showStatus, setShowStatus] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -53,6 +56,10 @@ const Prename = () => {
     staleTime: 1000 * 60 * 5,
     placeholderData: (previousData) => previousData,
   });
+
+  const handleAddPrename = async () => {
+    navigate('/prename/add');
+  };
 
   const handleSearch = (input: string) => {
     setSearchTerm(input);
@@ -154,6 +161,15 @@ const Prename = () => {
           options={statusOptions}
           placeholder="สถานะทั้งหมด"
         />
+        <Button
+          variant="gradient"
+          color="green"
+          className="py-1 px-2 bg-green-500 flex items-center gap-2 font-notoRegular"
+          onClick={handleAddPrename}
+        >
+          <PlusCircle className="w-10 h-10 p-1" />
+          เพิ่มคำนำหน้าชื่อ
+        </Button>
       </div>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <PaginatedTable<Prename>

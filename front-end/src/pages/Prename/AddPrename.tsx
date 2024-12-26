@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { useAddPrename } from '../../services/usePrenameData';
 import PrenameForm from './PrenameForm';
 import { toast } from 'react-toastify';
@@ -25,11 +24,7 @@ const AddPrename = () => {
     });
   };
 
-  return (
-    <div>
-      <PrenameForm onSubmit={handleSubmit} isLoading={isPending} />
-    </div>
-  );
+  return <PrenameForm onSubmit={handleSubmit} isLoading={isPending} />;
 };
 
 export default AddPrename;
