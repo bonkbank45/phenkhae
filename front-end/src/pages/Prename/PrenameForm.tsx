@@ -128,7 +128,7 @@ const PrenameForm = ({
 
         <Button
           type="submit"
-          className="bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
+          className="bg-blue-500 dark:bg-white dark:text-black font-notoLoopThaiRegular text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
         >
           <div className="flex items-center gap-2">
             {isLoading && <Spinner className="w-4 h-4" color="blue" />}
