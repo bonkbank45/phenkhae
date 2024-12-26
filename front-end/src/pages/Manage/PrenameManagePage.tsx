@@ -58,7 +58,7 @@ const Prename = () => {
   });
 
   const handleAddPrename = async () => {
-    navigate('/prename/add');
+    navigate('/manage/prename/add');
   };
 
   const handleSearch = (input: string) => {
