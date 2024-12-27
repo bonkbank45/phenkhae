@@ -1,4 +1,4 @@
-import { UseFormRegister } from 'react-hook-form';
+import { UseFormRegister, UseFormRegisterReturn } from 'react-hook-form';
 
 interface TextFieldProps {
   label: string;
@@ -6,7 +6,9 @@ interface TextFieldProps {
   type?: string;
   placeholder?: string;
   error?: string;
-  includeRegister?: UseFormRegister<any>;
+  includeRegister?:
+    | UseFormRegister<any>
+    | ((name: string) => UseFormRegisterReturn);
   className?: string;
   required?: boolean;
 }

@@ -21,7 +21,7 @@ const CheckboxOne = ({
       <label
         htmlFor={id}
         className={`flex cursor-pointer select-none items-center ${className} ${
-          checked && 'text-black'
+          checked && 'text-black dark:text-white'
         }`}
       >
         <div className="relative">

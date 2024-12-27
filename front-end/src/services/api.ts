@@ -53,7 +53,7 @@ export const fetchPrefixNames = async (): Promise<
     }[]
   >
 > => {
-  return await api.get('/prename');
+  return await api.get('/prename?show_status=1');
 };
 
 export default api;

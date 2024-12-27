@@ -2,10 +2,12 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import api from './axios/axiosClient';
 
 interface PrenameFormData {
+  id: number;
   prename_tha: string;
   prename_eng: string;
   prename_short_tha?: string;
   prename_short_eng?: string;
+  show_status: number;
 }
 
 export const usePrenameData = () => {
@@ -17,7 +19,8 @@ export const usePrenameData = () => {
 
 export const useAddPrename = () => {
   const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: (data: PrenameFormData) => api.post('/prename', data),
+    mutationFn: (data: PrenameFormData) =>
+      api.post<PrenameFormData>('/prename', data),
     onSuccess: () => {
       console.log('Prename added successfully');
     },
@@ -30,8 +33,8 @@ export const useAddPrename = () => {
 
 export const useUpdatePrename = () => {
   const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: (data: { id: number } & PrenameFormData) =>
-      api.put(`/prename/${data.id}`, data),
+    mutationFn: (data: PrenameFormData) =>
+      api.put<PrenameFormData>(`/prename/${data.id}`, data),
   });
   return { mutate, isPending, isError, error };
 };

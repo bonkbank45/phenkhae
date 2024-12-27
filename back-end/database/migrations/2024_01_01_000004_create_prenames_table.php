@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('prenames', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedBigInteger('id')->primary();
             $table->string("prename_tha");
             $table->string("prename_eng")->nullable();
             $table->string("prename_short_tha")->nullable();
