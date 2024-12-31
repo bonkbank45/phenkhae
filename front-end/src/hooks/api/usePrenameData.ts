@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import api from './axios/axiosClient';
+import api from '../../services/axios/axiosClient';
 
 interface PrenameFormData {
   id: number;

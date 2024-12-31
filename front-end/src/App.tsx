@@ -24,6 +24,7 @@ import Prename from './pages/Manage/PrenameManagePage';
 // import AddPrename from './pages/AddPrename';
 import AddPrename from './pages/Prename/AddPrename';
 import NotFound from './pages/NotFound';
+import CourseManagePage from './pages/Manage/CourseManagePage';
 
 function App() {
   const { pathname } = useLocation();
@@ -162,6 +163,7 @@ function App() {
             }
           />
           <Route path="/students/add" element={<AddStudent />} />
+          <Route path="/courses/list" element={<CourseManagePage />} />
           <Route path="/settings/datas/prenames" element={<Prename />} />
           <Route path="/settings/datas/prenames/add" element={<AddPrename />} />
           <Route path="*" element={<NotFound />} />

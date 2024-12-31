@@ -13,6 +13,11 @@ use App\Http\Requests\StoreCourseCategoryBillRequest;
 class CourseCategoryBillController extends Controller
 {
     use JsonResponseTrait;
+    public function index(): JsonResponse
+    {
+        $courseCategoryBills = CourseCategoryBill::all();
+        return $this->successResponse($courseCategoryBills, 'Course category bills retrieved successfully', 200);
+    }
     public function show(int $id): JsonResponse
     {
         try {

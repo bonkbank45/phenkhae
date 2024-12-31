@@ -18,7 +18,7 @@ const Search = ({
       <div className="flex justify-start gap-0 w-full">
         <IconSearch
           width={40}
-          height={45}
+          height={50}
           className="rounded-l-lg border border-stroke dark:border-strokedark gap-0 px-1"
         />
         <input

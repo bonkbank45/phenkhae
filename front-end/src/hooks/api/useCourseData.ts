@@ -1,5 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import api from './axios/axiosClient';
+import { ApiResponse, Course } from '../../types/course';
+import api from '../../services/api';
+
+interface UseCourseDataParams {
+  page: number;
+  searchTerm?: string;
+  courseCategoryId?: string;
+  courseBillCategoryId?: string;
+  onLoadComplete?: () => void;
+}
 
 export const useCourseData = () => {
   const { data: courseGroupEnrollmentData, isLoading } = useQuery({
@@ -33,8 +42,8 @@ export const useCourseData = () => {
   //             category_name: courseCategory.category_name,
   //           }),
   //         );
-  //       }),
-  //     staleTime: 1000 * 60 * 60 * 24,
+  //       }),{!!  !!}
+  //     staleTime: 10{!!  !!}* 60 * 60 * 24,
   //     gcTime: 1000 * 60 * 60 * 24,
   //   });
 
@@ -64,4 +73,38 @@ export const useCourseData = () => {
   // const isLoading = isCourseCategoriesLoading || isCoursesLoading;
 
   return { courseGroupEnrollmentData, isLoading };
+};
+
+export const useCourseDataTable = ({
+  page,
+  searchTerm,
+  courseCategoryId,
+  courseBillCategoryId,
+  onLoadComplete,
+}: UseCourseDataParams) => {
+  return useQuery({
+    queryKey: [
+      'courses',
+      page,
+      searchTerm,
+      courseCategoryId,
+      courseBillCategoryId,
+    ],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        ...(searchTerm && { search: searchTerm }),
+        ...(courseCategoryId && { category: courseCategoryId }),
+        ...(courseBillCategoryId && { bill_category: courseBillCategoryId }),
+      });
+      const response = await api.get<ApiResponse<Course>>(
+        `/course/table?${params}`,
+      );
+      onLoadComplete?.();
+      console.log(response.data);
+      return response.data;
+    },
+    staleTime: 1000 * 60 * 5,
+    placeholderData: (prevData) => prevData,
+  });
 };

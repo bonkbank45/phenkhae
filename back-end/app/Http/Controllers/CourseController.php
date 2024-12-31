@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use App\Traits\JsonResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -19,6 +20,17 @@ class CourseController extends Controller
     public function index(): JsonResponse
     {
         $courses = Course::all();
+        return $this->successResponse($courses, 'Courses fetched successfully', 200);
+    }
+
+    public function table(Request $request)
+    {
+        $courses = Course::with('course_category:id,category_name', 'course_category_bill:id,category_bill_name')
+            ->select("id", "course_name", "course_description", "course_category_id", "course_category_bill_id")
+            ->search($request->search)
+            ->filterByCategory($request->category)
+            ->filterByCategoryBill($request->bill_category)
+            ->paginate(10);
         return $this->successResponse($courses, 'Courses fetched successfully', 200);
     }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import CheckboxOne from '../Checkboxes/CheckboxOne';
 import { useFormContext } from 'react-hook-form';
-import { useCourseData } from '../../services/useCourseData';
+import { useCourseData } from '../../hooks/api/useCourseData';
 import Spinner from '../../common/Spinner';
 import IconFaceSadTear from '../../common/FaceSadTear';
 

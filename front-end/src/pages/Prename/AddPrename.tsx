@@ -1,4 +1,4 @@
-import { useAddPrename } from '../../services/usePrenameData';
+import { useAddPrename } from '../../hooks/api/usePrenameData';
 import PrenameForm from './PrenameForm';
 import { toast } from 'react-toastify';
 

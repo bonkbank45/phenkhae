@@ -1,4 +1,4 @@
-import { useDeletePrename } from '../../services/usePrenameData';
+import { useDeletePrename } from '../../hooks/api/usePrenameData';
 import { toast } from 'react-toastify';
 
 interface DeletePrenameProps {
