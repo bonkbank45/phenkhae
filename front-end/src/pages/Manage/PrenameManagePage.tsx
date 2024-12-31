@@ -58,7 +58,7 @@ const Prename = () => {
   });
 
   const handleAddPrename = async () => {
-    navigate('/manage/prename/add');
+    navigate('/settings/datas/prenames/add');
   };
 
   const handleSearch = (input: string) => {

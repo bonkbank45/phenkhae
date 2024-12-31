@@ -161,9 +161,9 @@ function App() {
               </>
             }
           />
-          <Route path="/student/add" element={<AddStudent />} />
-          <Route path="/manage/prename" element={<Prename />} />
-          <Route path="/manage/prename/add" element={<AddPrename />} />
+          <Route path="/students/add" element={<AddStudent />} />
+          <Route path="/settings/datas/prenames" element={<Prename />} />
+          <Route path="/settings/datas/prenames/add" element={<AddPrename />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
