@@ -5,6 +5,8 @@ import { toast } from 'react-toastify';
 import { Course } from '../../types/course';
 import { ErrorResponse } from '../../types/error_response';
 import CourseForm from './CourseForm';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { courseFormSchema } from '../../schema/courses/courseForm';
 
 const AddCourse = () => {
   const { mutate: addCourse, isPending, isError, error } = useAddCourse();
@@ -26,6 +28,7 @@ const AddCourse = () => {
         value: category.id,
         label: category.category_bill_name,
       })) || [],
+    resolver: yupResolver(courseFormSchema),
   };
 
   const handleSubmit = (data: Course) => {
@@ -51,7 +54,13 @@ const AddCourse = () => {
     });
   };
 
-  return <CourseForm onSubmit={handleSubmit} formOptions={formOptions} />;
+  return (
+    <CourseForm
+      onSubmit={handleSubmit}
+      isLoading={isPending}
+      formOptions={formOptions}
+    />
+  );
 };
 
 export default AddCourse;

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import Button from '@material-tailwind/react/components/Button';
 import Spinner from '../../common/Spinner';
@@ -13,28 +12,32 @@ import useDebounce from '../../hooks/useDebounce';
 import PlusCircle from '../../common/PlusCircle';
 import IconEdit from '../../common/EditPen';
 import IconCrossCircled from '../../common/CrossCircle';
-import { Course, ApiResponse } from '../../types/course';
+import { Course, ApiResponse, CourseWithCategory } from '../../types/course';
 import { useCourseDataTable } from '../../hooks/api/useCourseData';
 import { useCourseCategoryData } from '../../hooks/api/useCourseCategoryData';
 import { useCourseBillCategoryData } from '../../hooks/api/useCourseBillCategoryData';
+import EditCourse from '../Course/EditCourse';
+import DeleteCourse from '../Course/DeleteCourse';
 
 const CourseManagePage = () => {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [courseCategoryId, setCourseCategoryId] = useState('');
-  const [courseBillCategoryId, setCourseBillCategoryId] = useState('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [courseCategoryId, setCourseCategoryId] = useState<string>('');
+  const [courseBillCategoryId, setCourseBillCategoryId] = useState<string>('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const [page, setPage] = useState(1);
-  const [isEditModal, setIsEditModal] = useState(false);
-  const [isDeleteModal, setIsDeleteModal] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  const [page, setPage] = useState<number>(1);
+  const [isEditModal, setIsEditModal] = useState<boolean>(false);
+  const [isDeleteModal, setIsDeleteModal] = useState<boolean>(false);
+  const [selectedCourse, setSelectedCourse] =
+    useState<CourseWithCategory | null>(null);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState<boolean>(false);
 
   const {
     data: apiResponse,
     isLoading,
     isError,
     isFetching,
+    refetch,
   } = useCourseDataTable({
     page,
     searchTerm: debouncedSearchTerm,
@@ -69,28 +72,29 @@ const CourseManagePage = () => {
     {
       header: 'รหัสวิชา',
       key: 'course_code',
-      render: (item: Course) => item.id || '-',
+      render: (item: CourseWithCategory) => item.id || '-',
     },
     {
       header: 'ชื่อหลักสูตร',
       key: 'course_name',
-      render: (item: Course) => item.course_name || '-',
+      render: (item: CourseWithCategory) => item.course_name || '-',
     },
     {
       header: 'ประเภทหลักสูตร',
       key: 'course_category_id',
-      render: (item: Course) => item.course_category.category_name || '-',
+      render: (item: CourseWithCategory) =>
+        item.course_category.category_name || '-',
     },
     {
       header: 'ประเภทบิล',
       key: 'course_category_bill_id',
-      render: (item: Course) =>
+      render: (item: CourseWithCategory) =>
         item.course_category_bill.category_bill_name || '-',
     },
     {
       header: 'จัดการ',
       key: 'manage',
-      render: (item: Course) => (
+      render: (item: CourseWithCategory) => (
         <div className="flex items-center gap-2">
           <button
             onClick={() => {
@@ -192,7 +196,7 @@ const CourseManagePage = () => {
         onClose={() => setIsEditModal(false)}
         title="แก้ไขรายละเอียดหลักสูตร"
       >
-        {/* {selectedCourse && (
+        {selectedCourse && (
           <EditCourse
             initialData={selectedCourse}
             onSuccess={() => {
@@ -200,10 +204,7 @@ const CourseManagePage = () => {
               refetch();
             }}
           />
-        )} */}
-        <div>
-          <h1>รายละเอียดหลักสูตร</h1>
-        </div>
+        )}
       </Modal>
 
       <Modal
@@ -211,19 +212,16 @@ const CourseManagePage = () => {
         onClose={() => setIsDeleteModal(false)}
         title="ลบหลักสูตร"
       >
-        {/* {selectedCourse && (
+        {selectedCourse && (
           <DeleteCourse
             id={selectedCourse.id}
-            courseName={selectedCourse.course_name_thai}
+            courseName={selectedCourse.course_name}
             onSuccess={() => {
               setIsDeleteModal(false);
               refetch();
             }}
           />
-        )} */}
-        <div>
-          <h1>ลบรายวิชา</h1>
-        </div>
+        )}
       </Modal>
     </>
   );

@@ -122,3 +122,31 @@ export const useAddCourse = () => {
     },
   });
 };
+
+export const useUpdateCourse = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Course) => api.put<Course>(`/course/${data.id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['courses'], exact: false });
+      console.log('แก้ไขหลักสูตรสำเร็จ');
+    },
+    onError: (error: ErrorResponse) => {
+      console.error(error.message || 'เกิดข้อผิดพลาดในการแก้ไข');
+    },
+  });
+};
+
+export const useDeleteCourse = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => api.delete(`/course/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['courses'], exact: false });
+      console.log('ลบหลักสูตรสำเร็จ');
+    },
+    onError: (error: ErrorResponse) => {
+      console.error(error.message || 'เกิดข้อผิดพลาดในการลบ');
+    },
+  });
+};

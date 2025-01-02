@@ -65,6 +65,7 @@ const DropdownSearchWithController = <Type,>({
         control={control}
         render={({ field }) => (
           <Select
+            menuPlacement="auto"
             onChange={(option: DropdownSearchOption<Type> | null) => {
               field.onChange(option?.value || '');
             }}
@@ -94,11 +95,13 @@ const DropdownSearchWithController = <Type,>({
               dropdownIndicator: () => '!px-2',
               singleValue: () => 'text-gray-900 dark:text-white',
               placeholder: () => 'text-gray-400',
-              menu: () => '!bg-white dark:!bg-gray-800',
+              menu: () =>
+                '!bg-white dark:!bg-gray-800 !border !border-gray-200 !rounded-md !shadow-lg',
+              menuList: () => '!max-h-[150px] overflow-y-auto',
               option: (state) => `
                 py-2 px-3
-                ${state.isFocused ? 'bg-gray-100 dark:bg-gray-700' : ''}
-                ${state.isSelected ? 'bg-blue-500 text-white' : ''}
+                ${state.isFocused ? 'bg-blue-100 dark:bg-gray-700' : ''}
+                ${state.isSelected ? 'bg-gray-100 text-gray-500' : ''}
               `,
             }}
             components={{ DropdownIndicator }}

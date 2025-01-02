@@ -14,6 +14,9 @@ interface Course {
   course_description: string;
   course_category_id: number;
   course_category_bill_id: number;
+}
+
+interface CourseWithCategory extends Course {
   course_category: CourseCategory;
   course_category_bill: CourseCategoryBill;
 }
@@ -46,4 +49,10 @@ interface ApiResponse<Type> {
   data: PaginationData<Type>;
 }
 
-export type { Course, CourseCategory, CourseCategoryBill, ApiResponse };
+export type {
+  Course,
+  CourseCategory,
+  CourseCategoryBill,
+  CourseWithCategory,
+  ApiResponse,
+};
