@@ -1,5 +1,6 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '../../services/axios/axiosClient';
+import { ErrorResponse } from '../../types/error_response';
 
 interface PrenameFormData {
   id: number;
@@ -18,30 +19,45 @@ export const usePrenameData = () => {
 };
 
 export const useAddPrename = () => {
-  const { mutate, isPending, isError, error } = useMutation({
+  const queryClient = useQueryClient();
+  return useMutation({
     mutationFn: (data: PrenameFormData) =>
       api.post<PrenameFormData>('/prename', data),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['prename'], exact: false });
       console.log('Prename added successfully');
     },
-    onError: (error) => {
+    onError: (error: ErrorResponse) => {
       console.log(error.message);
     },
   });
-  return { mutate, isPending, isError, error };
 };
 
 export const useUpdatePrename = () => {
-  const { mutate, isPending, isError, error } = useMutation({
+  const queryClient = useQueryClient();
+  return useMutation({
     mutationFn: (data: PrenameFormData) =>
       api.put<PrenameFormData>(`/prename/${data.id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['prename'], exact: false });
+      console.log('Prename updated successfully');
+    },
+    onError: (error: ErrorResponse) => {
+      console.log(error.message);
+    },
   });
-  return { mutate, isPending, isError, error };
 };
 
 export const useDeletePrename = () => {
-  const { mutate, isPending, isError, error } = useMutation({
+  const queryClient = useQueryClient();
+  return useMutation({
     mutationFn: (id: number) => api.delete(`/prename/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['prename'], exact: false });
+      console.log('Prename deleted successfully');
+    },
+    onError: (error: ErrorResponse) => {
+      console.log(error.message);
+    },
   });
-  return { mutate, isPending, isError, error };
 };

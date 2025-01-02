@@ -47,7 +47,7 @@ const CourseManagePage = () => {
   const { data: courseBillCategoryData } = useCourseBillCategoryData();
 
   const handleAddCourse = () => {
-    navigate('/settings/datas/courses/add');
+    navigate('/courses/add');
   };
 
   const handleSearch = (input: string) => {

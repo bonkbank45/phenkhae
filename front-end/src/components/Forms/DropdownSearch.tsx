@@ -44,7 +44,7 @@ const DropdownSearchWithController = ({
 }: DropdownSearchProps) => {
   return (
     <div className="mb-4">
-      <label className="mb-2.5 block font-medium text-black dark:text-white">
+      <label className="mb-2.5 block font-medium text-gray-500 dark:text-white font-notoLoopThaiRegular">
         {label}
       </label>
       <Controller
@@ -55,7 +55,7 @@ const DropdownSearchWithController = ({
             onChange={(option) => field.onChange(option?.value)}
             options={options}
             placeholder={placeholder}
-            className="rounded-lg"
+            className="rounded-lg font-notoLoopThaiRegular"
             classNamePrefix="select"
             styles={{
               control: (base) => ({

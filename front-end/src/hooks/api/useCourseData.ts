@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiResponse, Course } from '../../types/course';
+import { ErrorResponse } from '../../types/error_response';
 import api from '../../services/api';
-
 interface UseCourseDataParams {
   page: number;
   searchTerm?: string;
@@ -106,5 +106,19 @@ export const useCourseDataTable = ({
     },
     staleTime: 1000 * 60 * 5,
     placeholderData: (prevData) => prevData,
+  });
+};
+
+export const useAddCourse = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Course) => api.post<Course>('/course', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['courses'], exact: false });
+      console.log('เพิ่มหลักสูตรสำเร็จ');
+    },
+    onError: (error: ErrorResponse) => {
+      console.log('Error', error);
+    },
   });
 };

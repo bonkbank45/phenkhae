@@ -24,7 +24,7 @@ const TextArea = ({
     <div className={className}>
       <label
         className={`mb-3 block text-black dark:text-white font-notoLoopThaiRegular ${
-          isDisabled ? 'text-gray-500' : 'text-black'
+          isDisabled ? 'text-gray-300' : 'text-gray-500'
         }`}
       >
         {label}
@@ -41,7 +41,7 @@ const TextArea = ({
             ? 'border-gray-300 bg-gray-100'
             : error
             ? 'border-red-500 '
-            : 'border-primary bg-white'
+            : 'border-gray-300 bg-white'
         } py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white`}
       ></textarea>
       {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
