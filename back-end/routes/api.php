@@ -44,6 +44,7 @@ Route::group(['middleware' => ['api']], function () {
         Route::delete('/{courseCategory}', [CourseCategoryController::class, 'destroy']);
     });
     Route::prefix('course_category_bill')->group(function () {
+        Route::get('/', [CourseCategoryBillController::class, 'index']);
         Route::get('/{courseCategoryBill}', [CourseCategoryBillController::class, 'show']);
         Route::post('/', [CourseCategoryBillController::class, 'store']);
         Route::put('/{courseCategoryBill}', [CourseCategoryBillController::class, 'update']);
@@ -51,6 +52,7 @@ Route::group(['middleware' => ['api']], function () {
     });
     Route::prefix('course')->group(function () {
         Route::get('/', [CourseController::class, 'index']);
+        Route::get('/table', [CourseController::class, 'table']);
         Route::get('/{course}', [CourseController::class, 'show']);
         Route::post('/', [CourseController::class, 'store']);
         Route::put('/{course}', [CourseController::class, 'update']);

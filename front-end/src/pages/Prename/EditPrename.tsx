@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUpdatePrename } from '../../services/usePrenameData';
+import { useUpdatePrename } from '../../hooks/api/usePrenameData';
 import PrenameForm from './PrenameForm';
 import { toast } from 'react-toastify';
 import { yupResolver } from '@hookform/resolvers/yup';

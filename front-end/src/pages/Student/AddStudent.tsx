@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup.js';
 import {
   useAddStudentData,
   AddStudentData,
-} from '../../services/useStudentData';
+} from '../../hooks/api/useStudentData';
 
 import { personalInformationSchema } from '../../schema/addStudent/personalInformationSchema';
 import { additionalPersonalInformationSchema } from '../../schema/addStudent/additionalPersonalInformationSchema';

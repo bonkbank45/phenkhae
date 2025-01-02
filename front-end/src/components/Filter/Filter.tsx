@@ -11,6 +11,7 @@ interface FilterProps {
   options: FilterOption[];
   placeholder?: string;
   className?: string;
+  showIcon?: boolean;
 }
 
 const Filter = ({
@@ -19,18 +20,23 @@ const Filter = ({
   options,
   placeholder = 'เลือกตัวกรอง',
   className = '',
+  showIcon = true,
 }: FilterProps) => {
   return (
     <div className="flex items-center gap-0">
-      <IconFilter3Fill
-        width={45}
-        height={45}
-        className="rounded-l-lg border border-stroke dark:border-strokedark"
-      />
+      {showIcon && (
+        <IconFilter3Fill
+          width={45}
+          height={45}
+          className="rounded-l-lg border border-stroke dark:border-strokedark"
+        />
+      )}
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={`rounded-r-lg border border-stroke bg-white px-4 py-2 focus:border-primary focus:outline-none dark:border-strokedark dark:bg-boxdark font-notoLoopThaiRegular ${className}`}
+        className={`${
+          showIcon ? 'rounded-r-lg' : 'rounded-lg'
+        } border border-stroke bg-white px-4 py-2 focus:border-primary focus:outline-none dark:border-strokedark dark:bg-boxdark font-notoLoopThaiRegular ${className}`}
       >
         <option value="">{placeholder}</option>
         {options.map((option) => (
