@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import api from './axios/axiosClient';
+import api from '../../services/axios/axiosClient';
 
 export interface AddStudentData {
   address_district: number;

@@ -1,7 +1,9 @@
 import React from 'react';
-import { useUpdatePrename } from '../../services/usePrenameData';
+import { useUpdatePrename } from '../../hooks/api/usePrenameData';
 import PrenameForm from './PrenameForm';
 import { toast } from 'react-toastify';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { addPrenameSchema } from '../../schema/addPrename/addPrename';
 
 interface PrenameFormData {
   id: number;
@@ -9,6 +11,7 @@ interface PrenameFormData {
   prename_eng: string;
   prename_short_tha?: string;
   prename_short_eng?: string;
+  show_status: number;
 }
 
 interface EditPrenameProps {
@@ -18,6 +21,11 @@ interface EditPrenameProps {
 
 const EditPrename = ({ initialData, onSuccess }: EditPrenameProps) => {
   const { mutate, isPending } = useUpdatePrename();
+
+  const formOptions = {
+    resolver: yupResolver(addPrenameSchema),
+    defaultValues: initialData,
+  };
 
   const handleSubmit = (data: Omit<PrenameFormData, 'id'>) => {
     mutate(
@@ -39,6 +47,7 @@ const EditPrename = ({ initialData, onSuccess }: EditPrenameProps) => {
       initialData={initialData}
       onSubmit={handleSubmit}
       isLoading={isPending}
+      formOptions={formOptions}
     />
   );
 };

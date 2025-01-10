@@ -11,6 +11,37 @@ class Course extends Model
     public $incrementing = false;
     protected $fillable = ['id', 'course_name', 'course_category_id', 'course_category_bill_id', 'course_description'];
 
+    public function scopeSearch($query, $searchTerm)
+    {
+        return $query->when($searchTerm, function ($query) use ($searchTerm) {
+            return $query->where(function ($query) use ($searchTerm) {
+                $query->where('course_name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('course_description', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('id', $searchTerm)
+                    ->orWhereHas('course_category', function ($query) use ($searchTerm) {
+                        $query->where('category_name', 'like', '%' . $searchTerm . '%');
+                    })
+                    ->orWhereHas('course_category_bill', function ($query) use ($searchTerm) {
+                        $query->where('category_bill_name', 'like', '%' . $searchTerm . '%');
+                    });
+            });
+        });
+    }
+
+    public function scopeFilterByCategory($query, $filter)
+    {
+        return $query->when($filter, function ($query) use ($filter) {
+            return $query->where('course_category_id', $filter);
+        });
+    }
+
+    public function scopeFilterByCategoryBill($query, $filter)
+    {
+        return $query->when($filter, function ($query) use ($filter) {
+            return $query->where('course_category_bill_id', $filter);
+        });
+    }
+
     public function course_category(): BelongsTo
     {
         return $this->belongsTo(CourseCategory::class, 'course_category_id');

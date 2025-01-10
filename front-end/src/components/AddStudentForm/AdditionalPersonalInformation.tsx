@@ -3,10 +3,10 @@ import DropdownSearchWithController from '../Forms/DropdownSearchWithController'
 import CheckboxFour from '../Checkboxes/CheckboxFour';
 import TextField from '../Forms/TextField';
 import TextArea from '../Forms/TextArea';
-import { useOccupationData } from '../../services/useOccupationData';
+import { useOccupationData } from '../../hooks/api/useOccupationData';
 import { useFormContext } from 'react-hook-form';
-import { useMedicalConditionData } from '../../services/useMedicalConditionData';
-import { useEducationQual } from '../../services/useEducationQual';
+import { useMedicalConditionData } from '../../hooks/api/useMedicalConditionData';
+import { useEducationQual } from '../../hooks/api/useEducationQual';
 
 interface SelectOptionMedicalCondition {
   value: number;

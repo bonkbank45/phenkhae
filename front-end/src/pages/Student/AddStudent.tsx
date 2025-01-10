@@ -6,14 +6,14 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup.js';
 import {
   useAddStudentData,
   AddStudentData,
-} from '../../services/useStudentData';
+} from '../../hooks/api/useStudentData';
 
-import { personalInformationSchema } from '../../schema/personalInformationSchema';
-import { additionalPersonalInformationSchema } from '../../schema/additionalPersonalInformationSchema';
-import { currentAddressSchema } from '../../schema/currentAddressSchema';
-import { massageExperienceSchema } from '../../schema/massageExperienceSchema';
-import { trainingCourseSchema } from '../../schema/trainingCourseSchema';
-import { uploadImageSchema } from '../../schema/uploadImageSchema';
+import { personalInformationSchema } from '../../schema/addStudent/personalInformationSchema';
+import { additionalPersonalInformationSchema } from '../../schema/addStudent/additionalPersonalInformationSchema';
+import { currentAddressSchema } from '../../schema/addStudent/currentAddressSchema';
+import { massageExperienceSchema } from '../../schema/addStudent/massageExperienceSchema';
+import { trainingCourseSchema } from '../../schema/addStudent/trainingCourseSchema';
+import { uploadImageSchema } from '../../schema/addStudent/uploadImageSchema';
 import { toast } from 'react-toastify';
 
 const AddStudent = () => {

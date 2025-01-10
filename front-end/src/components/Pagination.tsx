@@ -1,3 +1,4 @@
+import { Button } from '@material-tailwind/react';
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -45,45 +46,46 @@ const Pagination = ({
   return (
     <div className="flex items-center justify-between p-4">
       <div className="text-sm text-gray-500 font-notoLoopThaiRegular">
-        กำลังแสดงข้อมูล {from} ถึง {to} จาก {total} ทั้งหมด
+        กำลังแสดงข้อมูล {from === null ? '0' : from} ถึง{' '}
+        {to === null ? '0' : to} จาก {total === null ? '0' : total} ทั้งหมด
       </div>
       <div className="flex gap-2">
-        <button
+        <Button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={!hasPrevPage || isFetching}
           className={`px-4 py-2 rounded ${
             !hasPrevPage
-              ? 'bg-gray-100 text-gray-400'
-              : 'bg-primary text-white hover:bg-primary/80'
-          }`}
+              ? 'bg-gray-100 dark:bg-boxdark text-gray-400'
+              : 'bg-primary dark:bg-boxdark text-white hover:bg-primary/80'
+          } font-notoLoopThaiRegular`}
         >
-          Previous
-        </button>
+          ก่อนหน้า
+        </Button>
         {getPageNumbers().map((pageNum, index) => (
-          <button
+          <Button
             key={index}
             onClick={() => pageNum !== '...' && onPageChange(pageNum)}
             disabled={pageNum === '...'}
             className={`px-4 py-2 rounded ${
               pageNum === currentPage
-                ? 'bg-primary text-white'
-                : 'bg-gray-100 hover:bg-gray-200'
-            }`}
+                ? 'bg-primary dark:bg-boxdark text-white'
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-500 dark:bg-boxdark dark:hover:bg-gray-250'
+            } font-notoLoopThaiRegular`}
           >
             {pageNum}
-          </button>
+          </Button>
         ))}
-        <button
+        <Button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={!hasNextPage || isFetching}
           className={`px-4 py-2 rounded ${
             !hasNextPage
-              ? 'bg-gray-100 text-gray-400'
-              : 'bg-primary text-white hover:bg-primary/80'
-          }`}
+              ? 'bg-gray-100 dark:bg-boxdark text-gray-400'
+              : 'bg-primary dark:bg-boxdark text-white hover:bg-primary/80'
+          } font-notoLoopThaiRegular`}
         >
-          Next
-        </button>
+          ถัดไป
+        </Button>
       </div>
     </div>
   );

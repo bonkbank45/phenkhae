@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import api from './axios/axiosClient';
+import api from '../../services/axios/axiosClient';
 
 export const useAddressData = (provinceId?: string, districtId?: string) => {
   const {
