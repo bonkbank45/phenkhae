@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import api from '../../services/api';
 
 interface AddCourseBatchData {
@@ -8,6 +8,16 @@ interface AddCourseBatchData {
   date_start: string;
   date_end: string;
 }
+
+export const useCourseBatchDataById = (id: string) => {
+  return useQuery({
+    queryKey: ['course_batch_data', id],
+    queryFn: async () => {
+      const response = await api.get(`/course_group/${id}`);
+      return response.data;
+    },
+  });
+};
 
 export const useAddCourseBatchData = (data: AddCourseBatchData) => {
   return useMutation({

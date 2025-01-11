@@ -18,7 +18,20 @@ class CourseGroupController extends Controller
      */
     public function index(): JsonResponse
     {
-        $course_groups = CourseGroup::all();
+        $course_groups = CourseGroup::with([
+            'course' => function ($query) {
+                $query->select('id', 'course_category_id', 'course_category_bill_id', 'course_name', 'course_description');
+            },
+            'course.course_category' => function ($query) {
+                $query->select('id', 'category_name');
+            },
+            'course.course_category_bill' => function ($query) {
+                $query->select('id', 'category_bill_name');
+            }
+        ])
+            ->select('id', 'batch', 'max_students', 'date_start', 'date_end', 'course_id')
+            ->get();
+
         return $this->successResponse($course_groups, 'Course groups fetched successfully', 200);
     }
 
@@ -93,7 +106,23 @@ class CourseGroupController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            $course_group = CourseGroup::findOrFail($id);
+            $course_group = CourseGroup::with([
+                'course' => function ($query) {
+                    $query->select('id', 'course_category_id', 'course_category_bill_id', 'course_name', 'course_description');
+                },
+                'course.course_category' => function ($query) {
+                    $query->select('id', 'category_name');
+                },
+                'course.course_category_bill' => function ($query) {
+                    $query->select('id', 'category_bill_name');
+                },
+                'enrollments' => function ($query) {
+                    $query->select('course_group_id', 'student_id');
+                }
+            ])
+                ->select('id', 'batch', 'max_students', 'date_start', 'date_end', 'course_id')
+                ->findOrFail($id);
+            $course_group->students_enrolled = $course_group->enrollments->count();
             return $this->successResponse($course_group, 'Course group fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse('Course group not found', 404);
