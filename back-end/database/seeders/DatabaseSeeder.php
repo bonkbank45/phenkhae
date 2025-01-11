@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             CourseSeeder::class,
             MaritalStatusSeeder::class,
             EducationQualSeeder::class,
+            MedicalConditionSeeder::class,
         ]);
     }
 }
