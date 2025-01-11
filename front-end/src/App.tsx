@@ -26,6 +26,8 @@ import AddPrename from './pages/Prename/AddPrename';
 import AddCourse from './pages/Course/AddCourse';
 import NotFound from './pages/NotFound';
 import CourseManagePage from './pages/Manage/CourseManagePage';
+import CourseBatchIndexPage from './pages/OpenCourseBatch/CourseBatchIndexPage';
+import CourseBatchAddStudent from './pages/OpenCourseBatch/CourseBatchAddStudentPage';
 
 function App() {
   const { pathname } = useLocation();
@@ -167,6 +169,14 @@ function App() {
           <Route path="/courses/list" element={<CourseManagePage />} />
           <Route path="/settings/datas/prenames" element={<Prename />} />
           <Route path="/settings/datas/prenames/add" element={<AddPrename />} />
+          <Route
+            path="/courses/batchs/add"
+            element={<CourseBatchIndexPage />}
+          />
+          <Route
+            path="/courses/batchs/:id/add-students"
+            element={<CourseBatchAddStudent />}
+          />
           <Route path="/courses/add" element={<AddCourse />} />
           <Route path="*" element={<NotFound />} />
         </Route>

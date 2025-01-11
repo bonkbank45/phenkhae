@@ -11,6 +11,7 @@ interface TextFieldProps {
     | ((name: string) => UseFormRegisterReturn);
   className?: string;
   required?: boolean;
+  defaultValue?: string | number;
 }
 
 const TextField = ({
@@ -22,6 +23,7 @@ const TextField = ({
   includeRegister,
   className,
   required = false,
+  defaultValue,
 }: TextFieldProps) => {
   return (
     <div className={`${className} mb-6 md:mb-0`}>
@@ -34,6 +36,7 @@ const TextField = ({
         type={type}
         placeholder={placeholder}
         {...includeRegister(name)}
+        defaultValue={defaultValue}
         className={`font-notoLoopThaiRegular w-full rounded-lg border bg-transparent py-2 pl-4 pr-10 bg-white text-black outline-none focus-visible:border-primary dark:bg-form-input dark:text-white ${
           error ? 'border-red-500' : 'border-stroke'
         }`}

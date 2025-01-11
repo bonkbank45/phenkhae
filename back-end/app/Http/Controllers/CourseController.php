@@ -19,7 +19,9 @@ class CourseController extends Controller
      */
     public function index(): JsonResponse
     {
-        $courses = Course::all();
+        $courses = Course::with('course_category:id,category_name', 'course_category_bill:id,category_bill_name', 'latest_course_price:id,course_id,price,date_start,date_end')
+            ->select("id", "course_name", "course_description", "course_category_id", "course_category_bill_id", )
+            ->get();
         return $this->successResponse($courses, 'Courses fetched successfully', 200);
     }
 

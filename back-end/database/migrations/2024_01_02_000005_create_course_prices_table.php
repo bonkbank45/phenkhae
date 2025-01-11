@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId("course_id")->constrained('courses', 'id');
             $table->decimal("price", 10, 2);
             $table->dateTime("date_start");
-            $table->dateTime("date_end");
+            $table->dateTime("date_end")->nullable();
             $table->timestamps();
         });
     }

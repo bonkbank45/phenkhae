@@ -40,7 +40,7 @@ const DatePickerOne: React.FC<DatePickerOneProps> = ({
       </label>
       <div className="relative">
         <input
-          className={`form-datepicker w-full rounded-lg border bg-transparent py-2 pl-4 pr-10 bg-white text-black outline-none focus-visible:shadow-none dark:bg-form-input dark:text-white ${
+          className={`form-datepicker w-full rounded-lg border bg-transparent py-2 pl-4 pr-10 bg-white text-black outline-none focus-visible:shadow-none dark:bg-form-input dark:text-white font-notoLoopThaiRegular ${
             error ? 'border-red-500' : 'border-stroke'
           }`}
           style={{

@@ -58,6 +58,10 @@ class Course extends Model
     {
         return $this->hasMany(CoursePrice::class);
     }
+    public function latest_course_price()
+    {
+        return $this->hasOne(CoursePrice::class)->latest('date_start');
+    }
     public function student_license_completes(): HasMany
     {
         return $this->hasMany(StudentLicenseComplete::class);
