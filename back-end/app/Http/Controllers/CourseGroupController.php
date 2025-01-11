@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 use App\Traits\JsonResponseTrait;
 use Illuminate\Support\Facades\DB;
 use App\Models\CourseGroup;
-
+use App\Models\CoursePrice;
 use App\Http\Requests\StoreCourseGroupRequest;
 use App\Http\Requests\UpdateCourseGroupRequest;
 class CourseGroupController extends Controller
@@ -20,6 +20,12 @@ class CourseGroupController extends Controller
     {
         $course_groups = CourseGroup::all();
         return $this->successResponse($course_groups, 'Course groups fetched successfully', 200);
+    }
+
+    public function course(int $courseId): JsonResponse
+    {
+        $course_groups = CourseGroup::where('course_id', $courseId)->get();
+        return $this->successResponse($course_groups, 'Course groups by course id fetched successfully', 200);
     }
 
     public function available(): JsonResponse
@@ -64,8 +70,21 @@ class CourseGroupController extends Controller
      */
     public function store(StoreCourseGroupRequest $request): JsonResponse
     {
-        $course_group = CourseGroup::create($request->all());
-        return $this->successResponse($course_group, 'Course group created successfully', 201);
+        DB::beginTransaction();
+        try {
+            $course_group = CourseGroup::create([
+                'batch' => $request->batch,
+                'max_students' => $request->max_students,
+                'date_start' => $request->date_start,
+                'date_end' => $request->date_end,
+                'course_id' => $request->course_id,
+            ]);
+            DB::commit();
+            return $this->successResponse($course_group, 'Course group created successfully', 201);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return $this->errorResponse('Course group and price creation failed' . $e->getMessage(), 500);
+        }
     }
 
     /**

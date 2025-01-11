@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Rule;
 class UpdateCourseGroupRequest extends FormRequest
 {
     /**
@@ -24,9 +24,20 @@ class UpdateCourseGroupRequest extends FormRequest
         return [
             'max_students' => 'required|integer|min:1',
             'course_id' => 'required|exists:courses,id',
-            'batch' => 'required|numeric|min:1',
+            'batch' => [
+                'required',
+                'integer',
+                Rule::unique('course_groups')->where('course_id', $this->course_id),
+            ],
             'date_start' => 'required|date',
             'date_end' => 'required|date|after:date_start',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'batch.unique' => 'มีรุ่นหลักสูตรนี้ในระบบแล้ว โปรดระบุรุ่นหลักสูตรไม่ให้ซ้ำกัน',
         ];
     }
 }

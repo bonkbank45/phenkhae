@@ -47,7 +47,7 @@ const DropdownSearchWithController = <Type,>({
   name,
   placeholder,
   error,
-  options,
+  options = [],
   control,
   className,
   required = false,

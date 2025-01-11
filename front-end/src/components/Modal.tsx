@@ -18,7 +18,7 @@ export const Modal = ({ isOpen, onClose, children, title }: ModalProps) => {
       {/* Modal */}
       <div className="fixed inset-0 z-[9999] overflow-y-auto">
         <div className="flex min-h-full items-center justify-center p-4 text-center">
-          <div className="relative w-full max-w-lg transform overflow-visible rounded-lg bg-white p-6 text-left shadow-xl transition-all dark:bg-boxdark">
+          <div className="relative w-full max-w-3xl transform rounded-lg bg-white p-6 text-left shadow-xl transition-all dark:bg-boxdark">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white font-notoLoopThaiRegular">
@@ -46,7 +46,7 @@ export const Modal = ({ isOpen, onClose, children, title }: ModalProps) => {
             </div>
 
             {/* Content */}
-            <div className="mt-2">{children}</div>
+            <div className="mt-2 max-h-[80vh] overflow-y-auto">{children}</div>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import CheckboxOne from '../Checkboxes/CheckboxOne';
 import { useFormContext } from 'react-hook-form';
-import { useCourseData } from '../../hooks/api/useCourseData';
+import { useCourseGroupEnrollmentData } from '../../hooks/api/useCourseData';
 import Spinner from '../../common/Spinner';
 import IconFaceSadTear from '../../common/FaceSadTear';
 
@@ -21,7 +21,7 @@ const CourseTraining = () => {
   } = useFormContext();
 
   const { courseGroupEnrollmentData = { data: {} }, isLoading } =
-    useCourseData();
+    useCourseGroupEnrollmentData();
 
   const [checkedState, setCheckedState] = useState<{ [key: string]: boolean }>(
     {},

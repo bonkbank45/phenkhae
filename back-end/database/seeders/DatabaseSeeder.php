@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             CourseBillSeeder::class,
             CourseCategorySeeder::class,
             CourseSeeder::class,
+            CoursePriceSeeder::class,
             MaritalStatusSeeder::class,
             EducationQualSeeder::class,
         ]);

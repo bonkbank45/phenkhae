@@ -10,7 +10,7 @@ interface UseCourseDataParams {
   onLoadComplete?: () => void;
 }
 
-export const useCourseData = () => {
+export const useCourseGroupEnrollmentData = () => {
   const { data: courseGroupEnrollmentData, isLoading } = useQuery({
     queryKey: ['course_group_enrollment_data'],
     queryFn: () =>
@@ -73,6 +73,17 @@ export const useCourseData = () => {
   // const isLoading = isCourseCategoriesLoading || isCoursesLoading;
 
   return { courseGroupEnrollmentData, isLoading };
+};
+
+export const useCourseData = () => {
+  return useQuery({
+    queryKey: ['courses'],
+    queryFn: async () => {
+      const response = await api.get('/course');
+      return response.data;
+    },
+    staleTime: 1000 * 60 * 5,
+  });
 };
 
 export const useCourseDataTable = ({
