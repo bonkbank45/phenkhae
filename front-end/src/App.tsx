@@ -19,13 +19,12 @@ import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
-import AddStudent from './pages/Student/AddStudent';
+import AddStudent from './pages/Student/AddStudentPage';
 import Prename from './pages/Manage/PrenameManagePage';
-// import AddPrename from './pages/AddPrename';
 import AddPrename from './pages/Prename/AddPrename';
-import AddCourse from './pages/Course/AddCourse';
+import AddCourse from './pages/Course/CourseManageForm/AddCourse';
 import NotFound from './pages/NotFound';
-import CourseManagePage from './pages/Manage/CourseManagePage';
+import CourseManagePage from './pages/Course/CourseManagePage';
 import CourseBatchIndexPage from './pages/OpenCourseBatch/CourseBatchIndexPage';
 import CourseBatchAddStudent from './pages/OpenCourseBatch/CourseBatchAddStudentPage';
 

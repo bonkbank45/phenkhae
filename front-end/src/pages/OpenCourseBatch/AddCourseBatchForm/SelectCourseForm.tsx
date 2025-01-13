@@ -1,7 +1,7 @@
 import React from 'react';
-import DropdownSearchWithController from '../Forms/DropdownSearchWithController';
+import DropdownSearchWithController from '../../../components/Forms/DropdownSearchWithController';
 import { useFormContext } from 'react-hook-form';
-import { useCourseData } from '../../hooks/api/useCourseData';
+import { useCourseData } from '../../../hooks/api/useCourseData';
 
 const SelectCourseForm = () => {
   const {

@@ -1,14 +1,14 @@
 import React from 'react';
-import { useUpdateCourse } from '../../hooks/api/useCourseData';
-import { useCourseCategoryData } from '../../hooks/api/useCourseCategoryData';
-import { useCourseBillCategoryData } from '../../hooks/api/useCourseBillCategoryData';
+import { useUpdateCourse } from '../../../hooks/api/useCourseData';
+import { useCourseCategoryData } from '../../../hooks/api/useCourseCategoryData';
+import { useCourseBillCategoryData } from '../../../hooks/api/useCourseBillCategoryData';
 import CourseForm from './CourseForm';
 import { toast } from 'react-toastify';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { courseFormSchema } from '../../schema/courses/courseForm';
-import { CourseCategory } from '../../types/course_categories';
-import { CourseCategoryBill } from '../../types/course_bill_categories';
-import { ErrorResponse } from '../../types/error_response';
+import { courseFormSchema } from '../../../schema/courses/courseForm';
+import { CourseCategory } from '../../../types/course_categories';
+import { CourseCategoryBill } from '../../../types/course_bill_categories';
+import { ErrorResponse } from '../../../types/error_response';
 
 interface CourseFormData {
   id: number;

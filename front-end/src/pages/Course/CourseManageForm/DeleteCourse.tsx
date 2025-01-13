@@ -1,6 +1,6 @@
-import { useDeleteCourse } from '../../hooks/api/useCourseData';
+import { useDeleteCourse } from '../../../hooks/api/useCourseData';
 import { toast } from 'react-toastify';
-import { ErrorResponse } from '../../types/error_response';
+import { ErrorResponse } from '../../../types/error_response';
 
 interface DeleteCourseProps {
   id: number;

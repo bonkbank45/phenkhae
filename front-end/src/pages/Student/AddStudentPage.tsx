@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import StepperForm from '../../components/StepperForm';
-import AddStudentForm from '../../components/AddStudentForm/AddStudentForm';
+import AddStudentForm from './AddStudentForm/AddStudentForm';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup.js';
 import {
   useAddStudentData,

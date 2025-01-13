@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import TextField from '../Forms/TextField';
-import DatePickerOne from '../Forms/DatePicker/DatePickerOne';
-import DropdownSearchWithController from '../Forms/DropdownSearchWithController';
+import TextField from '../../../components/Forms/TextField';
+import DatePickerOne from '../../../components/Forms/DatePicker/DatePickerOne';
+import DropdownSearchWithController from '../../../components/Forms/DropdownSearchWithController';
 import { useFormContext } from 'react-hook-form';
 
 import { AxiosResponse } from 'axios';
@@ -10,7 +10,7 @@ import {
   fetchMaritalStatuses,
   fetchProvinces,
   fetchPrefixNames,
-} from '../../services/api';
+} from '../../../services/api';
 
 interface SelectOption {
   value: number;

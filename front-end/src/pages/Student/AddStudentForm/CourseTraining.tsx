@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import CheckboxOne from '../Checkboxes/CheckboxOne';
+import CheckboxOne from '../../../components/Checkboxes/CheckboxOne';
 import { useFormContext } from 'react-hook-form';
-import { useCourseGroupEnrollmentData } from '../../hooks/api/useCourseData';
-import Spinner from '../../common/Spinner';
-import IconFaceSadTear from '../../common/FaceSadTear';
+import { useCourseGroupEnrollmentData } from '../../../hooks/api/useCourseData';
+import Spinner from '../../../common/Spinner';
+import IconFaceSadTear from '../../../common/FaceSadTear';
 
 interface Course {
   course_name: string;

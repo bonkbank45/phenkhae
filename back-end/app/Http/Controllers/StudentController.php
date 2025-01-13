@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use App\Traits\JsonResponseTrait;
-
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +21,35 @@ class StudentController extends Controller
     public function index(): JsonResponse
     {
         $students = Student::all();
+        return $this->successResponse($students, 'Students fetched successfully', 200);
+    }
+
+    public function table(Request $request)
+    {
+        $query = Student::search($request->search);
+
+        if ($request->has('age_range')) {
+            $query->filterAgeRange($request->age_range);
+        }
+
+        if ($request->has('experience')) {
+            $query->filterExperience($request->experience);
+        }
+
+        if ($request->has('recently_added')) {
+            $query->filterRecentlyAdded($request->recently_added);
+        }
+
+        if ($request->has('education')) {
+            $query->filterEducation($request->education);
+        }
+
+        if ($request->has('course_group_id')) {
+            $query->whereDoesntHave('enrollments', function ($query) use ($request) {
+                $query->where('course_group_id', $request->course_group_id);
+            });
+        }
+        $students = $query->paginate(10);
         return $this->successResponse($students, 'Students fetched successfully', 200);
     }
 

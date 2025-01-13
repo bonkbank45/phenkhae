@@ -111,6 +111,7 @@ Route::group(['middleware' => ['api']], function () {
     });
     Route::prefix('student')->group(function () {
         Route::get('/', [StudentController::class, 'index']);
+        Route::get('/table', [StudentController::class, 'table']);
         Route::post('/', [StudentController::class, 'store']);
         Route::get('/{student}', [StudentController::class, 'show']);
         Route::put('/{student}', [StudentController::class, 'update']);
