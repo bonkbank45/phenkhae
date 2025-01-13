@@ -10,12 +10,19 @@ use App\Http\Requests\StoreEnrollmentRequest;
 use App\Http\Requests\UpdateEnrollmentRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use App\Services\EnrollmentService;
+
 class EnrollmentController extends Controller
 {
     use JsonResponseTrait;
     /**
      * Display a listing of the resource.
      */
+
+    public function __construct(private EnrollmentService $enrollmentService)
+    {
+        $this->enrollmentService = $enrollmentService;
+    }
     public function index(): JsonResponse
     {
         $enrollments = Enrollment::all();
@@ -35,8 +42,17 @@ class EnrollmentController extends Controller
      */
     public function store(StoreEnrollmentRequest $request): JsonResponse
     {
-        $enrollment = Enrollment::create($request->all());
-        return $this->successResponse($enrollment, 'Enrollment created successfully', 201);
+        DB::beginTransaction();
+        try {
+            $enrollments = $this->enrollmentService
+                ->storeEnrollment($request->course_group_id, $request->student_ids);
+            Enrollment::insert($enrollments);
+            DB::commit();
+            return $this->successResponse($enrollments, 'Enrollments created successfully', 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse('Enrollment failed ' . $e->getMessage(), 400);
+        }
     }
 
     /**

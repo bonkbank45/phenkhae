@@ -2,14 +2,14 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Button, Spinner } from '@material-tailwind/react';
-import { Course, CourseCategory, CourseCategoryBill } from '../../types/course';
-import IconArrowLeft from '../../common/ArrowLeft';
-import TextField from '../../components/Forms/TextField';
-import TextArea from '../../components/Forms/TextArea';
-import DropdownSearchWithController from '../../components/Forms/DropdownSearchWithController';
+import { Course } from '../../../types/course';
+import IconArrowLeft from '../../../common/ArrowLeft';
+import TextField from '../../../components/Forms/TextField';
+import TextArea from '../../../components/Forms/TextArea';
+import DropdownSearchWithController from '../../../components/Forms/DropdownSearchWithController';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { courseFormSchema } from '../../schema/courses/courseForm';
+import { courseFormSchema } from '../../../schema/courses/courseForm';
 
 interface CourseFormProps {
   initialData?: Course;

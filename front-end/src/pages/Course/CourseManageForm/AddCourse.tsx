@@ -1,12 +1,12 @@
-import { useAddCourse } from '../../hooks/api/useCourseData';
-import { useCourseCategoryData } from '../../hooks/api/useCourseCategoryData';
-import { useCourseBillCategoryData } from '../../hooks/api/useCourseBillCategoryData';
+import { useAddCourse } from '../../../hooks/api/useCourseData';
+import { useCourseCategoryData } from '../../../hooks/api/useCourseCategoryData';
+import { useCourseBillCategoryData } from '../../../hooks/api/useCourseBillCategoryData';
 import { toast } from 'react-toastify';
-import { Course } from '../../types/course';
-import { ErrorResponse } from '../../types/error_response';
+import { Course } from '../../../types/course';
+import { ErrorResponse } from '../../../types/error_response';
 import CourseForm from './CourseForm';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { courseFormSchema } from '../../schema/courses/courseForm';
+import { courseFormSchema } from '../../../schema/courses/courseForm';
 
 const AddCourse = () => {
   const { mutate: addCourse, isPending, isError, error } = useAddCourse();

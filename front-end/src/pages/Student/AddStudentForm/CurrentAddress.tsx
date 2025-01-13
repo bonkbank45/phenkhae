@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import TextField from '../Forms/TextField';
-import DropdownSearchWithController from '../Forms/DropdownSearchWithController';
-import { useEducationQual } from '../../hooks/api/useEducationQual';
-import { useAddressData } from '../../hooks/api/useAddressData';
+import TextField from '../../../components/Forms/TextField';
+import DropdownSearchWithController from '../../../components/Forms/DropdownSearchWithController';
+import { useEducationQual } from '../../../hooks/api/useEducationQual';
+import { useAddressData } from '../../../hooks/api/useAddressData';
 import { useFormContext } from 'react-hook-form';
 
 type provinceValue = number;

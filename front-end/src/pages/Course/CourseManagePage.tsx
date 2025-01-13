@@ -16,8 +16,8 @@ import { Course, ApiResponse, CourseWithCategory } from '../../types/course';
 import { useCourseDataTable } from '../../hooks/api/useCourseData';
 import { useCourseCategoryData } from '../../hooks/api/useCourseCategoryData';
 import { useCourseBillCategoryData } from '../../hooks/api/useCourseBillCategoryData';
-import EditCourse from '../Course/EditCourse';
-import DeleteCourse from '../Course/DeleteCourse';
+import EditCourse from './CourseManageForm/EditCourse';
+import DeleteCourse from './CourseManageForm/DeleteCourse';
 
 const CourseManagePage = () => {
   const navigate = useNavigate();

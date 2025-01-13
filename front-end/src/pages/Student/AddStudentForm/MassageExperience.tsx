@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import CheckboxFour from '../Checkboxes/CheckboxFour';
+import CheckboxFour from '../../../components/Checkboxes/CheckboxFour';
 import { useFormContext } from 'react-hook-form';
-import TextArea from '../Forms/TextArea';
+import TextArea from '../../../components/Forms/TextArea';
 
 const MassageExperience = () => {
   const {

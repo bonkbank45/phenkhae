@@ -13,8 +13,15 @@ export const useCourseBatchDataById = (id: string) => {
   return useQuery({
     queryKey: ['course_batch_data', id],
     queryFn: async () => {
-      const response = await api.get(`/course_group/${id}`);
-      return response.data;
+      try {
+        const response = await api.get(`/course_group/${id}`);
+        if (response.data.status === 'error') {
+          throw new Error(response.data.message);
+        }
+        return response.data;
+      } catch (error) {
+        throw error;
+      }
     },
   });
 };

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import StepperForm from '../../components/StepperForm';
-import AddCourseBatchForm from '../../components/AddCourseBatchForm/AddCourseBatchForm';
+import AddCourseBatchForm from './AddCourseBatchForm/AddCourseBatchForm';
 import selectCourseSchema from '../../schema/addNewBatch/selectCourse';
 import infoBatchSchema from '../../schema/addNewBatch/infoBatch';
 import Modal from '../../components/Modal';

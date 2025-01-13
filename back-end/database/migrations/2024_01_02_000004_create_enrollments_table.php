@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->tinyInteger("activity_case_status");
             $table->dateTime("enrollment_date");
             $table->dateTime("date_start");
-            $table->dateTime("date_end");
+            $table->dateTime("date_end")->nullable();
             $table->foreignId("course_price_id")->constrained('course_prices', 'id');
             $table->primary(["course_group_id", "student_id"]);
             $table->timestamps();

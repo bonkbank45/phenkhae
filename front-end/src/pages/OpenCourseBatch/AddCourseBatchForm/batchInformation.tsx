@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import TextField from '../Forms/TextField';
+import TextField from '../../../components/Forms/TextField';
 import { useFormContext } from 'react-hook-form';
-import DatePickerOne from '../Forms/DatePicker/DatePickerOne';
-import { useCourseData } from '../../hooks/api/useCourseData';
+import DatePickerOne from '../../../components/Forms/DatePicker/DatePickerOne';
+import { useCourseData } from '../../../hooks/api/useCourseData';
 
-import Modal from '../Modal';
+import Modal from '../../../components/Modal';
 import { Button } from '@material-tailwind/react';
-import { useCourseGroupDataByCourseId } from '../../hooks/api/useCourseGroupData';
+import { useCourseGroupDataByCourseId } from '../../../hooks/api/useCourseGroupData';
 import { format } from 'date-fns';
 import { th } from 'date-fns/locale';
 

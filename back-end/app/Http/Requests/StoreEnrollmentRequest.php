@@ -23,12 +23,35 @@ class StoreEnrollmentRequest extends FormRequest
     {
         return [
             'course_group_id' => 'required|exists:course_groups,id',
-            'student_id' => 'required|exists:students,id',
-            'activity_case_status' => 'required|in:0,1',
-            'enrollment_date' => 'required|date',
-            'date_start' => 'required|date',
-            'date_end' => 'required|date:after:date_start',
-            'course_price_id' => 'required|exists:course_prices,id',
+            'student_ids' => 'required|array',
+            'student_ids.*' => 'required|exists:students,id',
+        ];
+
+        // return [
+        //     'course_group_id' => 'required|exists:course_groups,id',
+        //     'student_id' => 'required|exists:students,id',
+        //     'activity_case_status' => 'required|in:0,1',
+        //     'enrollment_date' => 'required|date',
+        //     'date_start' => 'required|date',
+        //     'date_end' => 'required|date:after:date_start',
+        //     'course_price_id' => 'required|exists:course_prices,id',
+        // ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'student_ids.required' => 'Please select at least one student',
+            'student_ids.array' => 'Student IDs must be provided as an array',
+            'student_ids.min' => 'Please select at least one student',
+            'student_ids.*.required' => 'Each student ID must be provided',
+            'student_ids.*.integer' => 'Each student ID must be a number',
+            'student_ids.*.exists' => 'One or more selected students do not exist',
         ];
     }
 }

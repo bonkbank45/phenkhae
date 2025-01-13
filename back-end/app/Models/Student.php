@@ -42,6 +42,60 @@ class Student extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function scopeSearch($query, $searchTerm)
+    {
+        return $query->where('firstname_tha', 'like', '%' . $searchTerm . '%')
+            ->orWhere('lastname_tha', 'like', '%' . $searchTerm . '%')
+            ->orWhere('phonenumber', 'like', '%' . $searchTerm . '%')
+            ->orWhere('email', 'like', '%' . $searchTerm . '%');
+    }
+
+    public function scopeFilterAgeRange($query, $ageRange)
+    {
+        return match ($ageRange) {
+            'all' => $query,
+            '20-30' => $query->whereBetween('birthdate', [now()->subYears(30)->startOfDay(), now()->subYears(20)->endOfDay()]),
+            '31-40' => $query->whereBetween('birthdate', [now()->subYears(40)->startOfDay(), now()->subYears(31)->endOfDay()]),
+            '41-50' => $query->whereBetween('birthdate', [now()->subYears(50)->startOfDay(), now()->subYears(41)->endOfDay()]),
+            '51+' => $query->where('birthdate', '<', now()->subYears(51)->startOfDay()),
+            default => $query,
+        };
+    }
+
+    public function scopeFilterExperience($query, $experience)
+    {
+        return match ($experience) {
+            'all' => $query,
+            'hasExpLearn' => $query->where('learn_massage', 1),
+            'hasExpWork' => $query->where('work_massage', 1),
+            default => $query,
+        };
+    }
+
+    public function scopeFilterEducation($query, $education)
+    {
+        return match ($education) {
+            'all' => $query,
+            'below' => $query->whereBetween('edu_qual_id', [0, 35]),
+            'bachelor' => $query->where('edu_qual_id', 40),
+            'above' => $query->whereBetween('edu_qual_id', [50, 90]),
+            default => $query,
+        };
+    }
+
+    public function scopeFilterRecentlyAdded($query, $recentlyAdded)
+    {
+        return match ($recentlyAdded) {
+            'all' => $query,
+            'today' => $query->whereDate('created_at', now()->format('Y-m-d')),
+            'yesterday' => $query->whereDate('created_at', now()->subDay()->format('Y-m-d')),
+            'last7days' => $query->whereBetween('created_at', [now()->subWeek()->startOfDay(), now()->endOfDay()]),
+            'last30days' => $query->whereBetween('created_at', [now()->subMonth()->startOfDay(), now()->endOfDay()]),
+            default => $query,
+        };
+    }
+
     public function birth_province(): BelongsTo
     {
         return $this->belongsTo(Province::class, 'birth_province_id');

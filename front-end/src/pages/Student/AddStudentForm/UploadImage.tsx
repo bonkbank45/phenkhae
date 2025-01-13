@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import IconBxsUserCircle from '../../common/BxsUserCircle';
-import AttachFile from '../Forms/AttachFile';
+import IconBxsUserCircle from '../../../common/BxsUserCircle';
+import AttachFile from '../../../components/Forms/AttachFile';
 const UploadImage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 

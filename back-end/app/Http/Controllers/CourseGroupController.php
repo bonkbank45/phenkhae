@@ -7,30 +7,33 @@ use Illuminate\Http\JsonResponse;
 use App\Traits\JsonResponseTrait;
 use Illuminate\Support\Facades\DB;
 use App\Models\CourseGroup;
-use App\Models\CoursePrice;
 use App\Http\Requests\StoreCourseGroupRequest;
 use App\Http\Requests\UpdateCourseGroupRequest;
+use App\Services\EnrollmentService;
+
 class CourseGroupController extends Controller
 {
     use JsonResponseTrait;
+    protected $enrollmentService;
+
+    public function __construct(EnrollmentService $enrollmentService)
+    {
+        $this->enrollmentService = $enrollmentService;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index(): JsonResponse
     {
         $course_groups = CourseGroup::with([
-            'course' => function ($query) {
-                $query->select('id', 'course_category_id', 'course_category_bill_id', 'course_name', 'course_description');
-            },
+            'course',
             'course.course_category' => function ($query) {
                 $query->select('id', 'category_name');
             },
             'course.course_category_bill' => function ($query) {
                 $query->select('id', 'category_bill_name');
             }
-        ])
-            ->select('id', 'batch', 'max_students', 'date_start', 'date_end', 'course_id')
-            ->get();
+        ])->get();
 
         return $this->successResponse($course_groups, 'Course groups fetched successfully', 200);
     }
@@ -107,21 +110,16 @@ class CourseGroupController extends Controller
     {
         try {
             $course_group = CourseGroup::with([
-                'course' => function ($query) {
-                    $query->select('id', 'course_category_id', 'course_category_bill_id', 'course_name', 'course_description');
-                },
+                'course',
                 'course.course_category' => function ($query) {
                     $query->select('id', 'category_name');
                 },
                 'course.course_category_bill' => function ($query) {
                     $query->select('id', 'category_bill_name');
                 },
-                'enrollments' => function ($query) {
-                    $query->select('course_group_id', 'student_id');
-                }
-            ])
-                ->select('id', 'batch', 'max_students', 'date_start', 'date_end', 'course_id')
-                ->findOrFail($id);
+                'course.latest_course_price',
+                'enrollments'
+            ])->findOrFail($id);
             $course_group->students_enrolled = $course_group->enrollments->count();
             return $this->successResponse($course_group, 'Course group fetched successfully', 200);
         } catch (ModelNotFoundException $e) {

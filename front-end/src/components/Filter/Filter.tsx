@@ -1,7 +1,7 @@
 import IconFilter3Fill from '../../common/Filter';
 
 interface FilterOption {
-  value: number;
+  value: string | number;
   label: string;
 }
 

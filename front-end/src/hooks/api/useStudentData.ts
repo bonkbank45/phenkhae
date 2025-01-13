@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '../../services/axios/axiosClient';
 
 export interface AddStudentData {
@@ -39,7 +39,54 @@ export interface AddStudentData {
   surgery_history: string | null;
 }
 
+export const useStudentData = ({
+  searchTerm,
+  courseBatchId,
+  recentlyAdded,
+  ageRange,
+  experience,
+  education,
+  page,
+}: {
+  searchTerm: string;
+  courseBatchId?: string;
+  recentlyAdded?: string;
+  ageRange?: string;
+  experience?: string;
+  education?: string;
+  page?: number;
+}) => {
+  return useQuery({
+    queryKey: [
+      'students',
+      searchTerm,
+      courseBatchId,
+      recentlyAdded,
+      ageRange,
+      experience,
+      education,
+      page,
+    ],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: page?.toString() || '1',
+        ...(searchTerm && { search: searchTerm }),
+        ...(courseBatchId && { course_group_id: courseBatchId }),
+        ...(recentlyAdded && { recently_added: recentlyAdded }),
+        ...(ageRange && { age_range: ageRange }),
+        ...(experience && { experience: experience }),
+        ...(education && { education: education }),
+      });
+      const response = await api.get(`/student/table?${params}`);
+      return response.data;
+    },
+    staleTime: 1000 * 60 * 5,
+    placeholderData: (previousData) => previousData,
+  });
+};
+
 export const useAddStudentData = (data: AddStudentData) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: AddStudentData) => {
       const response = await api.post('/student', data);
@@ -47,6 +94,7 @@ export const useAddStudentData = (data: AddStudentData) => {
     },
     onSuccess: (response) => {
       console.log('Success', response.data);
+      queryClient.invalidateQueries({ queryKey: ['students'] });
     },
     onError: (error: Error) => {
       console.error('Failed to add student:', error.message);
