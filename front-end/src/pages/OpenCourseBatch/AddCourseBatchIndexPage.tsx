@@ -19,7 +19,7 @@ interface AddCourseBatchData {
   date_end: string;
 }
 
-const CourseBatchIndexPage = () => {
+const AddCourseBatchIndexPage = () => {
   const schemas = [selectCourseSchema, infoBatchSchema];
   const [activeStep, setActiveStep] = useState(0);
   const [newBatchId, setNewBatchId] = useState<string | null>(null);
@@ -147,4 +147,4 @@ const CourseBatchIndexPage = () => {
   );
 };
 
-export default CourseBatchIndexPage;
+export default AddCourseBatchIndexPage;

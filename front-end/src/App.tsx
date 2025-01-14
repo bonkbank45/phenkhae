@@ -25,7 +25,7 @@ import AddPrename from './pages/Prename/AddPrename';
 import AddCourse from './pages/Course/CourseManageForm/AddCourse';
 import NotFound from './pages/NotFound';
 import CourseManagePage from './pages/Course/CourseManagePage';
-import CourseBatchIndexPage from './pages/OpenCourseBatch/CourseBatchIndexPage';
+import AddCourseBatchIndexPage from './pages/OpenCourseBatch/AddCourseBatchIndexPage';
 import CourseBatchAddStudent from './pages/OpenCourseBatch/CourseBatchAddStudentPage';
 
 function App() {
@@ -170,7 +170,7 @@ function App() {
           <Route path="/settings/datas/prenames/add" element={<AddPrename />} />
           <Route
             path="/courses/batchs/add"
-            element={<CourseBatchIndexPage />}
+            element={<AddCourseBatchIndexPage />}
           />
           <Route
             path="/courses/batchs/:id/add-students"
