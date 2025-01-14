@@ -14,9 +14,10 @@ class Prename extends Model
 
     public function scopeFilterByStatus($query, $showStatus)
     {
-        return $query->when(isset($showStatus), function ($query) use ($showStatus) {
-            return $query->where('show_status', $showStatus);
-        });
+        if ($showStatus === 'all') {
+            return $query;
+        }
+        return $query->where('show_status', $showStatus);
     }
 
     public function scopeSearch($query, $searchTerm)

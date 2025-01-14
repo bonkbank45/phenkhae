@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useCourseBatchDataById } from '../../hooks/api/useCourseBatchData';
 import { useStudentData } from '../../hooks/api/useStudentData';
 import { useAddEnrollment } from '../../hooks/api/useEnrollmentData';
@@ -14,6 +14,7 @@ import Spinner from '../../common/Spinner';
 import { toast } from 'react-toastify';
 import { ErrorResponse } from '../../types/error_response';
 import NotFound from '../NotFound';
+import { filterOptions } from '../../constants/filterOptions';
 
 interface SelectedStudent {
   id: number;
@@ -56,33 +57,6 @@ const CourseBatchAddStudentPage = () => {
   });
 
   console.log(students);
-
-  const filterOptions = {
-    ageRange: [
-      { value: '20-30', label: '20-30 ปี' },
-      { value: '31-40', label: '31-40 ปี' },
-      { value: '41-50', label: '41-50 ปี' },
-      { value: '51+', label: '51 ปีขึ้นไป' },
-    ],
-
-    experience: [
-      { value: 'hasExpLearn', label: 'เคยนวด/เรียน' },
-      { value: 'hasExpWork', label: 'เคยทำงานเกี่ยวข้องกับนวดไทย' },
-    ],
-
-    education: [
-      { value: 'below', label: 'ต่ำกว่าปริญญาตรี' },
-      { value: 'bachelor', label: 'ปริญญาตรี' },
-      { value: 'above', label: 'สูงกว่าปริญญาตรี' },
-    ],
-
-    recentlyAdded: [
-      { value: 'today', label: 'วันนี้' },
-      { value: 'yesterday', label: 'เมื่อวาน' },
-      { value: 'last7days', label: '7 วันที่ผ่านมา' },
-      { value: 'last30days', label: '30 วันที่ผ่านมา' },
-    ],
-  };
 
   const columns = [
     {
@@ -235,7 +209,7 @@ const CourseBatchAddStudentPage = () => {
           <h2 className="text-xl font-semibold mb-4 dark:text-white font-notoExtraBold">
             รายชื่อนักเรียน
           </h2>
-          <div className="mb-4 hidden lg:flex overflow-x-auto gap-2">
+          <div className="mb-4 hidden lg:flex md:justify-start lg:justify-between flex-wrap gap-2">
             <Filter
               value={ageRange}
               onChange={handleAgeRangeFilter}
@@ -261,8 +235,9 @@ const CourseBatchAddStudentPage = () => {
               value={recentlyAdded}
               onChange={handleRecentlyAddedFilter}
               options={filterOptions.recentlyAdded}
-              placeholder="ทุกช่วงเวลา"
+              placeholder="ระยะเวลาที่เพิ่มเข้าระบบ"
               showIcon={false}
+              disablePlaceholder={true}
             />
           </div>
           <Search
