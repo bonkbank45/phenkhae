@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { Button } from '@material-tailwind/react';
 import { useCourseBatchDataById } from '../../hooks/api/useCourseBatchData';
 import { useStudentData } from '../../hooks/api/useStudentData';
 import { useAddEnrollment } from '../../hooks/api/useEnrollmentData';
-import { useParams } from 'react-router-dom';
+import useDebounce from '../../hooks/useDebounce';
 import PaginatedTable from '../../components/Tables/PaginatedTable';
 import Pagination from '../../components/Pagination';
-import { Button } from '@material-tailwind/react';
-import useDebounce from '../../hooks/useDebounce';
 import Search from '../../components/Search/Search';
 import Filter from '../../components/Filter/Filter';
-import { Student } from '../../types/student';
+import Modal from '../../components/Modal';
 import Spinner from '../../common/Spinner';
-import { toast } from 'react-toastify';
+import CloseIcon from '../../common/CloseIcon';
+import { Student } from '../../types/student';
 import { ErrorResponse } from '../../types/error_response';
 import NotFound from '../NotFound';
 import { filterOptions } from '../../constants/filterOptions';
@@ -41,6 +43,13 @@ const CourseBatchAddStudentPage = () => {
   const [selectedStudents, setSelectedStudents] = useState<SelectedStudent[]>(
     [],
   );
+
+  //----- Warning Modal -----
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
+  const availableStudents =
+    courseBatch?.data.max_students - courseBatch?.data.students_enrolled;
+  //----- Warning Modal -----
+
   const {
     data: students,
     isLoading: isLoadingStudents,
@@ -98,6 +107,10 @@ const CourseBatchAddStudentPage = () => {
     if (isSelected) {
       setSelectedStudents(selectedStudents.filter((s) => s.id !== student.id));
     } else {
+      if (selectedStudents.length >= availableStudents) {
+        setIsWarningModalOpen(true);
+        return;
+      }
       setSelectedStudents([
         ...selectedStudents,
         {
@@ -209,7 +222,7 @@ const CourseBatchAddStudentPage = () => {
           <h2 className="text-xl font-semibold mb-4 dark:text-white font-notoExtraBold">
             รายชื่อนักเรียน
           </h2>
-          <div className="mb-4 hidden lg:flex md:justify-start lg:justify-between flex-wrap gap-2">
+          <div className="mb-4 hidden lg:flex lg:justify-start xl:justify-between flex-wrap gap-2">
             <Filter
               value={ageRange}
               onChange={handleAgeRangeFilter}
@@ -245,7 +258,7 @@ const CourseBatchAddStudentPage = () => {
             onChange={handleSearch}
             placeholder="ค้นหานักเรียนด้วยชื่อ, อีเมลหรือเบอร์โทรศัพท์"
           />
-          <div className="h-[calc(100vh-300px)] mt-4 overflow-y-auto">
+          <div className="h-100vh mt-4 overflow-y-auto">
             <PaginatedTable<Student>
               data={students?.data}
               columns={columns}
@@ -270,7 +283,7 @@ const CourseBatchAddStudentPage = () => {
           <h2 className="text-xl font-semibold mb-4 dark:text-white font-notoExtraBold">
             นักเรียนที่เลือก ({selectedStudents.length})
           </h2>
-          <div className="h-[calc(100vh-300px)] overflow-y-auto">
+          <div className="h-100vh overflow-y-auto">
             {/* ตัวอย่างรายการที่เลือก */}
             {selectedStudents.length > 0 ? (
               selectedStudents.map((student) => (
@@ -302,7 +315,7 @@ const CourseBatchAddStudentPage = () => {
               ))
             ) : (
               <div className="flex items-center justify-center h-full">
-                <p className="font-notoLoopThaiRegular dark:text-white">
+                <p className="h-100 font-notoLoopThaiRegular dark:text-white">
                   ไม่มีนักเรียนที่เลือก
                 </p>
               </div>
@@ -335,6 +348,30 @@ const CourseBatchAddStudentPage = () => {
           เพิ่มนักเรียน
         </Button>
       </div>
+      <Modal
+        isOpen={isWarningModalOpen}
+        onClose={() => setIsWarningModalOpen(false)}
+        title="จำนวนนักเรียนที่เลือกมีมากกว่าจำนวนที่รับได้ของรุ่นหลักสูตร"
+      >
+        <div className="p-4">
+          <div className="flex items-center gap-4">
+            <CloseIcon w={50} h={50} />
+            <p className="text-center font-notoLoopThaiRegular">
+              ไม่สามารถเพิ่มนักเรียนได้ เนื่องจากเกินจำนวนที่รับได้
+              กรุณาลองใหม่อีกครั้ง (รับได้สูงสุด {availableStudents} คน)
+            </p>
+          </div>
+          <div className="flex justify-end mt-8">
+            <Button
+              color="blue"
+              onClick={() => setIsWarningModalOpen(false)}
+              className="font-notoLoopThaiRegular"
+            >
+              ตกลง
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -30,6 +30,9 @@ class Course extends Model
 
     public function scopeFilterByCategory($query, $filter)
     {
+        if ($filter == 'all') {
+            return $query;
+        }
         return $query->when($filter, function ($query) use ($filter) {
             return $query->where('course_category_id', $filter);
         });
@@ -37,6 +40,9 @@ class Course extends Model
 
     public function scopeFilterByCategoryBill($query, $filter)
     {
+        if ($filter == 'all') {
+            return $query;
+        }
         return $query->when($filter, function ($query) use ($filter) {
             return $query->where('course_category_bill_id', $filter);
         });

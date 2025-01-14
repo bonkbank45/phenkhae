@@ -5,8 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class Student extends Model
 {
+    use HasFactory;
     protected $table = 'students';
     protected $fillable = [
         'prename_id',
@@ -86,12 +89,14 @@ class Student extends Model
 
     public function scopeFilterRecentlyAdded($query, $recentlyAdded)
     {
+        $now = now()->setTimezone('Asia/Bangkok');
+
         return match ($recentlyAdded) {
             'all' => $query,
-            'today' => $query->whereDate('created_at', now()->format('Y-m-d')),
-            'yesterday' => $query->whereDate('created_at', now()->subDay()->format('Y-m-d')),
-            'last7days' => $query->whereBetween('created_at', [now()->subWeek()->startOfDay(), now()->endOfDay()]),
-            'last30days' => $query->whereBetween('created_at', [now()->subMonth()->startOfDay(), now()->endOfDay()]),
+            'today' => $query->whereDate('created_at', $now->format('Y-m-d')),
+            'yesterday' => $query->whereDate('created_at', $now->copy()->subDay()->format('Y-m-d')),
+            'last7days' => $query->whereBetween('created_at', [$now->copy()->subWeek()->startOfDay(), $now->copy()->endOfDay()]),
+            'last30days' => $query->whereBetween('created_at', [$now->copy()->subMonth()->startOfDay(), $now->copy()->endOfDay()]),
             default => $query,
         };
     }

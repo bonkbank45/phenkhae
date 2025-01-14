@@ -6,6 +6,8 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Database\Seeders\CourseBillSeeder;
+use App\Models\Student;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -25,5 +27,7 @@ class DatabaseSeeder extends Seeder
             EducationQualSeeder::class,
             MedicalConditionSeeder::class,
         ]);
+
+        Student::factory(1000)->create();
     }
 }
