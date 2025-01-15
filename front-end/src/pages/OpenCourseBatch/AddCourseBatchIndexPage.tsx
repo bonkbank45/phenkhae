@@ -53,11 +53,13 @@ const AddCourseBatchIndexPage = () => {
 
       const parseDateString = (dateStr: string) => {
         const [day, month, year] = dateStr.split('/');
-        return (
-          new Date(Number(year), Number(month) - 1, Number(day))
-            .toISOString()
-            .split('T')[0] + ' 00:00:00.000'
-        );
+        const currentTime = new Date().toLocaleTimeString('th-TH', {
+          hour12: false,
+        });
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(
+          2,
+          '0',
+        )} ${currentTime}`;
       };
 
       const submissionData: AddCourseBatchData = {

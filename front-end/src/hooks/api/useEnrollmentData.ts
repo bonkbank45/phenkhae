@@ -13,6 +13,10 @@ export const useAddEnrollment = () => {
         queryKey: ['enrollments'],
         exact: false,
       });
+      queryClient.invalidateQueries({
+        queryKey: ['course_batch_data'],
+        exact: false,
+      });
       console.log('เพิ่มการสมัครสำเร็จ');
     },
     onError: (error: ErrorResponse) => {

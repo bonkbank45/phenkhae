@@ -11,6 +11,7 @@ interface FilterProps {
   options: FilterOption[];
   placeholder?: string;
   className?: string;
+  classNameIcon?: string;
   showIcon?: boolean;
   disablePlaceholder?: boolean;
 }
@@ -21,6 +22,7 @@ const Filter = ({
   options,
   placeholder = 'เลือกตัวกรอง',
   className = '',
+  classNameIcon = '',
   showIcon = true,
   disablePlaceholder = false,
 }: FilterProps) => {
@@ -30,7 +32,7 @@ const Filter = ({
         <IconFilter3Fill
           width={41}
           height={41}
-          className="rounded-l-lg border border-stroke dark:border-strokedark"
+          className={`rounded-l-lg border border-stroke dark:border-strokedark ${classNameIcon}`}
         />
       )}
       <select

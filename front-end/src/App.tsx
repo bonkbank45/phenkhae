@@ -27,6 +27,8 @@ import NotFound from './pages/NotFound';
 import CourseManagePage from './pages/Course/CourseManagePage';
 import AddCourseBatchIndexPage from './pages/OpenCourseBatch/AddCourseBatchIndexPage';
 import CourseBatchAddStudent from './pages/OpenCourseBatch/CourseBatchAddStudentPage';
+import CourseBatchListPage from './pages/CourseBatch/CourseBatchListPage';
+import CourseBatchShowPage from './pages/CourseBatch/CourseBatchShowPage';
 
 function App() {
   const { pathname } = useLocation();
@@ -168,6 +170,11 @@ function App() {
           <Route path="/courses/list" element={<CourseManagePage />} />
           <Route path="/settings/datas/prenames" element={<Prename />} />
           <Route path="/settings/datas/prenames/add" element={<AddPrename />} />
+          <Route
+            path="/courses/batchs/list"
+            element={<CourseBatchListPage />}
+          />
+          <Route path="/courses/batchs/:id" element={<CourseBatchShowPage />} />
           <Route
             path="/courses/batchs/add"
             element={<AddCourseBatchIndexPage />}

@@ -33,4 +33,11 @@ export const filterOptions = {
     { label: 'แสดง', value: 1 },
     { label: 'ไม่แสดง', value: 0 },
   ],
+
+  courseBatchStatus: [
+    { value: 'all', label: 'สถานะทั้งหมด' },
+    { value: 'enrolling', label: 'กำลังเปิดรับสมัคร' },
+    { value: 'in_progress', label: 'กำลังเรียนอยู่' },
+    { value: 'closed', label: 'ปิดรุ่นแล้ว' },
+  ],
 };

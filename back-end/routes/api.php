@@ -60,6 +60,7 @@ Route::group(['middleware' => ['api']], function () {
     });
     Route::prefix('course_group')->group(function () {
         Route::get('/', [CourseGroupController::class, 'index']);
+        Route::get('/table', [CourseGroupController::class, 'table']);
         Route::get('/course/{courseId}', [CourseGroupController::class, 'course']);
         Route::get('/available', [CourseGroupController::class, 'available']);
         Route::post('/', [CourseGroupController::class, 'store']);
