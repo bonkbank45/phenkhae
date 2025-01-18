@@ -27,7 +27,9 @@ class UpdateCourseGroupRequest extends FormRequest
             'batch' => [
                 'required',
                 'integer',
-                Rule::unique('course_groups')->where('course_id', $this->course_id),
+                Rule::unique('course_groups')
+                    ->where('course_id', $this->course_id)
+                    ->ignore($this->id),
             ],
             'date_start' => 'required|date',
             'date_end' => 'required|date|after:date_start',

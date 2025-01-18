@@ -1,5 +1,6 @@
 import React from 'react';
-import { FiEye, FiX } from 'react-icons/fi';
+import { FiEdit, FiEye, FiX } from 'react-icons/fi';
+import { format } from 'date-fns';
 import { removeTime } from '../utils/datetime';
 import { CourseGroup, Status } from '../types/course_group';
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
   getStatusText: (date_start: string, date_end: string) => string;
   onViewDetails?: (id: number) => void;
   onCloseBatch?: (id: number) => void;
+  onEditBatch?: (id: number) => void;
 }
 
 export const CourseBatchCard = ({
@@ -16,8 +18,8 @@ export const CourseBatchCard = ({
   getStatusText,
   onViewDetails,
   onCloseBatch,
+  onEditBatch,
 }: Props) => {
-  console.log(batch);
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 dark:bg-boxdark border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow duration-200 font-notoLoopThaiRegular">
       <h3 className="text-lg font-semibold mb-2">{batch.course.course_name}</h3>
@@ -26,7 +28,8 @@ export const CourseBatchCard = ({
           รุ่นที่ {batch.batch} / {batch.date_start.split('-')[0]}
         </p>
         <p>
-          วันที่: {removeTime(batch.date_start)} - {removeTime(batch.date_end)}
+          วันที่: {format(new Date(batch.date_start), 'dd/MM/yyyy')} ถึง{' '}
+          {format(new Date(batch.date_end), 'dd/MM/yyyy')}
         </p>
         <p>
           จำนวนการลงทะเบียน: {batch.students_enrolled}/{batch.max_students}
@@ -46,12 +49,19 @@ export const CourseBatchCard = ({
         >
           <FiEye /> ดูรายละเอียด
         </button>
-        {getStatusText(batch.date_start, batch.date_end) === 'enrolling' && (
+        <button
+          className="flex items-center gap-1 px-3 py-1 border rounded-lg hover:bg-gray-50"
+          onClick={() => onEditBatch?.(batch.id)}
+        >
+          <FiEdit /> แก้ไข
+        </button>
+        {getStatusText(batch.date_start, batch.date_end) ===
+          'กำลังเปิดรับสมัคร' && (
           <button
             className="flex items-center gap-1 px-3 py-1 border rounded-lg text-red-600 hover:bg-red-50"
             onClick={() => onCloseBatch?.(batch.id)}
           >
-            <FiX /> ปิดรุ่น
+            <FiX /> ลบ
           </button>
         )}
       </div>

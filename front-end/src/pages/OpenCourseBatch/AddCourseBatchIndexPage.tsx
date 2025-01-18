@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 import StepperForm from '../../components/StepperForm';
 import AddCourseBatchForm from './AddCourseBatchForm/AddCourseBatchForm';
-import selectCourseSchema from '../../schema/addNewBatch/selectCourse';
-import infoBatchSchema from '../../schema/addNewBatch/infoBatch';
+import selectCourseSchema from '../../schema/ฺbatchs/addNewBatch/selectCourse';
+import infoBatchSchema from '../../schema/ฺbatchs/addNewBatch/infoBatch';
 import Modal from '../../components/Modal';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup.js';
 import { useAddCourseBatchData } from '../../hooks/api/useCourseBatchData';
@@ -37,7 +38,7 @@ const AddCourseBatchIndexPage = () => {
     isPending: isAddCourseBatchDataPending,
     isError: isAddCourseBatchDataError,
     error: addCourseBatchDataError,
-  } = useAddCourseBatchData(methods.getValues() as AddCourseBatchData);
+  } = useAddCourseBatchData();
 
   const steps = [
     'เลือกหลักสูตร',
@@ -53,21 +54,21 @@ const AddCourseBatchIndexPage = () => {
 
       const parseDateString = (dateStr: string) => {
         const [day, month, year] = dateStr.split('/');
-        const currentTime = new Date().toLocaleTimeString('th-TH', {
-          hour12: false,
-        });
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(
-          2,
-          '0',
-        )} ${currentTime}`;
+        return new Date(Number(year), Number(month) - 1, Number(day));
       };
 
       const submissionData: AddCourseBatchData = {
         ...formData,
         batch: Number(formData.batch),
         max_students: Number(formData.max_students),
-        date_start: parseDateString(formData.date_start),
-        date_end: parseDateString(formData.date_end),
+        date_start: format(
+          parseDateString(formData.date_start),
+          'yyyy-MM-dd 00:00:00',
+        ),
+        date_end: format(
+          parseDateString(formData.date_end),
+          'yyyy-MM-dd 23:59:59',
+        ),
       };
 
       addCourseBatchData(submissionData, {

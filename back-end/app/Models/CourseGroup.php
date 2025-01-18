@@ -36,7 +36,10 @@ class CourseGroup extends Model
     public function scopeFilterByCourse($query, $courseId)
     {
         return $query->when($courseId, function ($query) use ($courseId) {
-            return $query->where('course_id', $courseId);
+            return match ($courseId) {
+                'all' => $query,
+                default => $query->where('course_id', $courseId),
+            };
         });
     }
 

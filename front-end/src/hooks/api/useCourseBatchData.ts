@@ -10,6 +10,10 @@ interface AddCourseBatchData {
   date_end: string;
 }
 
+interface EditCourseBatchData extends Omit<AddCourseBatchData, 'course_id'> {
+  id: string;
+}
+
 interface UseCourseBatchDataTableParams {
   page: number;
   searchTerm: string;
@@ -70,10 +74,11 @@ export const useCourseBatchDataById = (id: string) => {
   });
 };
 
-export const useAddCourseBatchData = (data: AddCourseBatchData) => {
+export const useAddCourseBatchData = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: AddCourseBatchData) => {
+      console.log(data);
       const response = await api.post('/course_group', data);
       return response.data;
     },
@@ -85,6 +90,26 @@ export const useAddCourseBatchData = (data: AddCourseBatchData) => {
     },
     onError: (error: Error) => {
       console.error('Failed to add course batch:', error.message);
+    },
+  });
+};
+
+export const useEditCourseBatchData = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: EditCourseBatchData) => {
+      console.log(data);
+      const response = await api.put(`/course_group/${data.id}`, data);
+      return response.data;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: ['course_batch_data'],
+      });
+      console.log('Success', response.data);
+    },
+    onError: (error: Error) => {
+      console.error('Failed to edit course batch:', error.message);
     },
   });
 };

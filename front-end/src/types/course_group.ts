@@ -36,8 +36,13 @@ interface CourseGroupResponse {
   course_id: number;
   max_students: number;
   batch: number;
-  date_start: string;
-  date_end: string;
+  date_start:
+    | string
+    | `${number}-${number}-${number} ${number}:${number}:${number}`;
+  date_end:
+    | string
+    | `${number}-${number}-${number} ${number}:${number}:${number}`
+    | null;
   created_at: string;
   updated_at: string;
   students_enrolled: number;

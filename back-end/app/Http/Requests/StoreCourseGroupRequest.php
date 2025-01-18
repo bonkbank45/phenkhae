@@ -31,7 +31,7 @@ class StoreCourseGroupRequest extends FormRequest
                 Rule::unique('course_groups')->where('course_id', $this->course_id),
             ],
             'date_start' => 'required|date',
-            'date_end' => 'required|date',
+            'date_end' => 'required|date|after:date_start',
         ];
     }
 
