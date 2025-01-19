@@ -1,8 +1,16 @@
 import * as yup from 'yup';
 
 export const editBatchSchema = yup.object().shape({
-  batch: yup.number().typeError('กรุณากรอกตัวเลข').required(),
-  max_students: yup.number().typeError('กรุณากรอกตัวเลข').required(),
+  batch: yup
+    .number()
+    .typeError('กรุณากรอกตัวเลข')
+    .min(1, 'รุ่นหลักสูตรต้องมากกว่าหรือเท่ากับ 1')
+    .required(),
+  max_students: yup
+    .number()
+    .typeError('กรุณากรอกตัวเลข')
+    .min(1, 'จำนวนนักเรียนที่รับต้องมากกว่าหรือเท่ากับ 1 คน')
+    .required(),
   date_start: yup
     .date()
     .typeError('กรุณากรอกวันที่เริ่มหลักสูตร')

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { Button, Spinner } from '@material-tailwind/react';
 import TextField from '../../components/Forms/TextField';
 import { CourseGroup } from '../../types/course_group';
@@ -7,18 +8,27 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { formatDateToThai, formatDateToString } from '../../utils/datetime';
 import { editBatchSchema } from '../../schema/ฺbatchs/editBatch/editBatch';
 import DatePickerWithController from '../../components/Forms/DatePicker/DatePickerWithController';
+import { useEditCourseBatchData } from '../../hooks/api/useCourseBatchData';
+import { ErrorResponse } from '../../types/error_response';
+import { format } from 'date-fns';
 
 const EditCourseBatchForm = ({
   initialData,
   onClose,
-  handleSubmitEditForm,
-  isPending,
+  onSuccess,
+  onError,
 }: {
   initialData: CourseGroup;
   onClose: () => void;
-  handleSubmitEditForm: (dateString: CourseGroup) => void;
-  isPending: boolean;
+  onSuccess?: () => void;
+  onError?: (error: ErrorResponse) => void;
 }) => {
+  const navigate = useNavigate();
+  const [serverErrors, setServerErrors] = useState<{ [key: string]: string }>(
+    {},
+  );
+  const { mutate: editCourseBatch, isPending } = useEditCourseBatchData();
+
   const formattedInitialData = {
     ...initialData,
     date_start: formatDateToThai(initialData.date_start),
@@ -35,10 +45,44 @@ const EditCourseBatchForm = ({
     resolver: yupResolver(editBatchSchema),
   });
 
+  const handleSubmitForm = (data: Omit<CourseGroup, 'id'>) => {
+    setServerErrors({});
+    editCourseBatch(
+      {
+        ...data,
+        id: initialData.id,
+        date_start: format(data.date_start, 'yyyy-MM-dd 00:00:00'),
+        date_end: format(data.date_end, 'yyyy-MM-dd 23:59:59'),
+      },
+      {
+        onSuccess: () => {
+          onSuccess?.();
+          onClose();
+          setServerErrors({});
+        },
+        onError: (error: ErrorResponse) => {
+          if (error.response?.data?.errors) {
+            const formattedErrors = Object.entries(
+              error.response.data.errors,
+            ).reduce(
+              (acc, [key, value]) => ({
+                ...acc,
+                [key]: Array.isArray(value) ? value[0] : value,
+              }),
+              {},
+            );
+            setServerErrors(formattedErrors);
+          }
+          onError?.(error);
+        },
+      },
+    );
+  };
+
   return (
     <div className="max-w-2xl mx-auto p-4">
       <form
-        onSubmit={handleSubmit(handleSubmitEditForm)}
+        onSubmit={handleSubmit(handleSubmitForm)}
         className="flex flex-col gap-4"
       >
         <h1 className="text-2xl text-black dark:text-white font-bold mb-4 font-notoLoopThaiRegular">
@@ -52,7 +96,9 @@ const EditCourseBatchForm = ({
           required={true}
           type="number"
           error={
-            typeof errors.batch?.message === 'string'
+            serverErrors.batch?.length > 0
+              ? serverErrors.batch
+              : typeof errors.batch?.message === 'string'
               ? errors.batch.message
               : ''
           }
@@ -65,7 +111,9 @@ const EditCourseBatchForm = ({
           required={true}
           type="number"
           error={
-            typeof errors.max_students?.message === 'string'
+            serverErrors.max_students?.length > 0
+              ? serverErrors.max_students
+              : typeof errors.max_students?.message === 'string'
               ? errors.max_students.message
               : ''
           }
@@ -100,6 +148,29 @@ const EditCourseBatchForm = ({
           }
           required
         />
+        <div className="flex justify-start gap-4 items-center">
+          <div className="text-gray-500 dark:text-white font-notoLoopThaiRegular">
+            จัดการนักเรียนในรุ่นหลักสูตร :
+          </div>
+          <div className="flex gap-4">
+            <Button
+              color="green"
+              onClick={() => {
+                navigate(`/courses/batchs/${initialData.id}/add-students`);
+              }}
+            >
+              เพิ่มนักเรียน
+            </Button>
+            <Button
+              color="red"
+              onClick={() => {
+                navigate(`/courses/batchs/${initialData.id}/remove-students`);
+              }}
+            >
+              ลบนักเรียน
+            </Button>
+          </div>
+        </div>
         <div className="mt-4 h-10 flex justify-start gap-4">
           <Button
             type="submit"

@@ -11,7 +11,7 @@ interface AddCourseBatchData {
 }
 
 interface EditCourseBatchData extends Omit<AddCourseBatchData, 'course_id'> {
-  id: string;
+  id: number;
 }
 
 interface UseCourseBatchDataTableParams {
@@ -74,6 +74,27 @@ export const useCourseBatchDataById = (id: string) => {
   });
 };
 
+export const useAllCourseBatchDataByCourseId = (courseId: number) => {
+  return useQuery({
+    queryKey: ['course_batch_data_by_course_id', courseId],
+    queryFn: async () => {
+      try {
+        const response = await api.get(`/course_group/course/${courseId}`);
+        if (response.data.status === 'error') {
+          throw new Error(response.data.message);
+        }
+        return response.data;
+      } catch (error) {
+        throw error instanceof Error
+          ? error
+          : new Error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+      }
+    },
+    staleTime: 1000 * 60 * 5,
+    placeholderData: (prevData) => prevData,
+  });
+};
+
 export const useAddCourseBatchData = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -110,6 +131,25 @@ export const useEditCourseBatchData = () => {
     },
     onError: (error: Error) => {
       console.error('Failed to edit course batch:', error.message);
+    },
+  });
+};
+
+export const useDeleteCourseBatchData = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const response = await api.delete(`/course_group/${id}`);
+      return response.data;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: ['course_batch_data'],
+      });
+      console.log('Success', response.data);
+    },
+    onError: (error: Error) => {
+      console.error('Failed to delete course batch:', error.message);
     },
   });
 };

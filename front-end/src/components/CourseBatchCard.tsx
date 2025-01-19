@@ -10,6 +10,7 @@ interface Props {
   onViewDetails?: (id: number) => void;
   onCloseBatch?: (id: number) => void;
   onEditBatch?: (id: number) => void;
+  onDeleteBatch?: (id: number) => void;
 }
 
 export const CourseBatchCard = ({
@@ -19,6 +20,7 @@ export const CourseBatchCard = ({
   onViewDetails,
   onCloseBatch,
   onEditBatch,
+  onDeleteBatch,
 }: Props) => {
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 dark:bg-boxdark border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow duration-200 font-notoLoopThaiRegular">
@@ -42,7 +44,7 @@ export const CourseBatchCard = ({
           {getStatusText(batch.date_start, batch.date_end)}
         </span>
       </div>
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex flex-wrap gap-2">
         <button
           className="flex items-center gap-1 px-3 py-1 border rounded-lg hover:bg-gray-50"
           onClick={() => onViewDetails?.(batch.id)}
@@ -55,15 +57,21 @@ export const CourseBatchCard = ({
         >
           <FiEdit /> แก้ไข
         </button>
-        {getStatusText(batch.date_start, batch.date_end) ===
+        {/* {getStatusText(batch.date_start, batch.date_end) ===
           'กำลังเปิดรับสมัคร' && (
           <button
             className="flex items-center gap-1 px-3 py-1 border rounded-lg text-red-600 hover:bg-red-50"
-            onClick={() => onCloseBatch?.(batch.id)}
+            onClick={() => onDeleteBatch?.(batch.id)}
           >
             <FiX /> ลบ
           </button>
-        )}
+        )} */}
+        <button
+          className="flex items-center gap-1 px-3 py-1 border rounded-lg text-red-600 hover:bg-red-50"
+          onClick={() => onDeleteBatch?.(batch.id)}
+        >
+          <FiX /> ลบ
+        </button>
       </div>
     </div>
   );

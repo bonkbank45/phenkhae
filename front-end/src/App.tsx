@@ -42,7 +42,10 @@ function App() {
     <Loader />
   ) : (
     <>
-      <ToastContainer position="bottom-right" />
+      <ToastContainer
+        position="bottom-right"
+        toastClassName="font-notoLoopThaiRegular"
+      />
       <Routes>
         <Route path="/auth/signin" element={<SignIn />} />
         <Route path="/auth/signup" element={<SignUp />} />

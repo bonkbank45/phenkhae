@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { Button } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
-import {
-  useCourseBatchDataTable,
-  useEditCourseBatchData,
-} from '../../hooks/api/useCourseBatchData';
+import { useCourseBatchDataTable } from '../../hooks/api/useCourseBatchData';
 import { useCourseData } from '../../hooks/api/useCourseData';
 import useDebounce from '../../hooks/useDebounce';
 import Spinner from '../../common/Spinner';
@@ -20,21 +17,24 @@ import EditCourseBatchForm from './EditCourseBatchForm';
 import { CourseGroup } from '../../types/course_group';
 import { toast } from 'react-toastify';
 import { ErrorResponse } from '../../types/error_response';
-import { format } from 'date-fns';
+import DeleteCourseBatchForm from './DeleteCourseBatchForm';
+
 const CourseBatchListPage = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [courseId, setCourseId] = useState<string>('all');
   const [courseBatchStatus, setCourseBatchStatus] = useState<string>('all');
-  const [selectedCourseBatch, setSelectedCourseBatch] = useState<any>(null);
+  const [selectedCourseBatch, setSelectedCourseBatch] =
+    useState<CourseGroup | null>(null);
   const [page, setPage] = useState<number>(1);
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const [isOpenEditModal, setIsOpenEditModal] = useState<boolean>(false);
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
 
   /* Course Data Options */
   const { data: courseData } = useCourseData();
   const courseOptions = [
-    { label: 'ทั้งหมด', value: '' },
+    { label: 'ทั้งหมด', value: 'all' },
     ...(courseData?.data
       ? courseData.data.map((course) => ({
           label: course.course_name,
@@ -56,9 +56,6 @@ const CourseBatchListPage = () => {
     courseId,
   });
 
-  const { mutate: editCourseBatch, isPending: isEditCourseBatchPending } =
-    useEditCourseBatchData();
-
   const handleSearch = (input: string) => {
     setSearchTerm(input);
     setPage(1);
@@ -73,7 +70,16 @@ const CourseBatchListPage = () => {
   };
 
   const handleEditBatch = (id: number) => {
-    setIsOpenModal(true);
+    setIsOpenEditModal(true);
+    const courseBatch = courseBatchData?.data.data.find(
+      (batch) => batch.id === id,
+    );
+    setSelectedCourseBatch(courseBatch);
+    console.log(courseBatch);
+  };
+
+  const handleDeleteBatch = (id: number) => {
+    setIsOpenDeleteModal(true);
     const courseBatch = courseBatchData?.data.data.find(
       (batch) => batch.id === id,
     );
@@ -95,28 +101,34 @@ const CourseBatchListPage = () => {
     console.log('Closing batch:', id);
   };
 
-  const handleSubmitEditForm = (data: Omit<CourseGroup, 'id'>) => {
-    editCourseBatch(
-      {
-        ...data,
-        id: selectedCourseBatch.id,
-        date_start: format(data.date_start, 'yyyy-MM-dd 00:00:00'),
-        date_end: format(data.date_end, 'yyyy-MM-dd 23:59:59'),
-      },
-      {
-        onSuccess: () => {
-          toast.success('แก้ไขข้อมูลรุ่นหลักสูตรเบื้องต้นสำเร็จ');
-          setIsOpenModal(false);
-        },
-        onError: (error: ErrorResponse) => {
-          toast.error(
-            Object.entries(error.response.data.errors)
-              .map(([key, value]) => `${key}: ${value.join(', ')}`)
-              .join(', ') || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง',
-          );
-        },
-      },
+  const handleEditBatchSuccess = () => {
+    setIsOpenEditModal(false);
+    toast.success('แก้ไขข้อมูลรุ่นหลักสูตรสำเร็จ');
+  };
+
+  const handleEditBatchError = (error: ErrorResponse) => {
+    toast.error(
+      Object.entries(error.response.data.errors)
+        .map(([key, value]) => `${key}: ${value.join(', ')}`)
+        .join(', ') || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง',
     );
+  };
+
+  const handleDeleteBatchSuccess = () => {
+    setIsOpenDeleteModal(false);
+    toast.success('ลบรุ่นหลักสูตรสำเร็จ');
+  };
+
+  const handleDeleteBatchError = (error: ErrorResponse) => {
+    if (!error.response.data.errors) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error(
+        Object.entries(error.response.data.errors)
+          .map(([key, value]) => `${key}: ${value.join(', ')}`)
+          .join(', ') || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง',
+      );
+    }
   };
 
   if (isLoading)
@@ -193,7 +205,7 @@ const CourseBatchListPage = () => {
               <div className="flex col-span-3 justify-center items-center h-[300px]">
                 <p className="text-gray-600 dark:text-white font-notoLoopThaiRegular">
                   ไม่พบรุ่นหลักสูตร{' '}
-                  {courseId
+                  {courseId !== 'all'
                     ? `ของ ${
                         courseOptions.find(
                           (option) => option.value === parseInt(courseId),
@@ -212,6 +224,7 @@ const CourseBatchListPage = () => {
                   onViewDetails={handleViewDetails}
                   onCloseBatch={handleCloseBatch}
                   onEditBatch={handleEditBatch}
+                  onDeleteBatch={handleDeleteBatch}
                 />
               ))
             )}
@@ -232,20 +245,43 @@ const CourseBatchListPage = () => {
         </div>
       </div>
       <Modal
-        isOpen={isOpenModal}
-        onClose={() => setIsOpenModal(false)}
+        isOpen={isOpenEditModal}
+        onClose={() => {
+          setIsOpenEditModal(false);
+        }}
         title="แก้ไขข้อมูลรุ่นหลักสูตรเบื้องต้น"
       >
         <div>
           {selectedCourseBatch && (
             <EditCourseBatchForm
               initialData={selectedCourseBatch}
-              onClose={() => setIsOpenModal(false)}
-              handleSubmitEditForm={handleSubmitEditForm}
-              isPending={isEditCourseBatchPending}
+              onClose={() => {
+                setIsOpenEditModal(false);
+              }}
+              onSuccess={handleEditBatchSuccess}
+              onError={(error: ErrorResponse) => {
+                handleEditBatchError(error);
+              }}
             />
           )}
         </div>
+      </Modal>
+      <Modal
+        isOpen={isOpenDeleteModal}
+        onClose={() => {
+          setIsOpenDeleteModal(false);
+        }}
+        title="ลบรุ่นหลักสูตร"
+      >
+        {selectedCourseBatch && (
+          <DeleteCourseBatchForm
+            courseBatch={selectedCourseBatch}
+            onSuccess={handleDeleteBatchSuccess}
+            onError={(error: ErrorResponse) => {
+              handleDeleteBatchError(error);
+            }}
+          />
+        )}
       </Modal>
     </>
   );

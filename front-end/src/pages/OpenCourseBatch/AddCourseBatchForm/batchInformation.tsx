@@ -6,7 +6,7 @@ import { useCourseData } from '../../../hooks/api/useCourseData';
 
 import Modal from '../../../components/Modal';
 import { Button } from '@material-tailwind/react';
-import { useCourseGroupDataByCourseId } from '../../../hooks/api/useCourseGroupData';
+import { useAllCourseBatchDataByCourseId } from '../../../hooks/api/useCourseBatchData';
 import { format } from 'date-fns';
 import { th } from 'date-fns/locale';
 
@@ -24,10 +24,13 @@ const BatchInformation = () => {
   const selectedCourse = courseData?.data.find(
     (course) => course.id === selectedCourseId,
   );
-  const { data: courseGroupData, isLoading } =
-    useCourseGroupDataByCourseId(selectedCourseId);
+  const {
+    data: courseBatchData,
+    isLoading,
+    error: queryCourseBatchDataError,
+  } = useAllCourseBatchDataByCourseId(selectedCourseId);
 
-  const formattedCourseGroupData = courseGroupData?.data.data.map((group) => ({
+  const formattedCourseBatchData = courseBatchData?.data.map((group) => ({
     ...group,
     date_start: format(new Date(group.date_start), 'dd MMMM yyyy', {
       locale: th,
@@ -38,14 +41,15 @@ const BatchInformation = () => {
   }));
 
   useEffect(() => {
-    if (courseGroupData?.data.data) {
-      const nextBatchNumber = courseGroupData.data.data.length
-        ? courseGroupData.data.data[courseGroupData.data.data.length - 1]
-            .batch + 1
-        : 1;
+    if (courseBatchData?.data) {
+      const nextBatchNumber =
+        courseBatchData.data.reduce(
+          (max, group) => Math.max(max, group.batch),
+          0,
+        ) + 1;
       setValue('batch', nextBatchNumber);
     }
-  }, [courseGroupData, setValue]);
+  }, [courseBatchData, setValue]);
 
   return (
     <>
@@ -123,7 +127,13 @@ const BatchInformation = () => {
         <div className="overflow-x-auto">
           {isLoading ? (
             <p className="text-center py-4">กำลังโหลดข้อมูล...</p>
-          ) : formattedCourseGroupData?.length ? (
+          ) : queryCourseBatchDataError ? (
+            <p className="text-center py-4">
+              {queryCourseBatchDataError instanceof Error
+                ? queryCourseBatchDataError.message
+                : 'เกิดข้อผิดพลาดในการดึงข้อมูลรุ่นหลักสูตรจากระบบ'}
+            </p>
+          ) : formattedCourseBatchData?.length ? (
             <table className="w-full min-w-max table-auto text-left font-notoLoopThaiRegular">
               <thead>
                 <tr className="bg-gray-50">
@@ -134,7 +144,7 @@ const BatchInformation = () => {
                 </tr>
               </thead>
               <tbody>
-                {formattedCourseGroupData.map((group) => (
+                {formattedCourseBatchData.map((group) => (
                   <tr key={group.id} className="border-b border-gray-200">
                     <td className="p-4">{group.batch}</td>
                     <td className="p-4">{group.max_students}</td>

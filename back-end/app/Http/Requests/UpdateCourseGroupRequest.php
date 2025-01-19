@@ -22,9 +22,21 @@ class UpdateCourseGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'max_students' => 'required|integer|min:1',
+            'max_students' => [
+                'required',
+                'integer',
+                'min:1',
+                function ($attribute, $value, $fail) {
+                    $courseGroup = \App\Models\CourseGroup::findOrFail($this->id);
+                    $enrollmentsCount = $courseGroup->enrollments->count();
+                    if ($enrollmentsCount > $value) {
+                        $fail("ไม่สามารถกำหนดจำนวนรับนักเรียนน้อยกว่าจำนวนนักเรียนที่ลงทะเบียนอยู่ได้ (ปัจจุบันมีนักเรียน {$enrollmentsCount} คน)");
+                    }
+                }
+            ],
             'course_id' => 'required|exists:courses,id',
             'batch' => [
+                'min:1',
                 'required',
                 'integer',
                 Rule::unique('course_groups')
@@ -39,7 +51,9 @@ class UpdateCourseGroupRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'max_students.min' => 'จำนวนนักเรียนที่รับต้องมากกว่าหรือเท่ากับ 1 คน',
             'batch.unique' => 'มีรุ่นหลักสูตรนี้ในระบบแล้ว โปรดระบุรุ่นหลักสูตรไม่ให้ซ้ำกัน',
+            'batch.min' => 'รุ่นหลักสูตรต้องมากกว่าหรือเท่ากับ 1',
         ];
     }
 }
