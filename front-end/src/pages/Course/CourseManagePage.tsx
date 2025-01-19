@@ -22,8 +22,9 @@ import DeleteCourse from './CourseManageForm/DeleteCourse';
 const CourseManagePage = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [courseCategoryId, setCourseCategoryId] = useState<string>('');
-  const [courseBillCategoryId, setCourseBillCategoryId] = useState<string>('');
+  const [courseCategoryId, setCourseCategoryId] = useState<string>('all');
+  const [courseBillCategoryId, setCourseBillCategoryId] =
+    useState<string>('all');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [page, setPage] = useState<number>(1);
   const [isEditModal, setIsEditModal] = useState<boolean>(false);
@@ -119,17 +120,21 @@ const CourseManagePage = () => {
 
   const paginationData = apiResponse?.data;
 
-  const courseCategoryOptions =
-    courseCategoryData?.data?.map((item) => ({
+  const courseCategoryOptions = [
+    { label: 'ทั้งหมด', value: 'all' },
+    ...(courseCategoryData?.data?.map((item) => ({
       label: item.category_name,
       value: item.id,
-    })) || [];
+    })) || []),
+  ];
 
-  const courseBillCategoryOptions =
-    courseBillCategoryData?.data?.map((item) => ({
+  const courseBillCategoryOptions = [
+    { label: 'ทั้งหมด', value: 'all' },
+    ...(courseBillCategoryData?.data?.map((item) => ({
       label: item.category_bill_name,
       value: item.id,
-    })) || [];
+    })) || []),
+  ];
 
   if (isLoading && !hasLoadedOnce)
     return (

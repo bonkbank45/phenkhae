@@ -73,6 +73,7 @@ const CourseForm = ({
               label="ไอดี"
               type="number"
               placeholder="ไอดี"
+              required={true}
               includeRegister={() =>
                 register('id', {
                   valueAsNumber: true,
@@ -85,6 +86,7 @@ const CourseForm = ({
             name="course_name"
             label="ชื่อหลักสูตร"
             placeholder="ชื่อหลักสูตร"
+            required={true}
             includeRegister={register}
             error={errors.course_name?.message}
           />
@@ -93,6 +95,7 @@ const CourseForm = ({
             label="รายละเอียดหลักสูตร"
             placeholder="รายละเอียดหลักสูตร"
             includeRegister={register}
+            required={true}
             error={errors.course_description?.message}
           />
           <DropdownSearchWithController
@@ -101,6 +104,7 @@ const CourseForm = ({
             placeholder="ประเภทหลักสูตร"
             options={formOptions.courseCategories || []}
             control={control}
+            required={true}
             error={errors.course_category_id?.message}
           />
           <DropdownSearchWithController
@@ -109,6 +113,7 @@ const CourseForm = ({
             placeholder="ประเภทบิล"
             options={formOptions.courseBillCategories || []}
             control={control}
+            required={true}
             error={errors.course_category_bill_id?.message}
           />
           <Button

@@ -10,7 +10,7 @@ use App\Models\CourseGroup;
 use App\Http\Requests\StoreCourseGroupRequest;
 use App\Http\Requests\UpdateCourseGroupRequest;
 use App\Services\EnrollmentService;
-
+use Illuminate\Http\Request;
 class CourseGroupController extends Controller
 {
     use JsonResponseTrait;
@@ -25,6 +25,8 @@ class CourseGroupController extends Controller
      */
     public function index(): JsonResponse
     {
+        // $coures_groups = CourseGroup::all();
+        // return $this->successResponse($coures_groups, 'Course groups fetched successfully', 200);
         $course_groups = CourseGroup::with([
             'course',
             'course.course_category' => function ($query) {
@@ -32,8 +34,31 @@ class CourseGroupController extends Controller
             },
             'course.course_category_bill' => function ($query) {
                 $query->select('id', 'category_bill_name');
-            }
-        ])->get();
+            },
+            'course.latest_course_price',
+        ])
+            ->paginate(10);
+        return $this->successResponse($course_groups, 'Course groups fetched successfully', 200);
+    }
+
+    public function table(Request $request)
+    {
+        $course_groups = CourseGroup::with([
+            'course',
+            'course.course_category' => function ($query) {
+                $query->select('id', 'category_name');
+            },
+            'course.course_category_bill' => function ($query) {
+                $query->select('id', 'category_bill_name');
+            },
+            'course.latest_course_price',
+        ])
+            ->withCount('enrollments as students_enrolled')
+            ->orderBy('date_start', 'desc')
+            ->search($request->search)
+            ->filterByStatus($request->status)
+            ->filterByCourse($request->course_id)
+            ->paginate(9);
 
         return $this->successResponse($course_groups, 'Course groups fetched successfully', 200);
     }

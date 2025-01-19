@@ -18,8 +18,11 @@ return new class extends Migration {
             $table->dateTime("date_start");
             $table->dateTime("date_end")->nullable();
             $table->foreignId("course_price_id")->constrained('course_prices', 'id');
-            $table->primary(["course_group_id", "student_id"]);
             $table->timestamps();
+
+            $table->primary(["course_group_id", "student_id"]);
+            $table->foreign("course_group_id")->references("id")->on("course_groups")->onDelete("cascade");
+            $table->foreign("student_id")->references("id")->on("students")->onDelete("cascade");
         });
     }
 

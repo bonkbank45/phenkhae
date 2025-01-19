@@ -79,6 +79,7 @@ const PrenameForm = ({
             label="ไอดี"
             type="number"
             placeholder="ไอดี"
+            required={true}
             includeRegister={() =>
               register('id', {
                 valueAsNumber: true,
@@ -91,6 +92,7 @@ const PrenameForm = ({
           name="prename_tha"
           label="คำนำหน้าชื่อภาษาไทย"
           placeholder="นาย"
+          required={true}
           includeRegister={register}
           error={errors.prename_tha?.message}
         />

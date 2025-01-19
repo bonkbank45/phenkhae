@@ -1,38 +1,34 @@
-import flatpickr from 'flatpickr';
-import { useEffect } from 'react';
-interface DatePickerOneProps {
+import { Control, Controller } from 'react-hook-form';
+import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/flatpickr.css';
+import 'flatpickr/dist/themes/material_green.css';
+import { Thai } from 'flatpickr/dist/l10n/th';
+
+interface DatePickerWithControllerProps {
   label: string;
   name: string;
   placeholder: string;
-  includeRegister: any;
-  error: string;
+  control: Control<any>;
+  error?: string;
   required?: boolean;
   value?: string;
 }
 
-const DatePickerOne: React.FC<DatePickerOneProps> = ({
+const DatePickerWithController: React.FC<DatePickerWithControllerProps> = ({
   label = '',
   name = '',
   placeholder = '',
-  includeRegister,
+  control,
   error = '',
   required = false,
   value = '',
 }) => {
-  useEffect(() => {
-    // Init flatpickr
-    flatpickr('.form-datepicker', {
-      mode: 'single',
-      static: true,
-      monthSelectorType: 'static',
-      dateFormat: 'd/m/Y',
-      defaultDate: value || undefined,
-      prevArrow:
-        '<svg className="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M5.4 10.8l1.4-1.4-4-4 4-4L5.4 0 0 5.4z" /></svg>',
-      nextArrow:
-        '<svg className="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M1.4 10.8L0 9.4l4-4-4-4L1.4 0l5.4 5.4z" /></svg>',
-    });
-  }, []);
+  const formatDateToThai = (dateString: string) => {
+    if (!dateString) return '';
+    const [date] = dateString.split(' ');
+    const [year, month, day] = date.split('-');
+    return `${day}/${month}/${year}`;
+  };
 
   return (
     <div className="mb-6 md:mb-0">
@@ -41,21 +37,39 @@ const DatePickerOne: React.FC<DatePickerOneProps> = ({
         {required && <span className="text-red-500"> *</span>}
       </label>
       <div className="relative">
-        <input
-          className={`form-datepicker w-full rounded-lg border bg-transparent py-2 pl-4 pr-10 bg-white text-black outline-none focus-visible:shadow-none dark:bg-form-input dark:text-white font-notoLoopThaiRegular ${
-            error ? 'border-red-500' : 'border-stroke'
-          }`}
-          style={{
-            appearance: 'none',
-            WebkitAppearance: 'none',
-            MozAppearance: 'none',
-          }}
-          placeholder={placeholder}
+        <Controller
           name={name}
-          {...(includeRegister && includeRegister(name))}
-          data-class="flatpickr-right"
+          control={control}
+          defaultValue={value ? formatDateToThai(value) : ''}
+          render={({ field: { onChange, value } }) => (
+            <Flatpickr
+              options={{
+                dateFormat: 'd/m/Y',
+                locale: Thai,
+                allowInput: true,
+                defaultDate: value ? value : undefined,
+              }}
+              value={value}
+              onChange={([date]) => {
+                // แปลง Date เป็น string format DD/MM/YYYY
+                if (date) {
+                  const day = date.getDate().toString().padStart(2, '0');
+                  const month = (date.getMonth() + 1)
+                    .toString()
+                    .padStart(2, '0');
+                  const year = date.getFullYear();
+                  onChange(`${day}/${month}/${year}`);
+                } else {
+                  onChange('');
+                }
+              }}
+              className={`w-full rounded-lg border bg-transparent py-2 pl-4 pr-10 bg-white text-black outline-none focus-visible:shadow-none dark:bg-form-input dark:text-white font-notoLoopThaiRegular ${
+                error ? 'border-red-500' : 'border-stroke'
+              }`}
+              placeholder={placeholder}
+            />
+          )}
         />
-
         <div className="pointer-events-none absolute inset-0 left-auto right-5 flex items-center">
           <svg
             width="18"
@@ -76,4 +90,4 @@ const DatePickerOne: React.FC<DatePickerOneProps> = ({
   );
 };
 
-export default DatePickerOne;
+export default DatePickerWithController;

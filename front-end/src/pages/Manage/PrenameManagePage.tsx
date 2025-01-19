@@ -15,6 +15,7 @@ import Search from '../../components/Search/Search';
 import Filter from '../../components/Filter/Filter';
 import useDebounce from '../../hooks/useDebounce';
 import PlusCircle from '../../common/PlusCircle';
+import { filterOptions } from '../../constants/filterOptions';
 
 interface Prename {
   id: number;
@@ -28,7 +29,7 @@ interface Prename {
 const Prename = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [showStatus, setShowStatus] = useState('');
+  const [showStatus, setShowStatus] = useState('all');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [page, setPage] = useState(1);
   const [isEditModal, setIsEditModal] = useState(false);
@@ -133,11 +134,6 @@ const Prename = () => {
     },
   ];
 
-  const statusOptions = [
-    { label: 'แสดง', value: 1 },
-    { label: 'ไม่แสดง', value: 0 },
-  ];
-
   if (isLoading && !hasLoadedOnce)
     return (
       <div className="flex h-screen items-center justify-center">
@@ -158,8 +154,9 @@ const Prename = () => {
         <Filter
           value={showStatus}
           onChange={handleStatusFilter}
-          options={statusOptions}
+          options={filterOptions.statusOptions}
           placeholder="สถานะทั้งหมด"
+          showIcon={true}
         />
         <Button
           variant="gradient"

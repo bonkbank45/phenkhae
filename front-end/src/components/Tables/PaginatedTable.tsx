@@ -65,7 +65,10 @@ const PaginatedTable = <Type extends object>({
                 </tr>
               ) : (
                 data.data.map((item, rowIndex) => (
-                  <tr key={rowIndex}>
+                  <tr
+                    key={rowIndex}
+                    className="hover:bg-gray-100 dark:hover:bg-meta-4 transition-colors duration-200"
+                  >
                     {columns.map((column, colIndex) => (
                       <td
                         key={colIndex}
