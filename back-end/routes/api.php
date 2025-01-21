@@ -115,6 +115,7 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/table', [StudentController::class, 'table']);
         Route::post('/', [StudentController::class, 'store']);
         Route::get('/{student}', [StudentController::class, 'show']);
+        Route::get('/{student}/application-form', [StudentController::class, 'generateApplicationForm']);
         Route::put('/{student}', [StudentController::class, 'update']);
         Route::delete('/{student}', [StudentController::class, 'destroy']);
     });
