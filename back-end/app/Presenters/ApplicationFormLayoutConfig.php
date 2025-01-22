@@ -6,7 +6,7 @@ class ApplicationFormLayoutConfig
 {
     public const CHAR_WIDTH = [
         'THAI' => 4,
-        'ENG' => 4.5
+        'ENG' => 5
     ];
 
     public const POSITION = [
@@ -27,7 +27,8 @@ class ApplicationFormLayoutConfig
         'FIFTEENTH_LINE_Y' => 666,
         'SIXTEENTH_LINE_Y' => 693,
         'SEVENTEENTH_LINE_Y' => 720,
-        'EIGHTEENTH_LINE_Y' => 898
+        'EIGHTEENTH_LINE_Y' => 898,
+        'NINETEENTH_LINE_Y' => 925
     ];
 
     public const NUMBER = [
@@ -37,14 +38,15 @@ class ApplicationFormLayoutConfig
         'ADDRESS_NUMBER_X' => 200,
         'ADDRESS_MOO_X' => 278,
         'ADDRESS_ZIP_CODE_X' => 645,
-        'PHONE_NUMBER_X' => 180
+        'PHONE_NUMBER_X' => 180,
+        'DATE_REGISTER_FROM_FORM_X' => 530
     ];
 
     public const THAI_TEXT = [
         'PRENAME_X' => 230,
         'LASTNAME_X' => 500,
-        'SPACE_AFTER_PRENAME' => 20,
-        'SPACE_AFTER_FIRSTNAME' => 24,
+        'SPACE_AFTER_PRENAME' => 25,
+        'SPACE_AFTER_FIRSTNAME' => 10,
         'BIRTH_PROVINCE_X' => 260,
         'FATHER_NAME_X' => 510,
         'MARITAL_STATUS_X' => 260,
@@ -60,14 +62,16 @@ class ApplicationFormLayoutConfig
         'SURGERY_HISTORY_X' => 440,
         'LEARN_MASSAGE_DESCRIPTION_X' => 373,
         'WORK_EXPERIENCE_DESCRIPTION_X' => 360,
-        'SIGNATURE_PRENAME_X' => 490
+        'SIGNATURE_PRENAME_X' => 490,
+        'SIGNATURE_FIRSTNAME_X' => 517,
+        'SIGNATURE_LASTNAME_X' => 552
     ];
 
     public const ENG_TEXT = [
         'PRENAME_X' => 270,
         'FIRSTNAME_X' => 500,
         'LASTNAME_X' => 500,
-        'SPACE_AFTER_PRENAME' => 20,
+        'SPACE_AFTER_PRENAME' => 15,
         'SPACE_AFTER_FIRSTNAME' => 15,
         'EMAIL_X' => 320
     ];

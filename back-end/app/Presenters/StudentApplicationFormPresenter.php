@@ -21,10 +21,12 @@ class StudentApplicationFormPresenter
 
         // Prename Thai
         $prenameThaiText = $this->getPrenameThaiText();
-        $html .= $this->createPositionedDiv(
+        $prenameThaiShow = in_array($prenameThaiText, ['นาย', 'นาง', 'นางสาว']) ?
+            '' : $prenameThaiText;
+        $html .= $this->createPositionedDivAddSpace(
             FormLayoutConfig::POSITION['FIRST_LINE_Y'],
             FormLayoutConfig::THAI_TEXT['PRENAME_X'],
-            $prenameThaiText
+            $prenameThaiShow
         );
 
         // First name Thai
@@ -44,10 +46,12 @@ class StudentApplicationFormPresenter
 
         // Prename English
         $prenameEngText = $this->getPrenameEngText();
+        $prenameEngShow = in_array($prenameEngText, ['Mr.', 'Mrs.', 'Miss']) ?
+            '' : $prenameEngText;
         $html .= $this->createPositionedDivAddSpace(
             FormLayoutConfig::POSITION['SECOND_LINE_Y'],
             FormLayoutConfig::ENG_TEXT['PRENAME_X'],
-            $prenameEngText
+            $prenameEngShow
         );
 
         // First name English
@@ -312,31 +316,64 @@ class StudentApplicationFormPresenter
             }
         }
 
+        $isLongPrename = $this->getLengthWithoutExcludedChars($prenameThaiText, true) > 4;
         // Add signature
-        $html .= $this->createPositionedDiv(
+        $html .= $this->createPositionedDivAddSpace(
             FormLayoutConfig::POSITION['EIGHTEENTH_LINE_Y'],
             FormLayoutConfig::THAI_TEXT['SIGNATURE_PRENAME_X'],
-            ($this->getLengthWithoutExcludedChars($prenameThaiText, true) > 8) ? '' : $prenameThaiText
+            $isLongPrename ? '' : $prenameThaiText
         );
 
         // Add signature first name
-        $isLongPrename = $this->getLengthWithoutExcludedChars($prenameThaiText, true) > 4;
+        // Align with prename
+        $isLongFirstName = $this->getLengthWithoutExcludedChars($this->student->firstname_tha, true) >= 5;
+        $isLongLastName = $this->getLengthWithoutExcludedChars($this->student->lastname_tha, true) >= 7;
 
-        $startFirstNameXpos = $isLongPrename ? FormLayoutConfig::THAI_TEXT['SIGNATURE_PRENAME_X'] :
-            $this->calculateFirstNameStartX($prenameThaiText, 'THAI', 'SIGNATURE_PRENAME_X');
-        $html .= $this->createPositionedDiv(
+        if ($isLongPrename) {
+            $startFirstNameXpos = $isLongFirstName ?
+                FormLayoutConfig::THAI_TEXT['SIGNATURE_PRENAME_X'] :
+                FormLayoutConfig::THAI_TEXT['SIGNATURE_FIRSTNAME_X'];
+        } else {
+            $startFirstNameXpos = $this->calculateFirstNameStartX($prenameThaiText, 'THAI', 'SIGNATURE_PRENAME_X');
+        }
+
+        $html .= $this->createPositionedDivAddSpace(
             FormLayoutConfig::POSITION['EIGHTEENTH_LINE_Y'],
             $startFirstNameXpos,
             $this->student->firstname_tha
         );
 
         // Add signature last name
-        $startLastNameXpos = $isLongPrename ? $this->calculateFirstNameStartX('', 'THAI', 'SIGNATURE_PRENAME_X') :
-            $this->calculateLastNameStartX($prenameThaiText, 'THAI', 'SIGNATURE_PRENAME_X');
-        $html .= $this->createPositionedDiv(
+        // Align with first name
+        if (!$isLongFirstName && $isLongLastName) { // นาง  กนก ลิ้มไพบูลย์
+            $startLastNameXpos = FormLayoutConfig::THAI_TEXT['SIGNATURE_LASTNAME_X'];
+        } else if ($isLongPrename) { // ธนภัทร ลิ้มไพบูลย์
+            $startLastNameXpos = $this->calculateFirstNameStartX($this->student->firstname_tha, 'THAI', 'SIGNATURE_PRENAME_X');
+            $startLastNameXpos += 10; // Offset to make it align with the first name
+        } else { // มีคำนำหน้า แต่ชื่อยาว
+            if (
+                $this->getLengthWithoutExcludedChars($this->student->lastname_tha, true) +
+                $this->getLengthWithoutExcludedChars($this->student->firstname_tha, true) > 15
+            ) { // พ.ต.อ. ธนภัทร ลิ้มไพบูลย์ยาว
+                $startLastNameXpos = $this->calculateLastNameStartX($prenameThaiText, 'THAI', 'SIGNATURE_FIRSTNAME_X');
+                $startLastNameXpos -= 10;
+            } else { // พ.ต.อ. สั้น สั้น
+                $startLastNameXpos = $this->calculateLastNameStartX($prenameThaiText, 'THAI', 'SIGNATURE_FIRSTNAME_X');
+            }
+
+        }
+
+        $html .= $this->createPositionedDivAddSpace(
             FormLayoutConfig::POSITION['EIGHTEENTH_LINE_Y'],
             $startLastNameXpos,
             $this->student->lastname_tha
+        );
+
+        // Add date register from form
+        $html .= $this->createPositionedDivAddSpace(
+            FormLayoutConfig::POSITION['NINETEENTH_LINE_Y'],
+            FormLayoutConfig::NUMBER['DATE_REGISTER_FROM_FORM_X'],
+            Carbon::parse($this->student->date_register_from_form)->format('d/m/Y')
         );
 
         return $html;
@@ -407,7 +444,8 @@ class StudentApplicationFormPresenter
 
     private function getLengthWithoutExcludedChars(string $text, bool $isThai): int
     {
-        $text = str_replace('.', '', $text);
+        $excludeChars = ['.', '(', ')', '-'];
+        $text = str_replace($excludeChars, '', $text);
         if ($isThai) {
             $excludeThai = ['่', '้', '๊', '๋', 'ะ', 'ั', '้', 'ิ', 'ี', 'ื', 'ุ', 'ู', '์'];
             $text = str_replace($excludeThai, '', $text);
