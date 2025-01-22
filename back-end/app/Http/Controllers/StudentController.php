@@ -11,7 +11,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use Illuminate\Support\Facades\Log;
-
+use App\PDF\Generators\Templates\ApplicationFormGenerator;
+use Mpdf\Mpdf;
+use Illuminate\Support\Facades\View;
 class StudentController extends Controller
 {
     use JsonResponseTrait;
@@ -77,7 +79,26 @@ class StudentController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            $student = Student::findOrFail($id);
+            $student = Student::with([
+                'prename',
+                'birth_province',
+                'subdistrict' => function ($query) {
+                    $query->select(['id', 'name_in_thai', 'name_in_english', 'district_id', 'zip_code']);
+                },
+                'subdistrict.districts' => function ($query) {
+                    $query->select(['id', 'name_in_thai', 'name_in_english', 'province_id']);
+                },
+                'subdistrict.districts.provinces' => function ($query) {
+                    $query->select(['id', 'name_in_thai', 'name_in_english']);
+                },
+                'occupation',
+                'edu_qual' => function ($query) {
+                    $query->select(['id', 'edu_qual_name', 'edu_qual_eng']);
+                },
+                'medical_condition',
+                'enrollments',
+                'enrollments.course_group'
+            ])->findOrFail($id);
             return $this->successResponse($student, 'Student fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse($e->getMessage(), 404);
@@ -124,5 +145,20 @@ class StudentController extends Controller
             DB::rollBack();
             return $this->errorResponse($e->getMessage(), 404);
         }
+    }
+
+    public function generateApplicationForm(int $id, ApplicationFormGenerator $pdfGenerator)
+    {
+        try {
+            $student = Student::findOrFail($id);
+            $pdfGenerator->generate($student);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse($e->getMessage(), 404);
+        }
+
+        // $mpdf = new Mpdf(config('pdf'));
+        // $html = View::make('pdfs.application-form')->render();
+        // $mpdf->WriteHTML($html);
+        // $mpdf->Output('application-form.pdf', 'D');
     }
 }

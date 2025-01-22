@@ -48,17 +48,18 @@ class StudentFactory extends Factory
             'email' => $this->faker->email,
             'occupation_id' => Occupation::inRandomOrder()->first()->id,
             'medical_condition_id' => MedicalCondition::inRandomOrder()->first()->id,
-            'surgery_history' => $this->faker->text,
+            'surgery_history' => $this->faker->realText(60),
             'edu_qual_id' => EducationQual::inRandomOrder()->first()->id,
-            'edu_ins' => $this->faker->text,
+            'edu_ins' => $this->faker->realText(60),
             'learn_massage' => $this->faker->numberBetween(0, 1),
             'learn_massage_description' => function (array $attributes) {
-                return $attributes['learn_massage'] == 1 ? $this->faker->text : null;
+                return $attributes['learn_massage'] == 1 ? $this->faker->realText(70) : null;
             },
             'work_massage' => $this->faker->numberBetween(0, 1),
             'work_massage_description' => function (array $attributes) {
-                return $attributes['work_massage'] == 1 ? $this->faker->text : null;
+                return $attributes['work_massage'] == 1 ? $this->faker->realText(70) : null;
             },
+            'date_register_from_form' => $this->faker->date('Y-m-d', '-5 days'),
         ];
     }
 }

@@ -118,14 +118,10 @@ class Student extends Model
     {
         return $this->belongsTo(MedicalCondition::class, 'medical_condition_id');
     }
-    // public function edu_qual(): BelongsTo
-    // {
-    //     return $this->belongsTo(EduQual::class);
-    // }
-    // public function edu_ins(): BelongsTo
-    // {
-    //     return $this->belongsTo(University::class);
-    // }
+    public function edu_qual(): BelongsTo
+    {
+        return $this->belongsTo(EducationQual::class);
+    }
     public function prename(): BelongsTo
     {
         return $this->belongsTo(Prename::class, 'prename_id');

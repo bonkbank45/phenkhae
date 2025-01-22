@@ -42,6 +42,7 @@ return new class extends Migration {
             $table->tinyInteger('work_massage');
             $table->text('work_massage_description')->nullable();
             $table->text('profile_image')->nullable();
+            $table->date('date_register_from_form');
 
             $table->foreign('edu_qual_id')->references('id')->on('education_quals')->onDelete('cascade');
             $table->foreign('occupation_id')->references('id')->on('occupations')->onDelete('cascade');

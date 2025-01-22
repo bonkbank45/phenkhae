@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import Logo from '../../images/logo/logo.svg';
+import logoPhenkhae from '../../images/logo/logo-phenkhae.png';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -64,9 +65,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       }`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
-      <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
+      <div className="flex items-center justify-between lg:justify-center gap-2 px-6 py-5.5 lg:py-6.5">
         <NavLink to="/">
-          <img src={Logo} alt="Logo" />
+          <img src={logoPhenkhae} alt="Logo" className="w-40 h-40" />
         </NavLink>
 
         <button
@@ -95,7 +96,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
         {/* <!-- Sidebar Menu --> */}
-        <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
+        <nav className="mt-3 py-4 px-4 lg:px-6">
           {/* <!-- Menu Group --> */}
           <div>
             <h3 className="font-notoLoopThaiRegular mb-4 ml-4 text-sm font-semibold text-bodydark2">
