@@ -32,25 +32,31 @@ const AddCourse = () => {
   };
 
   const handleSubmit = (data: Course) => {
-    addCourse(data, {
-      onSuccess: () => {
-        toast.success('เพิ่มหลักสูตรสำเร็จ');
-      },
-      onError: (error: ErrorResponse) => {
-        console.log('Error', error);
-        if (
-          error.response.data.message.includes('Duplicate entry') ||
-          error.response.data.message.includes('Integrity constraint violation')
-        ) {
-          toast.error('ไม่สามารถเพิ่มข้อมูลได้ เนื่องจากไอดีรหัสซ้ำในระบบ');
-        } else {
-          toast.error(
-            Object.entries(error.response.data.errors)
-              .map(([key, value]) => `${key}: ${value.join(', ')}`)
-              .join(', ') || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง',
-          );
-        }
-      },
+    return new Promise((resolve, reject) => {
+      addCourse(data, {
+        onSuccess: () => {
+          toast.success('เพิ่มหลักสูตรสำเร็จ');
+          resolve(true);
+        },
+        onError: (error: ErrorResponse) => {
+          console.log('Error', error);
+          if (
+            error.response.data.message.includes('Duplicate entry') ||
+            error.response.data.message.includes(
+              'Integrity constraint violation',
+            )
+          ) {
+            toast.error('ไม่สามารถเพิ่มข้อมูลได้ เนื่องจากไอดีรหัสซ้ำในระบบ');
+          } else {
+            toast.error(
+              Object.entries(error.response.data.errors)
+                .map(([key, value]) => `${key}: ${value.join(', ')}`)
+                .join(', ') || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง',
+            );
+            reject(error);
+          }
+        },
+      });
     });
   };
 

@@ -95,6 +95,19 @@ export const useAllCourseBatchDataByCourseId = (courseId: number) => {
   });
 };
 
+export const useAvailableCourseBatchData = () => {
+  return useQuery({
+    queryKey: ['available_course_batch_data'],
+    queryFn: async () => {
+      const response = await api.get('/course_group/available');
+      if (response.data.status === 'error') {
+        throw new Error(response.data.message);
+      }
+      return response.data;
+    },
+  });
+};
+
 export const useAddCourseBatchData = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -106,6 +119,9 @@ export const useAddCourseBatchData = () => {
     onSuccess: (response) => {
       queryClient.invalidateQueries({
         queryKey: ['course_batch_data'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['available_course_batch_data'],
       });
       console.log('Success', response.data);
     },
@@ -127,6 +143,9 @@ export const useEditCourseBatchData = () => {
       queryClient.invalidateQueries({
         queryKey: ['course_batch_data'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['available_course_batch_data'],
+      });
       console.log('Success', response.data);
     },
     onError: (error: Error) => {
@@ -145,6 +164,9 @@ export const useDeleteCourseBatchData = () => {
     onSuccess: (response) => {
       queryClient.invalidateQueries({
         queryKey: ['course_batch_data'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['available_course_batch_data'],
       });
       console.log('Success', response.data);
     },

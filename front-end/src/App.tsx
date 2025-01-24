@@ -35,7 +35,10 @@ function App() {
   const { isAuthenticated, authLoading } = useAuth();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    document.getElementById('scroll-target')?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   }, [pathname]);
 
   return authLoading ? (

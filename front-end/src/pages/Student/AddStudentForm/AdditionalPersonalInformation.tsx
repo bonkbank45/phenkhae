@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import DropdownSearchWithController from '../../../components/Forms/DropdownSearchWithController';
 import CheckboxFour from '../../../components/Checkboxes/CheckboxFour';
 import TextField from '../../../components/Forms/TextField';
@@ -22,6 +22,7 @@ const AdditionalPersonalInformation = () => {
     register,
     control,
     setValue,
+    watch,
     formState: { errors },
   } = useFormContext();
 
@@ -66,19 +67,40 @@ const AdditionalPersonalInformation = () => {
     SelectOptionMedicalCondition[]
   >([]);
 
+  // Watch the form values
+  const hasMedicalCondition = watch('has_medical_condition');
+  const hasSurgeryHistory = watch('has_surgery_history');
+
   useEffect(() => {
-    setMedicalConditionCheckBox('ไม่มี');
-    setSurgeryHistoryCheckBox('ไม่เคยผ่าตัด');
-    setValue('has_medical_condition', 'ไม่มี');
-    setValue('has_surgery_history', 'ไม่เคยผ่าตัด');
-    setValue('medical_condition', null);
-    setValue('surgery_history', null);
+    document.getElementById('scroll-target')?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
+
+  useEffect(() => {
+    // Only set default values if they don't exist
+    if (!hasMedicalCondition) {
+      setMedicalConditionCheckBox('ไม่มี');
+      setValue('has_medical_condition', 'ไม่มี');
+      setValue('medical_condition', null);
+    } else {
+      setMedicalConditionCheckBox(hasMedicalCondition);
+    }
+
+    if (!hasSurgeryHistory) {
+      setSurgeryHistoryCheckBox('ไม่เคยผ่าตัด');
+      setValue('has_surgery_history', 'ไม่เคยผ่าตัด');
+      setValue('surgery_history', null);
+    } else {
+      setSurgeryHistoryCheckBox(hasSurgeryHistory);
+    }
   }, []);
 
   return (
     <>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
           ประวัติส่วนตัวเพิ่มเติม
         </h1>
         <div className="mt-4 md:grid grid-cols-2 gap-4">
@@ -148,7 +170,7 @@ const AdditionalPersonalInformation = () => {
         </div>
       </div>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
           โรคประจำตัว
         </h1>
         <CheckboxFour
@@ -186,7 +208,7 @@ const AdditionalPersonalInformation = () => {
         </div>
       </div>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
           การผ่าตัด
         </h1>
         <CheckboxFour
@@ -213,6 +235,7 @@ const AdditionalPersonalInformation = () => {
           label="ระบุประวัติการผ่าตัด"
           isDisabled={surgeryHistoryCheckBox === 'ไม่เคยผ่าตัด'}
           placeholder="ระบุประวัติการผ่าตัด (ถ้ามี)"
+          maxLength={60}
           className="ml-8 mt-4"
           required={true}
           includeRegister={register}

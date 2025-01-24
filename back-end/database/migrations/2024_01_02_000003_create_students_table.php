@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('lastname_tha');
             $table->string('firstname_eng');
             $table->string('lastname_eng');
-            $table->string('citizenid_card');
+            $table->string('citizenid_card')->unique();
             $table->date('birthdate');
             $table->integer('birth_province_id');
             $table->string('father_fname');
@@ -30,8 +30,9 @@ return new class extends Migration {
             $table->string('address_soi')->nullable();
             $table->string('address_road')->nullable();
             $table->integer('address_subdistrict_id');
+            $table->string('address_zip_code');
             $table->string('phonenumber');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('occupation_id')->constrained('occupations', 'id');
             $table->foreignId('medical_condition_id')->nullable()->constrained('medical_conditions', 'id');
             $table->string('surgery_history')->nullable();

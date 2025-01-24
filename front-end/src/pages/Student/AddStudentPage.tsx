@@ -15,9 +15,10 @@ import { massageExperienceSchema } from '../../schema/addStudent/massageExperien
 import { trainingCourseSchema } from '../../schema/addStudent/trainingCourseSchema';
 import { uploadImageSchema } from '../../schema/addStudent/uploadImageSchema';
 import { toast } from 'react-toastify';
+import { ErrorResponse } from '../../types/error_response';
 
 const AddStudent = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState<number>(0);
   const steps = [
     'ข้อมูลส่วนตัว',
     'ข้อมูลส่วนตัวเพิ่มเติม',
@@ -45,7 +46,7 @@ const AddStudent = () => {
     isPending: isAddStudentDataPending,
     isError: isAddStudentDataError,
     error: addStudentDataError,
-  } = useAddStudentData(methods.getValues() as AddStudentData);
+  } = useAddStudentData();
 
   const handleNext = async () => {
     const isValid = await methods.trigger();
@@ -62,8 +63,24 @@ const AddStudent = () => {
             methods.reset();
             setActiveStep(0);
           },
-          onError: (error) => {
-            toast.error(`เพิ่มข้อมูลนักเรียนไม่สำเร็จ: ${error.message}`);
+          onError: (error: ErrorResponse) => {
+            let errorMessages = '';
+            if (error.response.data.errors) {
+              console.error(error);
+              errorMessages = Object.entries(error.response.data.errors)
+                .map(([_, value]) => value[0])
+                .join(', ');
+            } else {
+              console.error(error);
+              errorMessages = error.response.data.message;
+            }
+            Object.entries(error.response.data.errors).forEach(([key, value]) =>
+              methods.setError(key, {
+                type: 'manual',
+                message: value[0],
+              }),
+            );
+            toast.error(`เพิ่มข้อมูลนักเรียนไม่สำเร็จ: ${errorMessages}`);
           },
         });
       }

@@ -10,7 +10,7 @@ const AttachFile = ({ label, onChange }: AttachFileProps) => {
   return (
     <div className="flex flex-col gap-5.5 p-6.5">
       <div>
-        <label className="mb-3 block text-black dark:text-white font-notoRegular">
+        <label className="mb-3 block text-gray-500 dark:text-white font-notoRegular">
           {label}
         </label>
         <input

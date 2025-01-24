@@ -46,7 +46,9 @@ class ApplicationFormGenerator implements PDFGenInterface
     private function setupPage(): void
     {
         $this->pdf->AddPage();
-        $pagecount = $this->pdf->SetSourceFile(resource_path('views/pdfs/application-form.pdf'));
+        $pagecount = $this->pdf->SetSourceFile(
+            storage_path('app/private/templates/application-form.pdf')
+        );
         $tplId = $this->pdf->ImportPage($pagecount);
         $this->pdf->UseTemplate($tplId);
     }

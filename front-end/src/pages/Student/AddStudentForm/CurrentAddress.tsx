@@ -11,6 +11,13 @@ type subDistrictValue = number;
 type educationQualValue = string;
 
 const CurrentAddress = () => {
+  useEffect(() => {
+    document.getElementById('scroll-target')?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
+
   const {
     watch,
     setValue,
@@ -57,7 +64,7 @@ const CurrentAddress = () => {
   return (
     <>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
           ที่อยู่ปัจจุบัน
         </h1>
         <div className="mt-4 md:grid grid-cols-2 gap-4">
@@ -130,7 +137,7 @@ const CurrentAddress = () => {
         </div>
       </div>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
           วุฒิการศึกษา
         </h1>
         <div className="mt-4 md:grid grid-cols-2 gap-4">

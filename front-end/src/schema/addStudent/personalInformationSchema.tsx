@@ -10,6 +10,9 @@ const englishCharacterPattern = /^[A-Za-z\s]+$/;
 const numericPattern = /^[0-9]+$/;
 
 export const personalInformationSchema = yup.object().shape({
+  date_register_from_form: yup
+    .string()
+    .required('กรุณากรอกวันที่สมัครจากใบสมัครนักเรียน'),
   prename_tha: yup.number().required('กรุณาเลือกคำนำหน้า'),
   firstname_tha: yup
     .string()

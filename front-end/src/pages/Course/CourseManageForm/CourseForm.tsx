@@ -35,6 +35,7 @@ const CourseForm = ({
     handleSubmit,
     setValue,
     control,
+    reset,
     formState: { errors },
   } = useForm<Course>({
     defaultValues: {
@@ -43,8 +44,13 @@ const CourseForm = ({
     resolver: yupResolver(courseFormSchema),
   });
 
-  const handleSubmitForm = (data: Course) => {
-    onSubmit(data);
+  const handleSubmitForm = async (data: Course) => {
+    try {
+      await onSubmit(data);
+      reset(); // จะ reset เมื่อ submit สำเร็จเท่านั้น
+    } catch (error) {
+      // จัดการ error ถ้าจำเป็น
+    }
   };
 
   return (

@@ -1,109 +1,92 @@
-import React, { useState } from 'react';
-import CheckboxOne from '../../../components/Checkboxes/CheckboxOne';
+import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useCourseGroupEnrollmentData } from '../../../hooks/api/useCourseData';
-import Spinner from '../../../common/Spinner';
+import { useAvailableCourseBatchData } from '../../../hooks/api/useCourseBatchData';
 import IconFaceSadTear from '../../../common/FaceSadTear';
-
-interface Course {
-  course_name: string;
-  course_batch: number;
-  max_students: number;
-  students_enrolled: number;
-}
+import { getStatusColor } from '../../../utils/course_group';
+import { getStatusText } from '../../../utils/course_group';
+import { SelectableCourseBatchCard } from '../../../components/SelectableCourseBatchCard';
+import { SelectableCourseBatchCardSkeleton } from '../../../components/SelectableCourseBatchCardSkeleton';
+import { CourseGroup } from '../../../types/course_group';
 
 const CourseTraining = () => {
+  useEffect(() => {
+    document.getElementById('scroll-target')?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
+
   const {
     register,
     control,
     setValue,
+    watch,
     formState: { errors },
   } = useFormContext();
 
-  const { courseGroupEnrollmentData = { data: {} }, isLoading } =
-    useCourseGroupEnrollmentData();
+  const {
+    data: availableCourseBatchData,
+    isLoading: isLoadingAvailableCourseBatchData,
+  } = useAvailableCourseBatchData();
 
-  const [checkedState, setCheckedState] = useState<{ [key: string]: boolean }>(
-    {},
+  const selectedCourseBatchIds = watch('course_batch_id_register');
+  const [checkedState, setCheckedState] = useState<number[]>(
+    selectedCourseBatchIds || [],
   );
-  const handleCheckboxChange = (courseOpeningId: string) => {
-    const newCheckedState = {
-      ...checkedState,
-      [courseOpeningId]: !checkedState[courseOpeningId],
-    };
-    setCheckedState(newCheckedState);
-    setValue(
-      'course_training',
-      Object.keys(newCheckedState).reduce((acc, key) => {
-        if (newCheckedState[key]) {
-          acc[key] = true;
-        }
-        return acc;
-      }, {}),
-    );
-  };
 
-  console.log(checkedState);
+  const handleCheckboxChange = (courseOpeningId: number) => {
+    if (checkedState.includes(courseOpeningId)) {
+      const newCheckedState = checkedState.filter((id) => {
+        return id !== courseOpeningId;
+      });
+      setCheckedState(newCheckedState);
+      setValue('course_batch_id_register', newCheckedState);
+    } else {
+      const newCheckedState = [...checkedState, courseOpeningId];
+      setCheckedState(newCheckedState);
+      setValue('course_batch_id_register', newCheckedState);
+    }
+  };
 
   return (
     <div className="mt-4">
-      <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
+      <h1 className="mt-6 mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
         ลงทะเบียนอบรมหลักสูตร
       </h1>
       <p className="mb-6 font-notoRegular text-sm text-gray-500 dark:text-white">
         <span className="text-red-500">* </span>
         หากยังไม่ต้องการลงทะเบียนอบรมหลักสูตร สามารถละเว้นไว้ได้
       </p>
-      {isLoading ? (
-        <div className="flex justify-center items-center">
-          <Spinner />
+      {isLoadingAvailableCourseBatchData ? (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="h-8 w-48 bg-gray-200 animate-pulse rounded col-span-full mb-4"></div>
+          {[...Array(6)].map((_, index) => (
+            <SelectableCourseBatchCardSkeleton key={index} />
+          ))}
         </div>
-      ) : courseGroupEnrollmentData === null ? (
-        <h2 className="text-2xl text-black font-notoRegular">
-          {Object.entries(courseGroupEnrollmentData?.data || {}).map(
-            ([categoryName, courses]) => (
-              <div key={categoryName}>
-                <div className="mt-6 mb-6">
-                  {categoryName} {'( รุ่นที่เปิดลงทะเบียนในขณะนี้ )'}
-                </div>
-                <div>
-                  {(courses as Course[]).map((course) => (
-                    <div
-                      key={course.course_name + '-' + course.course_batch}
-                      className="text-xl font-notoLoopThaiRegular text-gray-500"
-                    >
-                      <CheckboxOne
-                        name={course.course_name + '-' + course.course_batch}
-                        id={course.course_name + '-' + course.course_batch}
-                        label={
-                          course.course_name +
-                          ' รุ่นที่ ' +
-                          course.course_batch +
-                          ' จำนวนผู้ลงทะเบียนในขณะนี้ [' +
-                          course.students_enrolled +
-                          '/' +
-                          course.max_students +
-                          ']'
-                        }
-                        checked={
-                          checkedState[
-                            course.course_name + '-' + course.course_batch
-                          ] || false
-                        }
-                        className="ml-4"
-                        onChange={() =>
-                          handleCheckboxChange(
-                            course.course_name + '-' + course.course_batch,
-                          )
-                        }
-                      />
-                    </div>
-                  ))}
-                </div>
+      ) : availableCourseBatchData?.data ? (
+        Object.entries(availableCourseBatchData.data).map(
+          ([categoryName, courses]: [string, CourseGroup[]]) => (
+            <div key={categoryName}>
+              <h2 className="mt-6 mb-4 text-xl font-bold font-notoExtraBold">
+                {categoryName}
+              </h2>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {courses.map((batch) => (
+                  <SelectableCourseBatchCard
+                    key={batch.id}
+                    batch={batch}
+                    getStatusColor={getStatusColor}
+                    getStatusText={getStatusText}
+                    isSelected={checkedState.includes(batch.id)}
+                    onSelect={(id) => handleCheckboxChange(id)}
+                    disabled={batch.students_enrolled >= batch.max_students}
+                  />
+                ))}
               </div>
-            ),
-          )}
-        </h2>
+            </div>
+          ),
+        )
       ) : (
         <div className="flex justify-center items-center space-x-4 mt-10 mb-10 bg-white/50 rounded-lg p-4">
           <h2 className="text-2xl text-gray-500 dark:text-white font-notoRegular">

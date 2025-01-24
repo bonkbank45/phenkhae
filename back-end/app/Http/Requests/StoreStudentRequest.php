@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Support\Facades\Log;
 class StoreStudentRequest extends FormRequest
 {
     /**
@@ -27,8 +27,9 @@ class StoreStudentRequest extends FormRequest
             "lastname_tha" => "required|string|max:255",
             "firstname_eng" => "required|string|max:255",
             "lastname_eng" => "required|string|max:255",
-            "citizenid_card" => "required|string|max:255",
+            "citizenid_card" => "required|string|max:255|unique:students,citizenid_card",
             "birthdate" => "required|date",
+            "date_register_from_form" => "required|date",
             "birth_province_id" => "required|exists:provinces,id",
             "father_lname" => "required|string|max:255",
             "mother_fname" => "required|string|max:255",
@@ -38,18 +39,20 @@ class StoreStudentRequest extends FormRequest
             "address_moo" => "nullable|string|max:255",
             "address_road" => "nullable|string|max:255",
             "address_subdistrict_id" => "required|exists:subdistricts,id",
+            "address_zip_code" => "required|string|max:255",
             "phonenumber" => "required|string|max:255",
-            "email" => "required|string|max:255|email",
+            "email" => "required|string|max:255|email|unique:students,email",
             "occupation_id" => "required|exists:occupations,id",
             "medical_condition_id" => "nullable|exists:medical_conditions,id",
-            "surgery_history" => "nullable|string|max:255",
+            "surgery_history" => "nullable|string|max:60",
             "learn_massage" => "required|integer|min:0|max:1",
-            "learn_massage_description" => "nullable|string",
+            "learn_massage_description" => "nullable|string|max:70",
             "work_massage" => "required|integer|min:0|max:1",
-            "work_massage_description" => "nullable|string",
+            "work_massage_description" => "nullable|string|max:70",
             "course_training" => "nullable|array",
             "edu_qual_id" => "required|exists:education_quals,id",
-            "edu_ins" => "nullable|string",
+            "edu_ins" => "nullable|string|max:60",
+            "profile_image" => "nullable|image|mimes:jpeg,png,jpg|max:10240",
         ];
     }
 
@@ -64,13 +67,24 @@ class StoreStudentRequest extends FormRequest
             'occupation_id' => $this->occupation_student,
             'phonenumber' => $this->phone_number,
             'learn_massage' => $this->has_massage_experience_learn === 'ไม่เคยนวด/เรียน' ? 0 : 1,
-            'learn_massage_description' => $this->massage_experience_learn_detail,
+            'learn_massage_description' => $this->learn_massage_description,
             'work_massage' => $this->has_massage_experience_work === 'ไม่เคยทำงานเกี่ยวข้องกับการนวดไทย' ? 0 : 1,
-            'work_massage_description' => $this->massage_experience_work_detail,
+            'work_massage_description' => $this->work_massage_description,
             'medical_condition_id' => $this->has_medical_condition === 'ไม่มี' ? null : $this->medical_condition,
             'surgery_history' => $this->has_surgery_history === 'ไม่เคยผ่าตัด' ? null : $this->surgery_history,
             'edu_qual_id' => $this->edu_qual,
             'birthdate' => \Carbon\Carbon::createFromFormat('d/m/Y', $this->birthdate)->format('Y-m-d'),
+            'date_register_from_form' => \Carbon\Carbon::createFromFormat('d/m/Y', $this->date_register_from_form)->format('Y-m-d'),
         ]);
+    }
+
+    public function messages()
+    {
+        return [
+            'birthdate.date_format' => 'กรุณากรอกวันที่วันเกิดให้อยู่ในรูปแบบ วัน/เดือน/ปี',
+            'date_register_from_form.date_format' => 'กรุณากรอกวันที่สมัครจากใบสมัครนักเรียนให้อยู่ในรูปแบบ วัน/เดือน/ปี',
+            'citizenid_card.unique' => 'รหัสประจำตัวประชาชนนี้มีอยู่ในระบบแล้ว',
+            'email.unique' => 'อีเมลนี้มีอยู่ในระบบแล้ว',
+        ];
     }
 }

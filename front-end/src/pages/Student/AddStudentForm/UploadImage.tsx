@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import IconBxsUserCircle from '../../../common/BxsUserCircle';
 import AttachFile from '../../../components/Forms/AttachFile';
 const UploadImage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const { setValue } = useFormContext();
 
   const handleImageChange = (file: File) => {
     const reader = new FileReader();
@@ -11,6 +13,7 @@ const UploadImage = () => {
     };
     if (file) {
       reader.readAsDataURL(file);
+      setValue('profile_image', file);
     }
   };
 
@@ -34,7 +37,7 @@ const UploadImage = () => {
           <IconBxsUserCircle height="20em" width="20em" />
         )}
         <AttachFile
-          label="เลือกรูปภาพผู้ใช้งาน"
+          label="เลือกรูปภาพผู้ใช้งาน (ต้องเป็นไฟล์รูปภาพ jpeg,png,jpg ขนาดไม่เกิน 10MB)"
           onChange={(file) => handleImageChange(file)}
         />
       </div>

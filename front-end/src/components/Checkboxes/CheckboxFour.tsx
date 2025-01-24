@@ -13,12 +13,7 @@ const CheckboxFour = ({
 }: CheckboxFourProps) => {
   return (
     <div>
-      <label
-        htmlFor={`checkboxLabelFour-${label}`}
-        className={`flex cursor-pointer select-none items-center font-notoLoopThaiRegular ${
-          isChecked ? 'text-black dark:text-white' : 'text-gray-500'
-        }`}
-      >
+      <div className="flex items-center">
         <div className="relative">
           <input
             type="checkbox"
@@ -42,8 +37,15 @@ const CheckboxFour = ({
             </span>
           </div>
         </div>
-        {label}
-      </label>
+        <label
+          htmlFor={`checkboxLabelFour-${label}`}
+          className={`flex cursor-pointer select-none items-center font-notoLoopThaiRegular ${
+            isChecked ? 'text-black dark:text-white' : 'text-gray-500'
+          }`}
+        >
+          {label}
+        </label>
+      </div>
     </div>
   );
 };
