@@ -6,23 +6,83 @@ import TextArea from '../../../components/Forms/TextArea';
 const MassageExperience = () => {
   const {
     register,
-    control,
     setValue,
+    watch,
     formState: { errors },
   } = useFormContext();
 
-  const [massageExperienceCheckBox, setMassageExperienceCheckBox] =
-    useState<string>('ไม่เคยนวด/เรียน');
+  const [selectedExperiences, setSelectedExperiences] = useState<string[]>([
+    'ไม่เคยนวด/เรียน',
+  ]);
+
+  const learnDetail = watch('learn_massage_description');
+  const workDetail = watch('work_massage_description');
 
   useEffect(() => {
-    setValue('has_massage_experience_learn', 'ไม่เคยนวด/เรียน');
-    setValue(
-      'has_massage_experience_work',
-      'ไม่เคยทำงานเกี่ยวข้องกับการนวดไทย',
-    );
-    setValue('massage_experience_learn_detail', null);
-    setValue('massage_experience_work_detail', null);
+    const experiences: string[] = [];
+
+    if (learnDetail) {
+      experiences.push('เคยนวด/เรียน');
+      setValue('learn_massage', 'เคยนวด/เรียน');
+    }
+    if (workDetail) {
+      experiences.push('เคยทำงานเกี่ยวข้องกับการนวดไทย');
+      setValue('work_massage', 'เคยทำงานเกี่ยวข้องกับการนวดไทย');
+    }
+    if (experiences.length === 0) {
+      experiences.push('ไม่เคยนวด/เรียน');
+      setValue('learn_massage', 'ไม่เคยนวด/เรียน');
+      setValue('work_massage', 'ไม่เคยทำงานเกี่ยวข้องกับการนวดไทย');
+    }
+    console.log('useEffect work');
+    setSelectedExperiences(experiences);
   }, []);
+
+  const handleExperienceChange = (value: string) => {
+    let newExperiences: string[];
+
+    if (value === 'ไม่เคยนวด/เรียน') {
+      // ถ้าเลือก "ไม่เคยนวด" ให้ยกเลิกตัวเลือกอื่นๆ
+      newExperiences = ['ไม่เคยนวด/เรียน'];
+      setValue('learn_massage', 'ไม่เคยนวด/เรียน');
+      setValue('work_massage', 'ไม่เคยทำงานเกี่ยวข้องกับการนวดไทย');
+      setValue('learn_massage_description', null);
+      setValue('work_massage_description', null);
+      console.log('ถ้าเลือก "ไม่เคยนวด" ให้ยกเลิกตัวเลือกอื่นๆ');
+    } else if (selectedExperiences.includes(value)) {
+      // ถ้าเคยเลือกไว้แล้ว ให้ลบออก
+      newExperiences = selectedExperiences.filter((exp) => exp !== value);
+      if (value === 'เคยนวด/เรียน') {
+        setValue('learn_massage', 'ไม่เคยนวด/เรียน');
+        setValue('learn_massage_description', null);
+      }
+      if (value === 'เคยทำงานเกี่ยวข้องกับการนวดไทย') {
+        setValue('work_massage', 'ไม่เคยทำงานเกี่ยวข้องกับการนวดไทย');
+        setValue('work_massage_description', null);
+      }
+    } else {
+      // เพิ่มตัวเลือกใหม่
+      newExperiences = selectedExperiences.includes('ไม่เคยนวด/เรียน')
+        ? [value]
+        : [...selectedExperiences, value];
+
+      if (value === 'เคยนวด/เรียน') {
+        setValue('learn_massage', 'เคยนวด/เรียน');
+      }
+      if (value === 'เคยทำงานเกี่ยวข้องกับการนวดไทย') {
+        setValue('work_massage', 'เคยทำงานเกี่ยวข้องกับการนวดไทย');
+      }
+      console.log('// เพิ่มตัวเลือกใหม่', newExperiences);
+    }
+
+    // ถ้าไม่มีตัวเลือกใดๆ ให้กลับไปเลือก "ไม่เคยนวด"
+    if (newExperiences.length === 0) {
+      newExperiences = ['ไม่เคยนวด/เรียน'];
+      setValue('learn_massage', 'ไม่เคยนวด/เรียน');
+      setValue('work_massage', 'ไม่เคยทำงานเกี่ยวข้องกับการนวดไทย');
+    }
+    setSelectedExperiences(newExperiences);
+  };
 
   return (
     <>
@@ -33,73 +93,50 @@ const MassageExperience = () => {
         <div className="mt-4">
           <CheckboxFour
             label="ไม่เคยนวด/เรียน"
-            name="has_massage_experience_learn"
-            isChecked={massageExperienceCheckBox === 'ไม่เคยนวด/เรียน'}
-            onChange={() => {
-              setMassageExperienceCheckBox('ไม่เคยนวด/เรียน');
-              setValue('has_massage_experience_learn', 'ไม่เคยนวด/เรียน');
-              setValue(
-                'has_massage_experience_work',
-                'ไม่เคยทำงานเกี่ยวข้องกับการนวดไทย',
-              );
-              setValue('massage_experience_learn_detail', null);
-              setValue('massage_experience_work_detail', null);
-            }}
+            name="no_experience"
+            isChecked={selectedExperiences.includes('ไม่เคยนวด/เรียน')}
+            onChange={() => handleExperienceChange('ไม่เคยนวด/เรียน')}
           />
           <CheckboxFour
             label="เคยนวด/เรียน"
-            name="has_massage_experience_learn"
-            isChecked={massageExperienceCheckBox === 'เคยนวด/เรียน'}
-            onChange={() => {
-              setMassageExperienceCheckBox('เคยนวด/เรียน');
-              setValue('has_massage_experience_learn', 'เคยนวด/เรียน');
-              setValue(
-                'has_massage_experience_work',
-                'ไม่เคยทำงานเกี่ยวข้องกับการนวดไทย',
-              );
-              setValue('massage_experience_work_detail', null);
-            }}
+            name="has_learn_experience"
+            isChecked={selectedExperiences.includes('เคยนวด/เรียน')}
+            onChange={() => handleExperienceChange('เคยนวด/เรียน')}
           />
           <TextArea
-            name="massage_experience_learn_detail"
+            name="learn_massage_description"
             label="ระบุประสบการณ์ในการนวด"
             placeholder="ระบุประสบการณ์ในการนวด"
             className="ml-9 mt-4"
-            isDisabled={
-              massageExperienceCheckBox === 'ไม่เคยนวด/เรียน' ||
-              massageExperienceCheckBox === 'เคยทำงานเกี่ยวข้องกับการนวดไทย'
-            }
-            error={errors.massage_experience_learn_detail?.message as string}
+            maxLength={70}
+            required={true}
+            isDisabled={!selectedExperiences.includes('เคยนวด/เรียน')}
+            error={errors.learn_massage_description?.message as string}
             includeRegister={register}
           />
         </div>
         <div className="mt-4">
           <CheckboxFour
             label="เคยทำงานเกี่ยวข้องกับการนวดไทย"
-            name="has_massage_experience_work"
-            isChecked={
-              massageExperienceCheckBox === 'เคยทำงานเกี่ยวข้องกับการนวดไทย'
+            name="has_work_experience"
+            isChecked={selectedExperiences.includes(
+              'เคยทำงานเกี่ยวข้องกับการนวดไทย',
+            )}
+            onChange={() =>
+              handleExperienceChange('เคยทำงานเกี่ยวข้องกับการนวดไทย')
             }
-            onChange={() => {
-              setMassageExperienceCheckBox('เคยทำงานเกี่ยวข้องกับการนวดไทย');
-              setValue(
-                'has_massage_experience_work',
-                'เคยทำงานเกี่ยวข้องกับการนวดไทย',
-              );
-              setValue('has_massage_experience_learn', 'ไม่เคยนวด/เรียน');
-              setValue('massage_experience_learn_detail', null);
-            }}
           />
           <TextArea
-            name="massage_experience_work_detail"
+            name="work_massage_description"
             label="ระบุประสบการณ์ในการนวด"
             placeholder="ระบุประสบการณ์ในการนวด"
             className="ml-9 mt-4"
+            maxLength={70}
+            required={true}
             isDisabled={
-              massageExperienceCheckBox === 'ไม่เคยนวด/เรียน' ||
-              massageExperienceCheckBox === 'เคยนวด/เรียน'
+              !selectedExperiences.includes('เคยทำงานเกี่ยวข้องกับการนวดไทย')
             }
-            error={errors.massage_experience_work_detail?.message as string}
+            error={errors.work_massage_description?.message as string}
             includeRegister={register}
           />
         </div>

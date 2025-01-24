@@ -75,6 +75,7 @@ const AddCourseBatchIndexPage = () => {
         onSuccess: (response) => {
           toast.success('เพิ่มข้อมูลรุ่นหลักสูตรสำเร็จ');
           setNewBatchId(response.data.id);
+          methods.reset();
           setShowAddStudentModal(true);
           setActiveStep(0);
         },

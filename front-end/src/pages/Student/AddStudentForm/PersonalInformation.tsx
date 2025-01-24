@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import TextField from '../../../components/Forms/TextField';
 import DatePickerOne from '../../../components/Forms/DatePicker/DatePickerOne';
 import DropdownSearchWithController from '../../../components/Forms/DropdownSearchWithController';
+import DatePickerWithController from '../../../components/Forms/DatePicker/DatePickerWithController';
 import { useFormContext } from 'react-hook-form';
-
 import { AxiosResponse } from 'axios';
 
 import {
@@ -85,7 +85,20 @@ const PersonalInformation = () => {
 
   return (
     <>
-      <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
+      <div className="mt-8 mb-8">
+        <h1 className="mt-[2rem] mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
+          วันที่สมัครจากใบสมัครนักเรียน
+        </h1>
+        <DatePickerWithController
+          label="วันที่สมัครจากใบสมัครนักเรียน"
+          name="date_register_from_form"
+          placeholder="วัน/เดือน/ปี"
+          required={true}
+          control={control}
+        />
+      </div>
+
+      <h1 className="mt-[1.5rem] mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
         ประวัติส่วนตัว
       </h1>
       <div className="mt-4 md:grid grid-cols-2 gap-4">

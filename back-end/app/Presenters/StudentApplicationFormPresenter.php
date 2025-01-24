@@ -175,7 +175,7 @@ class StudentApplicationFormPresenter
         $html .= $this->createPositionedDivAddSpace(
             FormLayoutConfig::POSITION['SEVENTH_LINE_Y'],
             FormLayoutConfig::NUMBER['ADDRESS_ZIP_CODE_X'],
-            $this->student->subdistrict->zip_code
+            $this->student->address_zip_code
         );
 
         // Phone number

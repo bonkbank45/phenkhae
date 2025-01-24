@@ -95,6 +95,19 @@ export const useAllCourseBatchDataByCourseId = (courseId: number) => {
   });
 };
 
+export const useAvailableCourseBatchData = () => {
+  return useQuery({
+    queryKey: ['available_course_batch_data'],
+    queryFn: async () => {
+      const response = await api.get('/course_group/available');
+      if (response.data.status === 'error') {
+        throw new Error(response.data.message);
+      }
+      return response.data;
+    },
+  });
+};
+
 export const useAddCourseBatchData = () => {
   const queryClient = useQueryClient();
   return useMutation({

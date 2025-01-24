@@ -85,11 +85,15 @@ export const useStudentData = ({
   });
 };
 
-export const useAddStudentData = (data: AddStudentData) => {
+export const useAddStudentData = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: AddStudentData) => {
-      const response = await api.post('/student', data);
+      const response = await api.post('/student', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     },
     onSuccess: (response) => {

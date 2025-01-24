@@ -30,6 +30,7 @@ class Student extends Model
         'address_soi',
         'address_road',
         'address_subdistrict_id',
+        'address_zip_code',
         'phonenumber',
         'email',
         'occupation_id',
@@ -42,6 +43,7 @@ class Student extends Model
         'work_massage',
         'work_massage_description',
         'profile_image',
+        'date_register_from_form',
         'created_at',
         'updated_at'
     ];

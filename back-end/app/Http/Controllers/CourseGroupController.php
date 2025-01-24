@@ -76,26 +76,23 @@ class CourseGroupController extends Controller
             '>=',
             date('Y-m-d H:i:s')
         )
-            ->with('course', 'enrollments')
+            ->with('course')
+            ->withCount('enrollments as students_enrolled')
             ->get()
             ->groupBy(function ($course_group) {
                 return $course_group->course->course_category->category_name;
-            })
-            ->map(function ($grouped_course_groups) {
-                return $grouped_course_groups->map(function ($course_group) {
-                    return [
-                        'course_name' => $course_group->course->course_name,
-                        'course_batch' => $course_group->batch,
-                        'max_students' => $course_group->max_students,
-                        'students_enrolled' => $course_group->enrollments->count(),
-                    ];
-                });
             });
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Course data categories retrieved successfully',
-            'data' => $course_groups
-        ], 200);
+        // ->map(function ($grouped_course_groups) {
+        //     return $grouped_course_groups->map(function ($course_group) {
+        //         return [
+        //             'course_name' => $course_group->course->course_name,
+        //             'course_batch' => $course_group->batch,
+        //             'max_students' => $course_group->max_students,
+        //             'students_enrolled' => $course_group->enrollments->count(),
+        //         ];
+        //     });
+        // });
+        return $this->successResponse($course_groups, 'Course data categories retrieved successfully', 200);
     }
 
     /**

@@ -10,13 +10,19 @@ use App\Traits\JsonResponseTrait;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
-use Illuminate\Support\Facades\Log;
 use App\PDF\Generators\Templates\ApplicationFormGenerator;
-use Mpdf\Mpdf;
-use Illuminate\Support\Facades\View;
+use App\Services\ImageService;
+use Exception;
+
 class StudentController extends Controller
 {
     use JsonResponseTrait;
+    protected $imageService;
+
+    public function __construct(ImageService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -68,9 +74,31 @@ class StudentController extends Controller
      */
     public function store(StoreStudentRequest $request): JsonResponse
     {
-        Log::info($request->all());
-        $student = Student::create($request->all());
-        return $this->successResponse($student, 'Student created successfully', 201);
+        try {
+            DB::beginTransaction();
+
+            if ($request->hasFile('profile_image')) {
+                $student = Student::create($request->all());
+                $fileName = $this->imageService->uploadStudentProfileImage(
+                    $request->file('profile_image'),
+                    $student->id
+                );
+                $student->profile_image = $fileName;
+                $student->save();
+            } else {
+                $student = Student::create($request->all());
+            }
+
+            DB::commit();
+            return $this->successResponse($student, 'Student created successfully', 201);
+
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage(), 404);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse('Error processing student data: ' . $e->getMessage(), 500);
+        }
     }
 
     /**
@@ -118,13 +146,26 @@ class StudentController extends Controller
      */
     public function update(UpdateStudentRequest $request, int $id): JsonResponse
     {
-        DB::beginTransaction();
         try {
+            DB::beginTransaction();
             $student = Student::findOrFail($id);
+            if ($request->hasFile('profile_image')) {
+                $this->imageService->deleteStudentProfile($student->profile_image);
+                $fileName = $this->imageService->uploadStudentProfileImage(
+                    $request->file('profile_image'),
+                    $student->id
+                );
+                $student->profile_image = $fileName;
+                $student->save();
+            }
+
             $student->update($request->all());
             DB::commit();
             return $this->successResponse($student, 'Student updated successfully', 200);
         } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage(), 404);
+        } catch (Exception $e) {
             DB::rollBack();
             return $this->errorResponse($e->getMessage(), 404);
         }
