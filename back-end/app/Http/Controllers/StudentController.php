@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\Enrollment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -12,16 +13,18 @@ use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use App\PDF\Generators\Templates\ApplicationFormGenerator;
 use App\Services\ImageService;
+use App\Services\EnrollmentService;
 use Exception;
-
 class StudentController extends Controller
 {
     use JsonResponseTrait;
     protected $imageService;
+    protected $enrollmentService;
 
-    public function __construct(ImageService $imageService)
+    public function __construct(ImageService $imageService, EnrollmentService $enrollmentService)
     {
         $this->imageService = $imageService;
+        $this->enrollmentService = $enrollmentService;
     }
     /**
      * Display a listing of the resource.
@@ -87,6 +90,15 @@ class StudentController extends Controller
                 $student->save();
             } else {
                 $student = Student::create($request->all());
+            }
+
+            if ($request->has('course_batch_id_register')) {
+                $enrollments = [];
+                foreach ($request->course_batch_id_register as $courseBatchId) {
+                    $enrollments = $this->enrollmentService
+                        ->storeEnrollment($courseBatchId, [$student->id]);
+                }
+                Enrollment::insert($enrollments);
             }
 
             DB::commit();

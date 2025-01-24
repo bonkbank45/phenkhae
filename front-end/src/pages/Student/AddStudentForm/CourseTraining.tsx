@@ -1,21 +1,26 @@
-import React, { useState } from 'react';
-import CheckboxOne from '../../../components/Checkboxes/CheckboxOne';
+import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useCourseGroupEnrollmentData } from '../../../hooks/api/useCourseData';
 import { useAvailableCourseBatchData } from '../../../hooks/api/useCourseBatchData';
-import Spinner from '../../../common/Spinner';
 import IconFaceSadTear from '../../../common/FaceSadTear';
 import { getStatusColor } from '../../../utils/course_group';
 import { getStatusText } from '../../../utils/course_group';
 import { SelectableCourseBatchCard } from '../../../components/SelectableCourseBatchCard';
-import { SelectableCourseBatchCardSkeleton } from './SelectableCourseBatchCardSkeleton';
+import { SelectableCourseBatchCardSkeleton } from '../../../components/SelectableCourseBatchCardSkeleton';
 import { CourseGroup } from '../../../types/course_group';
 
 const CourseTraining = () => {
+  useEffect(() => {
+    document.getElementById('scroll-target')?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
+
   const {
     register,
     control,
     setValue,
+    watch,
     formState: { errors },
   } = useFormContext();
 
@@ -24,7 +29,10 @@ const CourseTraining = () => {
     isLoading: isLoadingAvailableCourseBatchData,
   } = useAvailableCourseBatchData();
 
-  const [checkedState, setCheckedState] = useState<number[]>([]);
+  const selectedCourseBatchIds = watch('course_batch_id_register');
+  const [checkedState, setCheckedState] = useState<number[]>(
+    selectedCourseBatchIds || [],
+  );
 
   const handleCheckboxChange = (courseOpeningId: number) => {
     if (checkedState.includes(courseOpeningId)) {

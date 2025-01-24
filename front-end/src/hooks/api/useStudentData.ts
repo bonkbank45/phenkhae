@@ -23,15 +23,11 @@ export interface AddStudentData {
   father_lname: string;
   firstname_eng: string;
   firstname_tha: string;
-  has_massage_experience_learn: string;
-  has_massage_experience_work: string;
-  has_medical_condition: string;
-  has_surgery_history: string;
   lastname_eng: string;
   lastname_tha: string;
   marital_status: number;
-  massage_experience_learn_detail: string | null;
-  massage_experience_work_detail: string | null;
+  learn_massage_description: string | null;
+  work_massage_description: string | null;
   medical_condition: number | null;
   mother_fname: string;
   mother_lname: string;

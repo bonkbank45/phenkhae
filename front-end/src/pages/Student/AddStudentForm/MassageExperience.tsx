@@ -4,6 +4,13 @@ import { useFormContext } from 'react-hook-form';
 import TextArea from '../../../components/Forms/TextArea';
 
 const MassageExperience = () => {
+  useEffect(() => {
+    document.getElementById('scroll-target')?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
+
   const {
     register,
     setValue,
@@ -15,27 +22,33 @@ const MassageExperience = () => {
     'ไม่เคยนวด/เรียน',
   ]);
 
-  const learnDetail = watch('learn_massage_description');
-  const workDetail = watch('work_massage_description');
-
   useEffect(() => {
+    const [learnDetail, workDetail] = watch([
+      'learn_massage_description',
+      'work_massage_description',
+    ]);
+
     const experiences: string[] = [];
 
     if (learnDetail) {
       experiences.push('เคยนวด/เรียน');
       setValue('learn_massage', 'เคยนวด/เรียน');
+    } else {
+      setValue('learn_massage', 'ไม่เคยนวด/เรียน');
+      setValue('learn_massage_description', null);
     }
+
     if (workDetail) {
       experiences.push('เคยทำงานเกี่ยวข้องกับการนวดไทย');
       setValue('work_massage', 'เคยทำงานเกี่ยวข้องกับการนวดไทย');
-    }
-    if (experiences.length === 0) {
-      experiences.push('ไม่เคยนวด/เรียน');
-      setValue('learn_massage', 'ไม่เคยนวด/เรียน');
+    } else {
       setValue('work_massage', 'ไม่เคยทำงานเกี่ยวข้องกับการนวดไทย');
+      setValue('work_massage_description', null);
     }
-    console.log('useEffect work');
-    setSelectedExperiences(experiences);
+
+    if (experiences.length > 0) {
+      setSelectedExperiences(experiences);
+    }
   }, []);
 
   const handleExperienceChange = (value: string) => {
@@ -87,7 +100,7 @@ const MassageExperience = () => {
   return (
     <>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
           ประสบการณ์ในการนวด
         </h1>
         <div className="mt-4">

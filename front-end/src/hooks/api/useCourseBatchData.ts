@@ -120,6 +120,9 @@ export const useAddCourseBatchData = () => {
       queryClient.invalidateQueries({
         queryKey: ['course_batch_data'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['available_course_batch_data'],
+      });
       console.log('Success', response.data);
     },
     onError: (error: Error) => {
@@ -140,6 +143,9 @@ export const useEditCourseBatchData = () => {
       queryClient.invalidateQueries({
         queryKey: ['course_batch_data'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['available_course_batch_data'],
+      });
       console.log('Success', response.data);
     },
     onError: (error: Error) => {
@@ -158,6 +164,9 @@ export const useDeleteCourseBatchData = () => {
     onSuccess: (response) => {
       queryClient.invalidateQueries({
         queryKey: ['course_batch_data'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['available_course_batch_data'],
       });
       console.log('Success', response.data);
     },

@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Support\Facades\Log;
 class StoreStudentRequest extends FormRequest
 {
     /**
@@ -29,6 +29,7 @@ class StoreStudentRequest extends FormRequest
             "lastname_eng" => "required|string|max:255",
             "citizenid_card" => "required|string|max:255|unique:students,citizenid_card",
             "birthdate" => "required|date",
+            "date_register_from_form" => "required|date",
             "birth_province_id" => "required|exists:provinces,id",
             "father_lname" => "required|string|max:255",
             "mother_fname" => "required|string|max:255",
@@ -51,7 +52,6 @@ class StoreStudentRequest extends FormRequest
             "course_training" => "nullable|array",
             "edu_qual_id" => "required|exists:education_quals,id",
             "edu_ins" => "nullable|string|max:60",
-            "date_register_from_form" => "required|date",
             "profile_image" => "nullable|image|mimes:jpeg,png,jpg|max:10240",
         ];
     }
@@ -81,6 +81,8 @@ class StoreStudentRequest extends FormRequest
     public function messages()
     {
         return [
+            'birthdate.date_format' => 'กรุณากรอกวันที่วันเกิดให้อยู่ในรูปแบบ วัน/เดือน/ปี',
+            'date_register_from_form.date_format' => 'กรุณากรอกวันที่สมัครจากใบสมัครนักเรียนให้อยู่ในรูปแบบ วัน/เดือน/ปี',
             'citizenid_card.unique' => 'รหัสประจำตัวประชาชนนี้มีอยู่ในระบบแล้ว',
             'email.unique' => 'อีเมลนี้มีอยู่ในระบบแล้ว',
         ];

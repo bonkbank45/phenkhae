@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import DropdownSearchWithController from '../../../components/Forms/DropdownSearchWithController';
 import CheckboxFour from '../../../components/Checkboxes/CheckboxFour';
 import TextField from '../../../components/Forms/TextField';
@@ -72,6 +72,13 @@ const AdditionalPersonalInformation = () => {
   const hasSurgeryHistory = watch('has_surgery_history');
 
   useEffect(() => {
+    document.getElementById('scroll-target')?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
+
+  useEffect(() => {
     // Only set default values if they don't exist
     if (!hasMedicalCondition) {
       setMedicalConditionCheckBox('ไม่มี');
@@ -93,7 +100,7 @@ const AdditionalPersonalInformation = () => {
   return (
     <>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
           ประวัติส่วนตัวเพิ่มเติม
         </h1>
         <div className="mt-4 md:grid grid-cols-2 gap-4">
@@ -163,7 +170,7 @@ const AdditionalPersonalInformation = () => {
         </div>
       </div>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
           โรคประจำตัว
         </h1>
         <CheckboxFour
@@ -201,7 +208,7 @@ const AdditionalPersonalInformation = () => {
         </div>
       </div>
       <div className="mt-4">
-        <h1 className="mt-6 mb-6 text-4xl font-bold text-black dark:text-white font-notoExtraBold">
+        <h1 className="mt-6 mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
           การผ่าตัด
         </h1>
         <CheckboxFour

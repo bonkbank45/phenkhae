@@ -72,7 +72,7 @@ class CourseGroupController extends Controller
     public function available(): JsonResponse
     {
         $course_groups = CourseGroup::where(
-            'date_start',
+            'date_end',
             '>=',
             date('Y-m-d H:i:s')
         )

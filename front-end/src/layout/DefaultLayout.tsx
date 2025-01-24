@@ -14,7 +14,10 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
-        <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        <div
+          id="scroll-target"
+          className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
+        >
           {/* <!-- ===== Header Start ===== --> */}
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           {/* <!-- ===== Header End ===== --> */}

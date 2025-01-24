@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import TextField from '../../../components/Forms/TextField';
-import DatePickerOne from '../../../components/Forms/DatePicker/DatePickerOne';
 import DropdownSearchWithController from '../../../components/Forms/DropdownSearchWithController';
 import DatePickerWithController from '../../../components/Forms/DatePicker/DatePickerWithController';
 import { useFormContext } from 'react-hook-form';
@@ -95,6 +94,11 @@ const PersonalInformation = () => {
           placeholder="วัน/เดือน/ปี"
           required={true}
           control={control}
+          error={
+            typeof errors.date_register_from_form?.message === 'string'
+              ? errors.date_register_from_form.message
+              : ''
+          }
         />
       </div>
 
@@ -176,12 +180,12 @@ const PersonalInformation = () => {
               : ''
           }
         />
-        <DatePickerOne
+        <DatePickerWithController
           label="วัน/เดือน/ปี เกิด"
           name="birthdate"
-          includeRegister={register}
           placeholder="วันเกิด"
           required={true}
+          control={control}
           error={
             typeof errors.birthdate?.message === 'string'
               ? errors.birthdate.message
