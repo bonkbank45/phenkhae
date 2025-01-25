@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { Button } from '@material-tailwind/react';
 import { useCourseBatchDataById } from '../../hooks/api/useCourseBatchData';
 import { useStudentData } from '../../hooks/api/useStudentData';
-import { useAddEnrollment } from '../../hooks/api/useEnrollmentData';
+import { useAddEnrolledStudents } from '../../hooks/api/useEnrollmentData';
 import useDebounce from '../../hooks/useDebounce';
 import PaginatedTable from '../../components/Tables/PaginatedTable';
 import Pagination from '../../components/Pagination';
@@ -26,7 +26,7 @@ interface SelectedStudent {
 
 const CourseBatchAddStudentPage = () => {
   const { id } = useParams();
-  const { mutate: addEnrollment, isPending } = useAddEnrollment();
+  const { mutate: addEnrolledStudents, isPending } = useAddEnrolledStudents();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [ageRange, setAgeRange] = useState<string>('all');
@@ -152,7 +152,7 @@ const CourseBatchAddStudentPage = () => {
   };
 
   const handleSubmit = () => {
-    addEnrollment(
+    addEnrolledStudents(
       {
         course_group_id: courseBatch?.data.id,
         student_ids: selectedStudents.map((student) => student.id),

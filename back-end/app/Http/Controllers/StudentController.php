@@ -37,6 +37,16 @@ class StudentController extends Controller
 
     public function table(Request $request)
     {
+        $request->validate([
+            'age_range' => 'nullable|string|in:all,20-30,31-40,41-50,51+',
+            'experience' => 'nullable|string|in:all,hasExpLearn,hasExpWork',
+            'recently_added' => 'nullable|string|in:all,today,yesterday,last7days,last30days',
+            'search' => 'nullable|string|max:255',
+            'education' => 'nullable|string|in:all,below,bachelor,above',
+            'course_group_id' => 'nullable|integer|exists:course_groups,id',
+            'page' => 'required|integer|min:1',
+        ]);
+
         $query = Student::search($request->search);
 
         if ($request->has('age_range')) {

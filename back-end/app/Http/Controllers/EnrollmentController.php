@@ -109,4 +109,16 @@ class EnrollmentController extends Controller
             return $this->errorResponse('Enrollment not found', 404);
         }
     }
+
+    public function getEnrolledStudentsByBatchId(int $courseBatchId, Request $request): JsonResponse
+    {
+        $request->validate([
+            'search' => 'nullable|string|max:255',
+            'page' => 'required|integer|min:1',
+        ]);
+        $enrollments = Enrollment::with('student')
+            ->where('course_group_id', $courseBatchId)
+            ->paginate(10);
+        return $this->successResponse($enrollments, 'Enrollments retrieved successfully', 200);
+    }
 }

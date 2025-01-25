@@ -1,5 +1,5 @@
 import React from 'react';
-import { UseFormRegister, useWatch } from 'react-hook-form';
+import { Control, UseFormRegister, useWatch } from 'react-hook-form';
 
 const TextArea = ({
   label,
@@ -11,6 +11,7 @@ const TextArea = ({
   includeRegister,
   maxLength,
   required = false,
+  control,
 }: {
   label: string;
   name: string;
@@ -21,8 +22,15 @@ const TextArea = ({
   includeRegister: UseFormRegister<any>;
   maxLength?: number;
   required?: boolean;
+  control?: any;
 }) => {
-  const value = useWatch({ name });
+  let value = '';
+  if (control) {
+    value = useWatch({ name, control });
+  } else {
+    value = useWatch({ name });
+  }
+
   return (
     <div className={className}>
       <label
@@ -33,10 +41,12 @@ const TextArea = ({
         {label}
         {required && <span className="text-red-500"> *</span>}
         <span className={`text-xs ${isDisabled ? 'hidden' : 'text-gray-500'}`}>
-          <span>
-            &nbsp; จำกัดความยาว {maxLength} ตัวอักษร, เหลือ{' '}
-            {maxLength - (value?.length || 0)} ตัวอักษร
-          </span>
+          {maxLength && (
+            <span>
+              &nbsp; จำกัดความยาว {maxLength} ตัวอักษร, เหลือ{' '}
+              {maxLength - (value?.length || 0)} ตัวอักษร
+            </span>
+          )}
         </span>
       </label>
       <textarea

@@ -45,6 +45,7 @@ const EditCourse = ({ initialData, onSuccess }: EditCourseProps) => {
   };
 
   const handleSubmit = (data: Omit<CourseFormData, 'id'>) => {
+    console.log(data);
     mutate(
       { ...data, id: initialData.id },
       {
