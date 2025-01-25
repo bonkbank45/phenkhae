@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button } from '@material-tailwind/react';
 import { useCourseBatchDataById } from '../../hooks/api/useCourseBatchData';
@@ -20,6 +20,7 @@ import { filterOptions } from '../../constants/filterOptions';
 import Filter from '../../components/Filter/Filter';
 import { EnrollmentWithStudent } from '../../types/enrollment';
 import RemoveCourseBatchStudentForm from './RemoveCourseBatchStudentForm';
+import IconArrowLeft from '../../common/ArrowLeft';
 
 interface SelectedStudent {
   id: number;
@@ -28,6 +29,7 @@ interface SelectedStudent {
 }
 
 const CourseBatchRemoveStudentPage = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { mutate: removeEnrollment, isPending } = useRemoveEnrollment();
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -152,7 +154,7 @@ const CourseBatchRemoveStudentPage = () => {
     setPage(1);
   };
 
-  const confirmRemoval = () => {
+  const handleRemove = () => {
     removeEnrollment(
       {
         courseGroupId: courseBatch?.data.id,
@@ -192,6 +194,19 @@ const CourseBatchRemoveStudentPage = () => {
 
   return (
     <div className="p-1">
+      <div className="flex justify-start mb-2">
+        <Button
+          variant="text"
+          type="button"
+          className="underline px-0 pt-0 flex items-center gap-2"
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          <IconArrowLeft className="w-4 h-4 text-black dark:text-white" />{' '}
+          <span className="text-black dark:text-white">ย้อนกลับ</span>
+        </Button>
+      </div>
       {/* Header */}
       <div className="bg-white rounded-lg shadow p-4 mb-4 dark:bg-boxdark">
         <h1 className="text-2xl font-semibold mb-2 dark:text-white font-notoExtraBold">
@@ -344,14 +359,7 @@ const CourseBatchRemoveStudentPage = () => {
             <RemoveCourseBatchStudentForm
               courseBatch={courseBatch.data}
               selectedStudents={selectedStudents}
-              onSuccess={() => {
-                setIsConfirmModalOpen(false);
-                toast.success('ลบนักเรียนออกจากรุ่นสำเร็จ');
-                refetchCourseBatch();
-                refetchEnrolledStudents();
-                setSelectedStudents([]);
-                setPage(1);
-              }}
+              onSuccess={handleRemove}
               onError={() => {
                 toast.error(
                   'เกิดข้อผิดพลาดในการลบนักเรียน กรุณาลองใหม่อีกครั้ง',
