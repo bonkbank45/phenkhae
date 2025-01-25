@@ -96,29 +96,49 @@ class EnrollmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(Request $request, int $courseGroupId): JsonResponse
     {
+        $studentIds = $request->input('student_ids');
         DB::beginTransaction();
         try {
-            $enrollment = Enrollment::findOrFail($id);
-            $enrollment->delete();
+            $enrollments = $this->enrollmentService->removeEnrollment($courseGroupId, $studentIds);
+            $enrollments->delete();
             DB::commit();
-            return $this->successResponse(null, 'Enrollment deleted successfully', 200);
-        } catch (ModelNotFoundException $e) {
+            return $this->successResponse($enrollments, 'Enrollments removed successfully', 200);
+        } catch (\Exception $e) {
             DB::rollBack();
-            return $this->errorResponse('Enrollment not found', 404);
+            return $this->errorResponse('Destroy Enrollment failed ' . $e->getMessage(), 400);
         }
     }
 
     public function getEnrolledStudentsByBatchId(int $courseBatchId, Request $request): JsonResponse
     {
-        $request->validate([
-            'search' => 'nullable|string|max:255',
-            'page' => 'required|integer|min:1',
-        ]);
-        $enrollments = Enrollment::with('student')
-            ->where('course_group_id', $courseBatchId)
-            ->paginate(10);
-        return $this->successResponse($enrollments, 'Enrollments retrieved successfully', 200);
+        $query = Enrollment::where('course_group_id', $courseBatchId)
+            ->join('students', 'enrollments.student_id', '=', 'students.id')
+            ->select('students.*', 'enrollments.enrollment_date', 'enrollments.activity_case_status')
+            ->orderBy('enrollments.created_at', 'desc');
+
+        if ($request->has('search')) {
+            $searchTerm = $request->search;
+            $query->search($searchTerm);
+        }
+
+        if ($request->has('age_range')) {
+            $query->filterAgeRange($request->age_range);
+        }
+
+        if ($request->has('experience')) {
+            $query->filterExperience($request->experience);
+        }
+
+        if ($request->has('education')) {
+            $query->filterEducation($request->education);
+        }
+
+        if ($request->has('recently_added')) {
+            $query->filterRecentlyAdded($request->recently_added);
+        }
+
+        return $this->successResponse($query->paginate(10), 'Enrollments retrieved successfully', 200);
     }
 }

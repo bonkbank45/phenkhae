@@ -17,6 +17,15 @@ class enrollmentService
         return $this->prepareEnrollments($courseGroup, $studentIds);
     }
 
+    public function removeEnrollment(int $courseGroupId, array $studentIds)
+    {
+        $courseGroup = $this->getCourseGroupWithValidation($courseGroupId);
+        $this->validateRemoveEnrollments($courseGroup, $studentIds);
+
+        return Enrollment::where('course_group_id', $courseGroupId)
+            ->whereIn('student_id', $studentIds);
+    }
+
     private function getCourseGroupWithValidation(int $courseGroupId)
     {
         $courseGroup = CourseGroup::with(['course.latest_course_price'])
@@ -42,6 +51,16 @@ class enrollmentService
             ->exists();
         if ($existingEnrollments) {
             throw new EnrollmentException('Student already enrolled in this course group');
+        }
+    }
+
+    private function validateRemoveEnrollments(CourseGroup $courseGroup, array $studentIds)
+    {
+        $existingEnrollments = Enrollment::where('course_group_id', $courseGroup->id)
+            ->whereIn('student_id', $studentIds)
+            ->exists();
+        if (!$existingEnrollments) {
+            throw new EnrollmentException('Student not enrolled in this course group');
         }
     }
 

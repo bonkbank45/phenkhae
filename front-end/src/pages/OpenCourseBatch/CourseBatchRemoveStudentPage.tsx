@@ -16,6 +16,10 @@ import Spinner from '../../common/Spinner';
 import { Student } from '../../types/student';
 import { ErrorResponse } from '../../types/error_response';
 import NotFound from '../NotFound';
+import { filterOptions } from '../../constants/filterOptions';
+import Filter from '../../components/Filter/Filter';
+import { EnrollmentWithStudent } from '../../types/enrollment';
+import RemoveCourseBatchStudentForm from './RemoveCourseBatchStudentForm';
 
 interface SelectedStudent {
   id: number;
@@ -29,6 +33,10 @@ const CourseBatchRemoveStudentPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [page, setPage] = useState<number>(1);
+  const [ageRange, setAgeRange] = useState<string>('all');
+  const [experience, setExperience] = useState<string>('all');
+  const [education, setEducation] = useState<string>('all');
+  const [recentlyAdded, setRecentlyAdded] = useState<string>('all');
   const [selectedStudents, setSelectedStudents] = useState<SelectedStudent[]>(
     [],
   );
@@ -41,14 +49,25 @@ const CourseBatchRemoveStudentPage = () => {
     refetch: refetchCourseBatch,
   } = useCourseBatchDataById(id);
 
-  const { data: enrolledStudents, isLoading: isLoadingEnrolledStudents } =
-    useEnrolledStudentsByBatchId(Number(id), page);
+  const {
+    data: enrolledStudents,
+    isLoading: isLoadingEnrolledStudents,
+    refetch: refetchEnrolledStudents,
+  } = useEnrolledStudentsByBatchId({
+    courseBatchId: Number(id),
+    searchTerm: debouncedSearchTerm,
+    page: page,
+    ageRange: ageRange,
+    experience: experience,
+    education: education,
+    recentlyAdded: recentlyAdded,
+  });
 
   const columns = [
     {
       header: 'เลือก',
       key: 'select',
-      render: (item: Student) => (
+      render: (item: EnrollmentWithStudent) => (
         <input
           type="checkbox"
           className="w-4 h-4 cursor-pointer"
@@ -60,26 +79,31 @@ const CourseBatchRemoveStudentPage = () => {
     {
       header: 'ชื่อนักเรียน',
       key: 'firstname_tha',
-      render: (item: Student) => item.firstname_tha || '-',
+      render: (item: EnrollmentWithStudent) => item.firstname_tha || '-',
     },
     {
       header: 'นามสกุลนักเรียน',
       key: 'lastname_tha',
-      render: (item: Student) => item.lastname_tha || '-',
+      render: (item: EnrollmentWithStudent) => item.lastname_tha || '-',
     },
     {
       header: 'อีเมล',
       key: 'email',
-      render: (item: Student) => item.email || '-',
+      render: (item: EnrollmentWithStudent) => item.email || '-',
     },
     {
       header: 'เบอร์โทรศัพท์',
       key: 'phonenumber',
-      render: (item: Student) => item.phonenumber || '-',
+      render: (item: EnrollmentWithStudent) => item.phonenumber || '-',
+    },
+    {
+      header: 'วันที่ลงทะเบียน',
+      key: 'enrollment_date',
+      render: (item: EnrollmentWithStudent) => item.enrollment_date || '-',
     },
   ];
 
-  const handleStudentSelect = (student: Student) => {
+  const handleStudentSelect = (student: EnrollmentWithStudent) => {
     const isSelected = selectedStudents.some((s) => s.id === student.id);
     if (isSelected) {
       setSelectedStudents(selectedStudents.filter((s) => s.id !== student.id));
@@ -108,11 +132,31 @@ const CourseBatchRemoveStudentPage = () => {
     setIsConfirmModalOpen(true);
   };
 
+  const handleAgeRangeFilter = (value: string) => {
+    setAgeRange(value);
+    setPage(1);
+  };
+
+  const handleExperienceFilter = (value: string) => {
+    setExperience(value);
+    setPage(1);
+  };
+
+  const handleEducationFilter = (value: string) => {
+    setEducation(value);
+    setPage(1);
+  };
+
+  const handleRecentlyAddedFilter = (value: string) => {
+    setRecentlyAdded(value);
+    setPage(1);
+  };
+
   const confirmRemoval = () => {
     removeEnrollment(
       {
-        course_group_id: courseBatch?.data.id,
-        student_ids: selectedStudents.map((student) => student.id),
+        courseGroupId: courseBatch?.data.id,
+        studentIds: selectedStudents.map((student) => student.id),
       },
       {
         onSuccess: () => {
@@ -166,12 +210,60 @@ const CourseBatchRemoveStudentPage = () => {
           <h2 className="text-xl font-semibold mb-4 dark:text-white font-notoExtraBold">
             รายชื่อนักเรียนในรุ่น
           </h2>
+          <div className="mb-4 hidden lg:flex lg:justify-start xl:justify-between flex-wrap gap-2">
+            <Filter
+              value={ageRange}
+              onChange={handleAgeRangeFilter}
+              options={filterOptions.ageRange}
+              placeholder="ทุกช่วงอายุ"
+              showIcon={true}
+            />
+            <Filter
+              value={experience}
+              onChange={handleExperienceFilter}
+              options={filterOptions.experience}
+              placeholder="ประสบการณ์ทั้งหมด"
+              showIcon={false}
+            />
+            <Filter
+              value={education}
+              onChange={handleEducationFilter}
+              options={filterOptions.education}
+              placeholder="วุฒิการศึกษาทั้งหมด"
+              showIcon={false}
+            />
+            <Filter
+              value={recentlyAdded}
+              onChange={handleRecentlyAddedFilter}
+              options={filterOptions.recentlyAdded}
+              placeholder="ระยะเวลาที่ลงทะเบียน"
+              showIcon={false}
+              disablePlaceholder={true}
+            />
+          </div>
           <Search
             value={searchTerm}
             onChange={handleSearch}
             placeholder="ค้นหานักเรียนด้วยชื่อ, อีเมลหรือเบอร์โทรศัพท์"
           />
-          {/* ... rest of the table code ... */}
+          <div className="h-100vh mt-4 overflow-y-auto">
+            <PaginatedTable<Student>
+              data={enrolledStudents?.data}
+              columns={columns}
+              isLoading={isLoadingEnrolledStudents}
+            />
+            <Pagination
+              isFetching={isLoadingEnrolledStudents}
+              currentPage={page}
+              totalPages={enrolledStudents?.data.last_page}
+              from={enrolledStudents?.data.from}
+              to={enrolledStudents?.data.to}
+              total={enrolledStudents?.data.total}
+              onPageChange={setPage}
+              hasNextPage={!!enrolledStudents?.data.next_page_url}
+              hasPrevPage={!!enrolledStudents?.data.prev_page_url}
+            />
+          </div>
         </div>
 
         {/* Right Column - Selected Students */}
@@ -179,7 +271,41 @@ const CourseBatchRemoveStudentPage = () => {
           <h2 className="text-xl font-semibold mb-4 dark:text-white font-notoExtraBold">
             นักเรียนที่เลือกลบ ({selectedStudents.length})
           </h2>
-          {/* ... selected students list ... */}
+          {selectedStudents.length > 0 ? (
+            selectedStudents.map((student) => (
+              <div
+                key={student.id}
+                className="flex items-center justify-between p-2"
+              >
+                <span className="font-notoLoopThaiRegular dark:text-white">
+                  {student.firstname_tha} {student.lastname_tha}
+                </span>
+                <button
+                  className="text-red-500 hover:text-red-700 dark:text-white"
+                  onClick={() => handleRemoveStudent(student.id)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            ))
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p className="h-100 font-notoLoopThaiRegular dark:text-white">
+                ไม่มีนักเรียนที่เลือก
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -188,9 +314,9 @@ const CourseBatchRemoveStudentPage = () => {
         <Button
           color="gray"
           onClick={handleCancel}
-          className="font-notoLoopThaiRegular dark:text-white"
+          className="font-notoLoopThaiRegular text-gray-500 dark:text-white"
         >
-          ยกเลิก
+          ล้างรายชื่อนักเรียนที่เลือก
         </Button>
         <Button
           color="red"
@@ -214,26 +340,25 @@ const CourseBatchRemoveStudentPage = () => {
         title="ยืนยันการลบนักเรียน"
       >
         <div className="p-4">
-          <p className="text-center font-notoLoopThaiRegular mb-4">
-            คุณแน่ใจหรือไม่ที่จะลบนักเรียนที่เลือกออกจากรุ่น?
-          </p>
-          <div className="flex justify-end gap-4">
-            <Button
-              color="gray"
-              onClick={() => setIsConfirmModalOpen(false)}
-              className="font-notoLoopThaiRegular"
-            >
-              ยกเลิก
-            </Button>
-            <Button
-              color="red"
-              onClick={confirmRemoval}
-              loading={isPending}
-              className="font-notoLoopThaiRegular"
-            >
-              ยืนยันการลบ
-            </Button>
-          </div>
+          {courseBatch && (
+            <RemoveCourseBatchStudentForm
+              courseBatch={courseBatch.data}
+              selectedStudents={selectedStudents}
+              onSuccess={() => {
+                setIsConfirmModalOpen(false);
+                toast.success('ลบนักเรียนออกจากรุ่นสำเร็จ');
+                refetchCourseBatch();
+                refetchEnrolledStudents();
+                setSelectedStudents([]);
+                setPage(1);
+              }}
+              onError={() => {
+                toast.error(
+                  'เกิดข้อผิดพลาดในการลบนักเรียน กรุณาลองใหม่อีกครั้ง',
+                );
+              }}
+            />
+          )}
         </div>
       </Modal>
     </div>
