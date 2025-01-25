@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Button, Spinner } from '@material-tailwind/react';
 import { Course } from '../../../types/course';
@@ -30,14 +30,7 @@ const CourseForm = ({
 }: CourseFormProps) => {
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm<Course>({
+  const methods = useForm<Course>({
     defaultValues: {
       ...initialData,
     },
@@ -47,7 +40,7 @@ const CourseForm = ({
   const handleSubmitForm = async (data: Course) => {
     try {
       await onSubmit(data);
-      reset(); // จะ reset เมื่อ submit สำเร็จเท่านั้น
+      methods.reset(); // จะ reset เมื่อ submit สำเร็จเท่านั้น
     } catch (error) {
       // จัดการ error ถ้าจำเป็น
     }
@@ -72,7 +65,10 @@ const CourseForm = ({
         <h1 className="text-2xl text-black dark:text-white font-bold mb-4 font-notoLoopThaiRegular">
           {initialData ? 'แก้ไขหลักสูตร' : 'เพิ่มหลักสูตร'}
         </h1>
-        <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-4">
+        <form
+          onSubmit={methods.handleSubmit(handleSubmitForm)}
+          className="space-y-4"
+        >
           {initialData ? null : (
             <TextField
               name="id"
@@ -81,11 +77,11 @@ const CourseForm = ({
               placeholder="ไอดี"
               required={true}
               includeRegister={() =>
-                register('id', {
+                methods.register('id', {
                   valueAsNumber: true,
                 })
               }
-              error={errors.id?.message}
+              error={methods.formState.errors.id?.message}
             />
           )}
           <TextField
@@ -93,34 +89,36 @@ const CourseForm = ({
             label="ชื่อหลักสูตร"
             placeholder="ชื่อหลักสูตร"
             required={true}
-            includeRegister={register}
-            error={errors.course_name?.message}
+            includeRegister={methods.register}
+            error={methods.formState.errors.course_name?.message}
           />
           <TextArea
             name="course_description"
             label="รายละเอียดหลักสูตร"
             placeholder="รายละเอียดหลักสูตร"
-            includeRegister={register}
+            includeRegister={methods.register}
             required={true}
-            error={errors.course_description?.message}
+            maxLength={70}
+            control={methods.control}
+            error={methods.formState.errors.course_description?.message}
           />
           <DropdownSearchWithController
             name="course_category_id"
             label="ประเภทหลักสูตร"
             placeholder="ประเภทหลักสูตร"
             options={formOptions.courseCategories || []}
-            control={control}
+            control={methods.control}
             required={true}
-            error={errors.course_category_id?.message}
+            error={methods.formState.errors.course_category_id?.message}
           />
           <DropdownSearchWithController
             name="course_category_bill_id"
             label="ประเภทบิล"
             placeholder="ประเภทบิล"
             options={formOptions.courseBillCategories || []}
-            control={control}
+            control={methods.control}
             required={true}
-            error={errors.course_category_bill_id?.message}
+            error={methods.formState.errors.course_category_bill_id?.message}
           />
           <Button
             type="submit"

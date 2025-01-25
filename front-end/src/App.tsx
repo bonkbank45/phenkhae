@@ -29,6 +29,7 @@ import AddCourseBatchIndexPage from './pages/OpenCourseBatch/AddCourseBatchIndex
 import CourseBatchAddStudent from './pages/OpenCourseBatch/CourseBatchAddStudentPage';
 import CourseBatchListPage from './pages/CourseBatch/CourseBatchListPage';
 import CourseBatchShowPage from './pages/CourseBatch/CourseBatchShowPage';
+import CourseBatchRemoveStudentPage from './pages/OpenCourseBatch/CourseBatchRemoveStudentPage';
 
 function App() {
   const { pathname } = useLocation();
@@ -188,6 +189,10 @@ function App() {
           <Route
             path="/courses/batchs/:id/add-students"
             element={<CourseBatchAddStudent />}
+          />
+          <Route
+            path="/courses/batchs/:id/remove-students"
+            element={<CourseBatchRemoveStudentPage />}
           />
           <Route path="/courses/add" element={<AddCourse />} />
           <Route path="*" element={<NotFound />} />
