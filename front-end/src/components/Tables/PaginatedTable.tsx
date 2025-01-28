@@ -1,13 +1,13 @@
 import React from 'react';
 import Spinner from '../../common/Spinner';
 
-interface Column<Type> {
+export interface ColumnType<Type> {
   header: string;
   key: keyof Type | string;
   render?: (item: Type) => React.ReactNode;
 }
 
-interface PaginationData<Type> {
+export interface PaginationDataType<Type> {
   current_page: number;
   data: Type[];
   first_page_url: string;
@@ -28,8 +28,8 @@ interface PaginationData<Type> {
 }
 
 interface PaginatedTableProps<Type> {
-  data: PaginationData<Type>;
-  columns: Column<Type>[];
+  data: PaginationDataType<Type>;
+  columns: ColumnType<Type>[];
   isLoading: boolean;
 }
 
@@ -59,7 +59,10 @@ const PaginatedTable = <Type extends object>({
             <tbody>
               {data.data.length === 0 ? (
                 <tr>
-                  <td colSpan={columns.length} className="text-center">
+                  <td
+                    colSpan={columns.length}
+                    className="mt-4 mb-4 text-center font-notoRegular"
+                  >
                     ไม่พบข้อมูล
                   </td>
                 </tr>

@@ -101,3 +101,13 @@ export const useAddStudentData = () => {
     },
   });
 };
+
+export const useStudentCount = () => {
+  return useQuery({
+    queryKey: ['students', 'count'],
+    queryFn: async () => {
+      const response = await api.get('/student/count');
+      return response.data;
+    },
+  });
+};

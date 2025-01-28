@@ -31,6 +31,23 @@ interface Course {
   latest_course_price: CoursePrice;
 }
 
+export interface CourseGroupByCourseIdResponse {
+  message: string;
+  status: string;
+  data: {
+    [key: number]: CourseGroupTable[];
+  };
+}
+
+export interface CourseGroupTable {
+  id: number;
+  course_id: number;
+  max_students: number;
+  batch: number;
+  date_start: string;
+  date_end: string | null;
+}
+
 interface CourseGroupResponse {
   id: number;
   course_id: number;

@@ -35,6 +35,9 @@ class StudentController extends Controller
         return $this->successResponse($students, 'Students fetched successfully', 200);
     }
 
+    /**
+     * แสดงตารางของนักเรียนแบบมี pagination
+     */
     public function table(Request $request)
     {
         $request->validate([
@@ -49,20 +52,17 @@ class StudentController extends Controller
 
         $query = Student::search($request->search);
 
-        if ($request->has('age_range')) {
-            $query->filterAgeRange($request->age_range);
-        }
+        $filters = [
+            'age_range' => 'filterAgeRange',
+            'experience' => 'filterExperience',
+            'recently_added' => 'filterRecentlyAdded',
+            'education' => 'filterEducation',
+        ];
 
-        if ($request->has('experience')) {
-            $query->filterExperience($request->experience);
-        }
-
-        if ($request->has('recently_added')) {
-            $query->filterRecentlyAdded($request->recently_added);
-        }
-
-        if ($request->has('education')) {
-            $query->filterEducation($request->education);
+        foreach ($filters as $param => $method) {
+            if ($request->has($param)) {
+                $query->{$method}($request->$param);
+            }
         }
 
         if ($request->has('course_group_id')) {
@@ -72,6 +72,21 @@ class StudentController extends Controller
         }
         $students = $query->paginate(10);
         return $this->successResponse($students, 'Students fetched successfully', 200);
+    }
+
+    /**
+     * นับจำนวนนักเรียนทั้งหมดในระบบ
+     * 
+     * @return JsonResponse
+     */
+    public function count(): JsonResponse
+    {
+        try {
+            $count = Student::count();
+            return $this->successResponse(['total' => $count], 'Students count fetched successfully', 200);
+        } catch (Exception $e) {
+            return $this->errorResponse('Error counting students: ' . $e->getMessage(), 500);
+        }
     }
 
     /**
@@ -218,10 +233,5 @@ class StudentController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse($e->getMessage(), 404);
         }
-
-        // $mpdf = new Mpdf(config('pdf'));
-        // $html = View::make('pdfs.application-form')->render();
-        // $mpdf->WriteHTML($html);
-        // $mpdf->Output('application-form.pdf', 'D');
     }
 }
