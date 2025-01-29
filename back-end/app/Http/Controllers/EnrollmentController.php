@@ -11,7 +11,7 @@ use App\Http\Requests\UpdateEnrollmentRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use App\Services\EnrollmentService;
-
+use App\Models\Student;
 class EnrollmentController extends Controller
 {
     use JsonResponseTrait;
@@ -58,7 +58,7 @@ class EnrollmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $id): JsonResponse
+    public function show($id): JsonResponse
     {
         try {
             $enrollment = Enrollment::findOrFail($id);
@@ -140,5 +140,39 @@ class EnrollmentController extends Controller
         }
 
         return $this->successResponse($query->paginate(10), 'Enrollments retrieved successfully', 200);
+    }
+
+    public function getEnrolledStudentsByBatchIds(Request $request): JsonResponse
+    {
+        $query = DB::table('course_groups')
+            ->select(
+                'course_groups.id as course_group_id',
+                'students.id as student_id',
+                'students.firstname_tha',
+                'students.lastname_tha',
+                'courses.course_name',
+                'course_groups.batch',
+                'course_groups.date_start as batch_start',
+                'course_groups.date_end as batch_end',
+                'enrollments.date_start as student_date_start',
+                'enrollments.date_end as student_date_end'
+            )
+            ->join('courses', 'courses.id', '=', 'course_groups.course_id')
+            ->join('enrollments', 'course_groups.id', '=', 'enrollments.course_group_id')
+            ->join('students', 'enrollments.student_id', '=', 'students.id');
+
+        if ($request->has('fetch_all')) {
+
+        } else {
+            $validated = $request->validate([
+                'batch_ids' => ['required', 'string', 'regex:/^\d+(,\d+)*$/']  // ตรวจสอบรูปแบบ "1,2,3"
+            ]);
+            $batchIds = explode(',', string: $validated['batch_ids']);
+            $query->whereIn('course_groups.id', $batchIds);
+        }
+
+        $students = $query->paginate(10);
+
+        return $this->successResponse($students, 'Enrolled students retrieved successfully', 200);
     }
 }

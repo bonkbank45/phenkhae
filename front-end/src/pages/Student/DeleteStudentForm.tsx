@@ -1,33 +1,31 @@
 import React from 'react';
-import { useDeleteCourseBatchData } from '../../hooks/api/useCourseBatchData';
-import { CourseGroup } from '../../types/course_group';
+import { BasicStudentInfo } from '../../types/student';
 import { ErrorResponse } from '../../types/error_response';
+import { useDeleteStudentData } from '../../hooks/api/useStudentData';
 
-interface DeleteCourseBatchFormProps {
-  courseBatch: CourseGroup;
+interface DeleteStudentFormProps {
+  student: BasicStudentInfo;
   onSuccess: () => void;
   onError: (error: ErrorResponse) => void;
   onClose: () => void;
 }
 
-const DeleteCourseBatchForm = ({
-  courseBatch,
+const DeleteStudentForm = ({
+  student,
   onSuccess,
-  onClose,
   onError,
-}: DeleteCourseBatchFormProps) => {
-  const { mutate: deleteCourseBatch, isPending: isDeleting } =
-    useDeleteCourseBatchData();
+  onClose,
+}: DeleteStudentFormProps) => {
+  const { mutate: deleteStudent, isPending: isDeleting } =
+    useDeleteStudentData();
   return (
     <div className="p-4">
       <p className="mb-4 font-notoLoopThaiRegular">
-        คุณต้องการลบรุ่นหลักสูตร "{courseBatch.course.course_name} รุ่นที่{' '}
-        {courseBatch.batch}" ใช่หรือไม่?
+        คุณต้องการลบรายชื่อนักเรียน "{student.firstname_tha}{' '}
+        {student.lastname_tha}" ใช่หรือไม่?
       </p>
       <p className="mb-4 text-red-500 font-notoExtraBold">
-        คำเตือน:
-        การลบรุ่นหลักสูตรนี้จะทำให้ข้อมูลที่เกี่ยวข้องกับรุ่นหลักสูตรนี้
-        (อย่างเช่น รายการการลงทะเบียนรุ่นหลักสูตรนี้ของนักเรียน) ทั้งหมดหายไป!
+        คำเตือน: การลบนักเรียนนี้จะทำให้ข้อมูลที่เกี่ยวข้องกับนักเรียนนี้หายไป!
       </p>
       <div className="flex justify-end gap-2">
         <button
@@ -40,7 +38,7 @@ const DeleteCourseBatchForm = ({
         </button>
         <button
           onClick={() => {
-            deleteCourseBatch(courseBatch.id, {
+            deleteStudent(student.id, {
               onSuccess: () => {
                 onSuccess?.();
               },
@@ -59,4 +57,4 @@ const DeleteCourseBatchForm = ({
   );
 };
 
-export default DeleteCourseBatchForm;
+export default DeleteStudentForm;

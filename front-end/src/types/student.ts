@@ -34,6 +34,25 @@ export interface Student {
   updated_at?: string; // ISO datetime string
 }
 
+export interface StudentWithCourseBatchTable {
+  course_group_id: number;
+  student_id: number;
+  firstname_tha: string;
+  lastname_tha: string;
+  course_name: string;
+  batch: number;
+  batch_start: string;
+  batch_end: string;
+  student_date_start: string;
+  student_date_end: string | null;
+}
+
+export interface BasicStudentInfo {
+  id: number;
+  firstname_tha: string;
+  lastname_tha: string;
+}
+
 // Optional: Add related interfaces for better type safety
 export interface Prename {
   id: number;

@@ -280,6 +280,10 @@ const CourseBatchListPage = () => {
             onError={(error: ErrorResponse) => {
               handleDeleteBatchError(error);
             }}
+            onClose={() => {
+              setIsOpenDeleteModal(false);
+              setSelectedCourseBatch(null);
+            }}
           />
         )}
       </Modal>

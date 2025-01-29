@@ -63,10 +63,19 @@ class CourseGroupController extends Controller
         return $this->successResponse($course_groups, 'Course groups fetched successfully', 200);
     }
 
-    public function course(int $courseId): JsonResponse
+    public function getCourseGroupByCourseId(int $courseId): JsonResponse
     {
         $course_groups = CourseGroup::where('course_id', $courseId)->get();
         return $this->successResponse($course_groups, 'Course groups by course id fetched successfully', 200);
+    }
+
+    public function getCourseGroupByCourseIds(Request $request): JsonResponse
+    {
+        $courseIds = explode(',', $request->input('course_ids'));
+        $course_groups = CourseGroup::whereIn('course_id', $courseIds)
+            ->get()
+            ->groupBy('course_id');
+        return $this->successResponse($course_groups, 'Course groups by courses id fetched successfully', 200);
     }
 
     public function available(): JsonResponse

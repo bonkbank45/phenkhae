@@ -95,6 +95,21 @@ export const useAllCourseBatchDataByCourseId = (courseId: number) => {
   });
 };
 
+export const useAllCourseBatchDataByCourseIds = (courseIds: number[]) => {
+  return useQuery({
+    queryKey: ['course_batch_data_by_course_ids', courseIds],
+    queryFn: async () => {
+      const response = await api.get(
+        `/course_group/courses?course_ids=${courseIds.join(',')}`,
+      );
+      return response.data;
+    },
+    staleTime: 1000 * 60 * 5,
+    enabled: courseIds.length > 0,
+    placeholderData: (prevData) => prevData,
+  });
+};
+
 export const useAvailableCourseBatchData = () => {
   return useQuery({
     queryKey: ['available_course_batch_data'],
@@ -145,6 +160,9 @@ export const useEditCourseBatchData = () => {
       });
       queryClient.invalidateQueries({
         queryKey: ['available_course_batch_data'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['course_batch_data_by_course_id'],
       });
       console.log('Success', response.data);
     },

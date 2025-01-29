@@ -1,5 +1,5 @@
 import { Button } from '@material-tailwind/react';
-interface PaginationProps {
+export interface PaginationProps {
   currentPage: number;
   totalPages: number;
   from: number;

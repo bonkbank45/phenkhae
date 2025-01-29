@@ -40,7 +40,7 @@ const Filter = ({
         onChange={(e) => onChange(e.target.value)}
         className={`${
           showIcon ? 'rounded-r-lg' : 'rounded-lg'
-        } border border-stroke bg-white px-4 py-2 focus:border-primary focus:outline-none dark:border-strokedark dark:bg-boxdark font-notoLoopThaiRegular text-sm ${className}`}
+        } h-full border border-stroke bg-white px-4 py-2 focus:border-primary focus:outline-none dark:border-strokedark dark:bg-boxdark font-notoLoopThaiRegular text-sm ${className}`}
       >
         <option value="all" disabled>
           {placeholder}

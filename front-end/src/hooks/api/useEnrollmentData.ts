@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Enrollment, GroupEnrollmentSubmit } from '../../types/enrollment';
 import api from '../../services/api';
 import { ErrorResponse } from '../../types/error_response';
+import { SelectedBatch } from '../../pages/Student/StudentIndexPage';
 
 interface StudentSelected {
   id: number;
@@ -51,6 +52,34 @@ export const useEnrolledStudentsByBatchId = ({
       );
       return response.data;
     },
+    staleTime: 1000 * 60 * 5,
+    placeholderData: (previousData) => previousData,
+  });
+};
+
+export const useEnrolledStudentsByBatchIds = (
+  batchData: SelectedBatch[],
+  enabled: boolean = false,
+  page: number,
+) => {
+  const params = new URLSearchParams();
+
+  const isAllSelected = batchData.some((batch) => batch.course_id === -1);
+
+  if (!isAllSelected) {
+    const batchIds = batchData.map((batch) => batch.batch_id.join(','));
+    params.append('batch_ids', batchIds.join(','));
+  } else {
+    params.append('fetch_all', 'true');
+  }
+  params.append('page', page.toString() || '1');
+  return useQuery({
+    queryKey: ['enrollments', isAllSelected ? 'all' : params.toString()],
+    queryFn: async () => {
+      const response = await api.get(`/enrollment/course-batches?${params}`);
+      return response.data;
+    },
+    enabled: enabled && (isAllSelected || params.toString().length > 0),
     staleTime: 1000 * 60 * 5,
     placeholderData: (previousData) => previousData,
   });

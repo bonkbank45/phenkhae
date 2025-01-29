@@ -61,7 +61,8 @@ Route::group(['middleware' => ['api']], function () {
     Route::prefix('course_group')->group(function () {
         Route::get('/', [CourseGroupController::class, 'index']);
         Route::get('/table', [CourseGroupController::class, 'table']);
-        Route::get('/course/{courseId}', [CourseGroupController::class, 'course']);
+        Route::get('/course/{courseId}', [CourseGroupController::class, 'getCourseGroupByCourseId']);
+        Route::get('/courses', [CourseGroupController::class, 'getCourseGroupByCourseIds']);
         Route::get('/available', [CourseGroupController::class, 'available']);
         Route::post('/', [CourseGroupController::class, 'store']);
         Route::get('/{courseGroup}', [CourseGroupController::class, 'show']);
@@ -113,6 +114,7 @@ Route::group(['middleware' => ['api']], function () {
     Route::prefix('student')->group(function () {
         Route::get('/', [StudentController::class, 'index']);
         Route::get('/table', [StudentController::class, 'table']);
+        Route::get('/count', [StudentController::class, 'count']);
         Route::post('/', [StudentController::class, 'store']);
         Route::get('/{student}', [StudentController::class, 'show']);
         Route::get('/{student}/application-form', [StudentController::class, 'generateApplicationForm']);
@@ -122,10 +124,11 @@ Route::group(['middleware' => ['api']], function () {
     Route::prefix('enrollment')->group(function () {
         Route::get('/', [EnrollmentController::class, 'index']);
         Route::post('/', [EnrollmentController::class, 'store']);
+        Route::get('/course-batches', [EnrollmentController::class, 'getEnrolledStudentsByBatchIds']);
+        Route::get('/course-batch/{courseBatchId}', [EnrollmentController::class, 'getEnrolledStudentsByBatchId']);
         Route::get('/{enrollment}', [EnrollmentController::class, 'show']);
         Route::put('/{enrollment}', [EnrollmentController::class, 'update']);
         Route::delete('/{enrollment}', [EnrollmentController::class, 'destroy']);
-        Route::get('/course-batch/{courseBatchId}', [EnrollmentController::class, 'getEnrolledStudentsByBatchId']);
     });
     Route::prefix('exam')->group(function () {
         Route::get('/', [ExamController::class, 'index']);

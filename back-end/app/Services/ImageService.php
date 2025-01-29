@@ -4,10 +4,9 @@ namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Laravel\Facades\Image;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
-
+use Exception;
 class ImageService
 {
     public function uploadStudentProfileImage(UploadedFile $image, string $studentId)
@@ -33,10 +32,13 @@ class ImageService
     public function deleteStudentProfile(?string $fileName): void
     {
         if ($fileName) {
-            Storage::delete('public/profiles/students/' . $fileName);
+            Storage::disk('public')->delete('profiles/students/' . $fileName);
+        } else {
+            throw new Exception('Student profile image not found');
         }
     }
 }
+
 
 
 

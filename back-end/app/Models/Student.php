@@ -50,10 +50,15 @@ class Student extends Model
 
     public function scopeSearch($query, $searchTerm)
     {
-        return $query->where('firstname_tha', 'like', '%' . $searchTerm . '%')
-            ->orWhere('lastname_tha', 'like', '%' . $searchTerm . '%')
-            ->orWhere('phonenumber', 'like', '%' . $searchTerm . '%')
-            ->orWhere('email', 'like', '%' . $searchTerm . '%');
+        return $query->when(is_numeric($searchTerm), function ($q) use ($searchTerm) {
+            $q->where('id', $searchTerm)
+                ->orWhere('citizenid_card', 'like', '%' . $searchTerm . '%')
+                ->orderByRaw('id = ? DESC', [$searchTerm]);
+        }, function ($q) use ($searchTerm) {
+            $q->where('firstname_tha', 'like', '%' . $searchTerm . '%')
+                ->orWhere('lastname_tha', 'like', '%' . $searchTerm . '%')
+                ->orWhere('email', 'like', '%' . $searchTerm . '%');
+        });
     }
 
     public function scopeFilterAgeRange($query, $ageRange)
