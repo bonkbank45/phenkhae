@@ -237,7 +237,11 @@ class StudentController extends Controller
     {
         try {
             $student = Student::findOrFail($id);
-            $pdfGenerator->generate($student);
+            $pdfContent = $pdfGenerator->generate($student);
+            return response($pdfContent, 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="application-form.pdf"',
+            ]);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse($e->getMessage(), 404);
         }

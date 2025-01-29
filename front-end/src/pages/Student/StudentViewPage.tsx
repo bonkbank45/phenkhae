@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useStudentDataById } from '../../hooks/api/useStudentData';
 import { format } from 'date-fns';
@@ -8,10 +8,22 @@ import IconEdit from '../../common/EditPen';
 import IconCrossCircled from '../../common/CrossCircle';
 import { OutlineFileDownload } from '../../common/Download';
 import { getCourseStatus } from '../../utils/student';
+import { usePdfRegisterStudent } from '../../hooks/api/usePdfData';
 
 const StudentViewPage = () => {
   const { id } = useParams();
   const { data: studentData, isLoading } = useStudentDataById(Number(id));
+  const [isClickDownload, setIsClickDownload] = useState(false);
+  const { data: pdfData, isLoading: isPdfLoading } = usePdfRegisterStudent(
+    id,
+    isClickDownload,
+  );
+
+  useEffect(() => {
+    if (isClickDownload) {
+      setIsClickDownload(false);
+    }
+  }, [isClickDownload]);
 
   const imageUrl = studentData?.data.profile_image
     ? `${import.meta.env.VITE_API_URL}/storage/profiles/students/${
@@ -136,6 +148,7 @@ const StudentViewPage = () => {
                   width="2em"
                   height="2em"
                   className="cursor-pointer"
+                  onClick={() => setIsClickDownload(true)}
                 />
               </div>
               {/* ข้อมูลในมือถือกว้าง 4/4 คอลัมน์ ในคอมจะกว้าง 2/4 คอลัมน์ */}
