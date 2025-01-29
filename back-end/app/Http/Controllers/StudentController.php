@@ -213,15 +213,21 @@ class StudentController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
-        DB::beginTransaction();
         try {
+            DB::beginTransaction();
             $student = Student::findOrFail($id);
+            if ($student->profile_image) {
+                $this->imageService->deleteStudentProfile($student->profile_image);
+            }
             $student->delete();
             DB::commit();
             return $this->successResponse(null, 'Student deleted successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
-            return $this->errorResponse($e->getMessage(), 404);
+            return $this->errorResponse($e->getMessage() . " - Student not found", 404);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage() . " - Error deleting student", 500);
         }
     }
 

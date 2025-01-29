@@ -94,7 +94,7 @@ export const useAddStudentData = () => {
     },
     onSuccess: (response) => {
       console.log('Success', response.data);
-      queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ['students'], exact: false });
     },
     onError: (error: Error) => {
       console.error('Failed to add student:', error.message);
@@ -108,6 +108,27 @@ export const useStudentCount = () => {
     queryFn: async () => {
       const response = await api.get('/student/count');
       return response.data;
+    },
+  });
+};
+
+export const useDeleteStudentData = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const response = await api.delete(`/student/${id}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      console.log('Delete StudentSuccess!');
+      queryClient.invalidateQueries({ queryKey: ['students'], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ['enrollments'],
+        exact: false,
+      });
+    },
+    onError: (error: Error) => {
+      console.error('Delete Student Failed!', error.message);
     },
   });
 };

@@ -17,16 +17,23 @@ import PaginatedTable, {
   ColumnType,
 } from '../../components/Tables/PaginatedTable';
 import Modal from '../../components/Modal';
+import DeleteStudentForm from './DeleteStudentForm';
 import useDebounce from '../../hooks/useDebounce';
 import { useCourseData } from '../../hooks/api/useCourseData';
 
 /* --Import Types-- */
-import { Student } from '../../types/student';
+import {
+  BasicStudentInfo,
+  Student,
+  StudentWithCourseBatchTable,
+} from '../../types/student';
 import {
   CourseGroupByCourseIdResponse,
   CourseGroupTable,
 } from '../../types/course_group';
 import { useEnrolledStudentsByBatchIds } from '../../hooks/api/useEnrollmentData';
+import { toast } from 'react-toastify';
+import { getCourseStatus } from '../../utils/student';
 /* -- Import Types-- */
 
 interface CourseIdFilter {
@@ -39,19 +46,6 @@ export interface SelectedBatch {
   batch_id: number[];
 }
 
-interface StudentWithCourseBatchTable {
-  course_group_id: number;
-  student_id: number;
-  firstname_tha: string;
-  lastname_tha: string;
-  course_name: string;
-  batch: number;
-  batch_start: string;
-  batch_end: string;
-  student_date_start: string;
-  student_date_end: string | null;
-}
-
 const StudentIndexPage = () => {
   const navigate = useNavigate();
   const [basicInfoPage, setBasicInfoPage] = useState<number>(1);
@@ -59,6 +53,9 @@ const StudentIndexPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [courseIdFilter, setCourseIdFilter] = useState<CourseIdFilter[]>([]);
   const [selectedBatch, setSelectedBatch] = useState<SelectedBatch[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [selectedStudentCourseBatch, setSelectedStudentCourseBatch] =
+    useState<StudentWithCourseBatchTable | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [
@@ -242,27 +239,27 @@ const StudentIndexPage = () => {
     {
       header: 'รหัสนักเรียน',
       key: 'id',
-      render: (student) => student.id || '-',
+      render: (student: Student) => student.id || '-',
     },
     {
       header: 'ชื่อ',
       key: 'firstname_tha',
-      render: (student) => student.firstname_tha || '-',
+      render: (student: Student) => student.firstname_tha || '-',
     },
     {
       header: 'นามสกุล',
       key: 'lastname_tha',
-      render: (student) => student.lastname_tha || '-',
+      render: (student: Student) => student.lastname_tha || '-',
     },
     {
       header: 'รหัสประจำตัวประชาชน',
       key: 'citizenid_card',
-      render: (student) => student.citizenid_card || '-',
+      render: (student: Student) => student.citizenid_card || '-',
     },
     {
       header: 'อีเมล',
       key: 'email',
-      render: (student) => student.email || '-',
+      render: (student: Student) => student.email || '-',
     },
     {
       header: 'จัดการ',
@@ -275,7 +272,12 @@ const StudentIndexPage = () => {
           <button onClick={() => navigate(`/students/${student.id}/edit`)}>
             <IconEdit className="cursor-pointer w-5 h-5" />
           </button>
-          <button onClick={() => {}}>
+          <button
+            onClick={() => {
+              setIsDeleteModalOpen(true);
+              setSelectedStudent(student);
+            }}
+          >
             <IconCrossCircled className="cursor-pointer w-5 h-5" />
           </button>
         </div>
@@ -288,32 +290,36 @@ const StudentIndexPage = () => {
       {
         header: 'รหัสนักเรียน',
         key: 'student_id',
-        render: (student) => student.student_id || '-',
+        render: (student: StudentWithCourseBatchTable) =>
+          student.student_id || '-',
       },
       {
         header: 'ชื่อ',
         key: 'firstname_tha',
-        render: (student) => student.firstname_tha || '-',
+        render: (student: StudentWithCourseBatchTable) =>
+          student.firstname_tha || '-',
       },
       {
         header: 'นามสกุล',
         key: 'lastname_tha',
-        render: (student) => student.lastname_tha || '-',
+        render: (student: StudentWithCourseBatchTable) =>
+          student.lastname_tha || '-',
       },
       {
         header: 'จากหลักสูตร',
         key: 'course_name',
-        render: (student) => student.course_name || '-',
+        render: (student: StudentWithCourseBatchTable) =>
+          student.course_name || '-',
       },
       {
         header: 'รุ่นที่ลงทะเบียน',
         key: 'batch',
-        render: (student) => student.batch || '-',
+        render: (student: StudentWithCourseBatchTable) => student.batch || '-',
       },
       {
         header: 'สถานะการเรียน',
         key: 'status',
-        render: (student) =>
+        render: (student: StudentWithCourseBatchTable) =>
           getCourseStatus(
             student.batch_start,
             student.batch_end,
@@ -334,7 +340,12 @@ const StudentIndexPage = () => {
             >
               <IconEdit className="cursor-pointer w-5 h-5" />
             </button>
-            <button onClick={() => {}}>
+            <button
+              onClick={() => {
+                setIsDeleteModalOpen(true);
+                setSelectedStudentCourseBatch(student);
+              }}
+            >
               <IconCrossCircled className="cursor-pointer w-5 h-5" />
             </button>
           </div>
@@ -342,47 +353,15 @@ const StudentIndexPage = () => {
       },
     ];
 
-  function getCourseStatus(
-    batchStart,
-    batchEnd,
-    studentDateStart,
-    studentDateEnd,
-  ) {
-    const now = new Date();
-    const start = new Date(batchStart);
-    const end = new Date(batchEnd);
-    const studentStart = new Date(studentDateStart);
-    const studentEnd = studentDateEnd ? new Date(studentDateEnd) : null;
-
-    if (now < studentStart) {
-      return (
-        <span className="text-gray-500 font-notoLoopThaiRegular">
-          ยังไม่เริ่มเรียน
-        </span>
-      );
-    } else if (
-      now >= studentStart &&
-      (studentEnd === null || now <= studentEnd)
-    ) {
-      if (now <= end) {
-        return (
-          <span className="text-green-500 font-notoLoopThaiRegular">
-            กำลังเรียน
-          </span>
-        );
-      } else {
-        return (
-          <span className="text-red-500 font-notoLoopThaiRegular">
-            กำลังเรียน (เลยกำหนดการวันเรียนจบของหลักสูตร)
-          </span>
-        );
-      }
-    } else {
-      return (
-        <span className="text-red-500 font-notoLoopThaiRegular">เรียนจบ</span>
-      );
-    }
-  }
+  const convertToBasicStudentInfo = (
+    student: StudentWithCourseBatchTable,
+  ): BasicStudentInfo => {
+    return {
+      id: student.student_id,
+      firstname_tha: student.firstname_tha,
+      lastname_tha: student.lastname_tha,
+    };
+  };
 
   if (isLoadingStudents) {
     return (
@@ -553,6 +532,47 @@ const StudentIndexPage = () => {
           />
         </div>
       </div>
+
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="ลบรายชื่อนักเรียน"
+      >
+        {selectedStudent && (
+          <DeleteStudentForm
+            student={selectedStudent}
+            onSuccess={() => {
+              toast.success('ลบรายชื่อนักเรียนสำเร็จ');
+              setIsDeleteModalOpen(false);
+              setSelectedStudent(null);
+            }}
+            onError={(error) => {
+              toast.error(error.message + ' - ลบรายชื่อนักเรียนไม่สำเร็จ');
+            }}
+            onClose={() => {
+              setIsDeleteModalOpen(false);
+              setSelectedStudent(null);
+            }}
+          />
+        )}
+        {selectedStudentCourseBatch && (
+          <DeleteStudentForm
+            student={convertToBasicStudentInfo(selectedStudentCourseBatch)}
+            onSuccess={() => {
+              toast.success('ลบรายชื่อนักเรียนสำเร็จ');
+              setIsDeleteModalOpen(false);
+              setSelectedStudentCourseBatch(null);
+            }}
+            onError={(error) => {
+              toast.error(error.message + ' - ลบรายชื่อนักเรียนไม่สำเร็จ');
+            }}
+            onClose={() => {
+              setIsDeleteModalOpen(false);
+              setSelectedStudentCourseBatch(null);
+            }}
+          />
+        )}
+      </Modal>
     </>
   );
 };
