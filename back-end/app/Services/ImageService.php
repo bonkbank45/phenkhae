@@ -12,7 +12,7 @@ class ImageService
     public function uploadStudentProfileImage(UploadedFile $image, string $studentId)
     {
         $fileName = 'student_profile_image_' . $studentId;
-        $path = storage_path('app/public/profiles/students/' . $fileName);
+        $path = storage_path('app/public/profiles/students/' . $fileName . '.jpg');
 
         // create image manager with desired driver
         $manager = new ImageManager(new Driver());

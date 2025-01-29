@@ -35,6 +35,16 @@ export interface AddStudentData {
   surgery_history: string | null;
 }
 
+export const useStudentDataById = (id: number) => {
+  return useQuery({
+    queryKey: ['student', id],
+    queryFn: async () => {
+      const response = await api.get(`/student/${id}`);
+      return response.data;
+    },
+  });
+};
+
 export const useStudentData = ({
   searchTerm,
   courseBatchId,

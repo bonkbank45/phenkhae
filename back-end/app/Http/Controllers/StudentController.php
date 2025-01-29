@@ -160,9 +160,11 @@ class StudentController extends Controller
                 'edu_qual' => function ($query) {
                     $query->select(['id', 'edu_qual_name', 'edu_qual_eng']);
                 },
+                'marital_status',
                 'medical_condition',
                 'enrollments',
-                'enrollments.course_group'
+                'enrollments.course_group',
+                'enrollments.course_group.course'
             ])->findOrFail($id);
             return $this->successResponse($student, 'Student fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
