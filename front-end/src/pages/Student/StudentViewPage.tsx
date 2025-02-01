@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useStudentDataById } from '../../hooks/api/useStudentData';
 import { format } from 'date-fns';
 import Table from '../../components/Tables/Table';
@@ -9,15 +9,31 @@ import IconCrossCircled from '../../common/CrossCircle';
 import { OutlineFileDownload } from '../../common/Download';
 import { getCourseStatus } from '../../utils/student';
 import { usePdfRegisterStudent } from '../../hooks/api/usePdfData';
+import Spinner from '../../common/Spinner';
+import StudentDetailModal from './StudentViewPageForm/StudentDetailModal';
+import { getPaymentStatus } from '../../utils/bill_info';
+import { FileAdditionOne } from '../../common/FileAdditionOne';
+import Button from '@material-tailwind/react/components/Button';
+import {
+  getStudentLicenseQual,
+  isCourseCanGetLicense,
+} from '../../utils/student_license_qual';
 
 const StudentViewPage = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
-  const { data: studentData, isLoading } = useStudentDataById(Number(id));
-  const [isClickDownload, setIsClickDownload] = useState(false);
-  const { data: pdfData, isLoading: isPdfLoading } = usePdfRegisterStudent(
-    id,
-    isClickDownload,
+  const [selectedMenu, setSelectedMenu] = useState<
+    'course' | 'certificate_after_end' | 'payment' | 'bill'
+  >('course');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data: studentData, isLoading: isStudentLoading } = useStudentDataById(
+    Number(id),
   );
+  const [modalType, setModalType] = useState<
+    'address' | 'surgery' | 'massage_exp'
+  >('address');
+  const [isClickDownload, setIsClickDownload] = useState(false);
+  const {} = usePdfRegisterStudent(id, isClickDownload);
 
   useEffect(() => {
     if (isClickDownload) {
@@ -33,15 +49,20 @@ const StudentViewPage = () => {
         import.meta.env.VITE_API_URL
       }/storage/profiles/students/default-profile.png`;
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isStudentLoading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner />
+      </div>
+    );
 
   const studentCourseDataTable =
     studentData?.data.enrollments?.map((enrollment) => ({
       course_name: enrollment.course_group?.course.course_name || '-',
       batch_name: `รุ่นที่ ${enrollment.course_group?.batch || '-'}`,
       course_status: getCourseStatus(
-        enrollment.course_group?.course.start_date,
-        enrollment.course_group?.course.end_date,
+        enrollment.course_group?.date_start,
+        enrollment.course_group?.date_end,
         enrollment.date_start,
         enrollment.date_end,
       ),
@@ -92,7 +113,12 @@ const StudentViewPage = () => {
     {
       header: 'สถานะการส่งเคส',
       key: 'case_status',
-      render: (courseBatch) => courseBatch.case_status || '-',
+      render: (courseBatch) =>
+        courseBatch.case_status === 'ยังไม่ส่งเคส' ? (
+          <p className="text-red-500">ยังไม่ส่งเคส</p>
+        ) : (
+          <p className="text-green-500">ส่งเคสแล้ว</p>
+        ),
     },
     {
       header: 'จัดการ',
@@ -113,6 +139,129 @@ const StudentViewPage = () => {
     },
   ];
 
+  const licenseCourseDataTable = studentData?.data.enrollments?.map(
+    (enrollment) => ({
+      course_id: enrollment.course_group.course.id,
+      course_name: enrollment.course_group.course.course_name,
+      course_batch: enrollment.course_group.batch,
+      license_qual: isCourseCanGetLicense(enrollment)
+        ? 'ยังไม่พร้อมสอบใบประกอบวิชาชีพ'
+        : 'หลักสูตรไม่สามารถสอบใบประกอบวิชาชีพได้',
+    }),
+  );
+
+  const columnsCertificateAfterEnd = [
+    {
+      header: 'ไอดีหลักสูตร',
+      key: 'course_id',
+      render: (certificateAfterEnd) => certificateAfterEnd.course_id || '-',
+    },
+    {
+      header: 'หลักสูตร',
+      key: 'course_name',
+      render: (certificateAfterEnd) => certificateAfterEnd.course_name || '-',
+    },
+    {
+      header: 'รุ่นที่ลงทะเบียน',
+      key: 'course_batch',
+      render: (certificateAfterEnd) => certificateAfterEnd.course_batch || '-',
+    },
+    {
+      header: 'สถานะความพร้อมสอบใบประกอบวิชาชีพ',
+      key: 'license_qual',
+      render: (certificateAfterEnd) =>
+        certificateAfterEnd.license_qual === 'ยังไม่พร้อมสอบใบประกอบวิชาชีพ' ? (
+          <p className="text-red-500">ยังไม่พร้อมสอบใบประกอบวิชาชีพ</p>
+        ) : (
+          <p className="text-yellow-500">
+            หลักสูตรไม่สามารถสอบใบประกอบวิชาชีพได้
+          </p>
+        ),
+    },
+    {
+      header: 'จัดการ',
+      key: 'action',
+      render: (certificateAfterEnd) => (
+        <div>
+          {certificateAfterEnd.license_qual ===
+          'ยังไม่พร้อมสอบใบประกอบวิชาชีพ' ? (
+            <div className="flex items-center gap-2">
+              <button>
+                <RoundRemoveRedEye className="cursor-pointer w-5 h-5" />
+              </button>
+              <button>
+                <IconEdit className="cursor-pointer w-5 h-5" />
+              </button>
+            </div>
+          ) : (
+            '-'
+          )}
+        </div>
+      ),
+    },
+  ];
+
+  const paymentDataTable = studentData?.data.enrollments?.map((enrollment) => ({
+    course_id: enrollment.course_group?.course.id || '-',
+    course_name: enrollment.course_group?.course.course_name || '-',
+    course_batch: `รุ่นที่ ${enrollment.course_group?.batch || '-'}`,
+    payment_status: getPaymentStatus(enrollment, studentData?.data.bill_infos)
+      ? 'ชำระเงินแล้ว'
+      : 'ยังไม่ชำระเงิน',
+  }));
+
+  const columnsPayment = [
+    {
+      header: 'ไอดีหลักสูตร',
+      key: 'course_id',
+      render: (enrollment) => enrollment.course_id || '-',
+    },
+    {
+      header: 'หลักสูตร',
+      key: 'course_name',
+      render: (enrollment) => enrollment.course_name || '-',
+    },
+    {
+      header: 'รุ่นที่ลงทะเบียน',
+      key: 'course_batch',
+      render: (enrollment) => enrollment.course_batch || '-',
+    },
+    {
+      header: 'สถานะการชำระเงิน',
+      key: 'payment_status',
+      render: (bill) =>
+        bill.payment_status === 'ชำระเงินแล้ว' ? (
+          <p className="text-green-500">ชำระเงินแล้ว</p>
+        ) : (
+          <p className="text-red-500">ยังไม่ชำระเงิน</p>
+        ),
+    },
+    {
+      header: 'จัดการ',
+      key: 'action',
+      render: (enrollment) => (
+        <div className="flex items-center gap-2">
+          {enrollment.payment_status === 'ชำระเงินแล้ว' ? (
+            <button>
+              <RoundRemoveRedEye className="cursor-pointer w-5 h-5" />
+            </button>
+          ) : null}
+          <button>
+            <FileAdditionOne
+              className="cursor-pointer w-5 h-5"
+              color="#808080"
+            />
+          </button>
+          {getPaymentStatus(enrollment, studentData?.data.bill_infos) ? (
+            <button>
+              <IconCrossCircled className="cursor-pointer w-5 h-5" />
+            </button>
+          ) : null}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <>
       <div className="bg-white rounded-xl shadow p-4 dark:bg-boxdark">
@@ -122,15 +271,11 @@ const StudentViewPage = () => {
             {/* กล่องโปรไฟล์ในมือถือกว้าง 3/3 แต่ในคอมจะกว้าง 1/3 */}
             <div className="grid col-span-3 xl:col-span-1 justify-items-center gap-4 bg-white rounded-xl shadow p-4 dark:bg-boxdark">
               <div className="flex justify-center items-center">
-                {imageUrl ? (
-                  <img
-                    src={imageUrl}
-                    alt="Student"
-                    className="w-50 h-50 rounded-full object-cover"
-                  />
-                ) : (
-                  <p>No image</p>
-                )}
+                <img
+                  src={imageUrl}
+                  alt="Student"
+                  className="w-60 h-60 rounded-full shadow-lg object-cover"
+                />
               </div>
               <p className="text-center text-2xl font-bold">
                 {studentData?.data.prename.prename_tha}{' '}
@@ -143,13 +288,16 @@ const StudentViewPage = () => {
               {/* หัวข้อจะกว้าง 4 ตลอด เพราะเป็นหัวข้อใหญ่ */}
               <h2 className="col-span-3 text-xl font-bold">ประวัติส่วนตัว</h2>
               <div className="col-span-1 flex justify-end items-center">
-                <IconEdit className="w-[1.6em] h-[1.6em] cursor-pointer" />
-                <OutlineFileDownload
-                  width="2em"
-                  height="2em"
-                  className="cursor-pointer"
-                  onClick={() => setIsClickDownload(true)}
-                />
+                <button onClick={() => navigate(`/student/${id}/edit`)}>
+                  <IconEdit className="w-[1.6em] h-[1.6em] cursor-pointer" />
+                </button>
+                <button onClick={() => setIsClickDownload(true)}>
+                  <OutlineFileDownload
+                    width="2em"
+                    height="2em"
+                    className="cursor-pointer"
+                  />
+                </button>
               </div>
               {/* ข้อมูลในมือถือกว้าง 4/4 คอลัมน์ ในคอมจะกว้าง 2/4 คอลัมน์ */}
               <div className="grid grid-cols-2 col-span-4 xl:col-span-2 gap-2">
@@ -222,15 +370,23 @@ const StudentViewPage = () => {
               {/* ข้อมูลในมือถือกว้าง 4/4 คอลัมน์ ในคอมจะกว้าง 2/4 คอลัมน์ */}
               <div className="grid grid-cols-2 col-span-4 xl:col-span-2 gap-2">
                 <p>ที่อยู่ปัจจุบัน</p>
-                <p className="break-words font-bold">คลิกเพื่อดูรายละเอียด</p>
+                <button
+                  onClick={() => {
+                    setModalType('address');
+                    setIsModalOpen(true);
+                  }}
+                  className="text-start font-bold hover:underline"
+                >
+                  คลิกเพื่อดูรายละเอียด
+                </button>
               </div>
               <h2 className="mt-4 col-span-4 text-xl font-bold">
                 ประวัติการศึกษา
               </h2>
               {/* ข้อมูลในมือถือกว้าง 4/4 คอลัมน์ ในคอมจะกว้าง 2/4 คอลัมน์ */}
-              <div className="grid grid-cols-2 col-span-4 xl:col-span-2 gap-2">
-                <p>วุฒิการศึกษาสูงสุด</p>
-                <p className="break-words font-bold">
+              <div className="grid grid-cols-4 col-span-4 gap-2">
+                <p className="col-span-2 xl:col-span-1">วุฒิการศึกษาสูงสุด</p>
+                <p className="col-span-2 xl:col-span-3 break-words font-bold">
                   {studentData?.data.edu_qual.edu_qual_name}
                 </p>
               </div>
@@ -244,16 +400,28 @@ const StudentViewPage = () => {
               {/* ข้อมูลในมือถือกว้าง 4/4 คอลัมน์ ในคอมจะกว้าง 4/4 คอลัมน์ */}
               <div className="grid grid-cols-4 col-span-4 gap-2">
                 <p className="col-span-2 xl:col-span-1">ประวัติการผ่าตัด</p>
-                <p className="col-span-2 xl:col-span-3 break-words font-bold">
+                <button
+                  onClick={() => {
+                    setModalType('surgery');
+                    setIsModalOpen(true);
+                  }}
+                  className="col-span-2 xl:col-span-1 text-start font-bold hover:underline"
+                >
                   คลิกเพื่อดูรายละเอียด
-                </p>
+                </button>
               </div>
               {/* ข้อมูลในมือถือกว้าง 4/4 คอลัมน์ ในคอมจะกว้าง 4/4 คอลัมน์ */}
               <div className="grid grid-cols-4 col-span-4 gap-2">
                 <p className="col-span-2 xl:col-span-1">ประสบการณ์การนวด</p>
-                <p className="col-span-2 xl:col-span-3 break-words font-bold">
+                <button
+                  onClick={() => {
+                    setModalType('massage_exp');
+                    setIsModalOpen(true);
+                  }}
+                  className="col-span-2 xl:col-span-1 text-start font-bold hover:underline"
+                >
                   คลิกเพื่อดูรายละเอียด
-                </p>
+                </button>
               </div>
             </div>
           </div>
@@ -261,32 +429,89 @@ const StudentViewPage = () => {
             <div className="flex flex-col lg:flex-row items-start gap-3 py-3 rounded-xl text-balance bg-gray-50 dark:bg-boxdark dark:border dark:border-gray-400">
               <button
                 type="button"
-                className=" border-gray-400 font-bold underline px-4 hover:text-black"
+                className={`border-gray-400 px-4 hover:text-slate-500 ${
+                  selectedMenu === 'course'
+                    ? 'font-bold underline text-slate-500'
+                    : 'text-gray-400'
+                }`}
+                onClick={() => setSelectedMenu('course')}
               >
                 หลักสูตร
               </button>
               <button
                 type="button"
-                className="text-gray-400 px-4 hover:text-slate-500"
+                className={`px-4 hover:text-slate-500 ${
+                  selectedMenu === 'certificate_after_end'
+                    ? 'font-bold underline text-slate-500'
+                    : 'text-gray-400'
+                }`}
+                onClick={() => setSelectedMenu('certificate_after_end')}
               >
                 สถานะความพร้อมสอบใบประกอบวิชาชีพ
               </button>
               <button
                 type="button"
-                className="text-gray-400 px-4 hover:text-slate-500"
+                className={`px-4 hover:text-slate-500 ${
+                  selectedMenu === 'payment'
+                    ? 'font-bold underline text-slate-500'
+                    : 'text-gray-400'
+                }`}
+                onClick={() => setSelectedMenu('payment')}
+              >
+                การชำระเงิน
+              </button>
+              <button
+                type="button"
+                className={`px-4 hover:text-slate-500 ${
+                  selectedMenu === 'bill'
+                    ? 'font-bold underline text-slate-500'
+                    : 'text-gray-400'
+                }`}
+                onClick={() => setSelectedMenu('bill')}
               >
                 ใบเสร็จ
               </button>
             </div>
             <div className="mt-4">
+              {selectedMenu === 'payment' && (
+                <Button
+                  className="bg-green-500 text-white mb-4 px-4 py-2 rounded-md"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  เพิ่มกลุ่มการจ่ายเงิน (กรณีหากจ่ายเงินพร้อมกันหลายหลักสูตร)
+                </Button>
+              )}
               <Table
-                data={studentCourseDataTable}
-                columns={columnsCourseBatch}
-                isLoading={isLoading}
+                data={
+                  selectedMenu === 'course'
+                    ? studentCourseDataTable
+                    : selectedMenu === 'certificate_after_end'
+                    ? licenseCourseDataTable
+                    : selectedMenu === 'payment'
+                    ? paymentDataTable
+                    : []
+                }
+                columns={
+                  selectedMenu === 'course'
+                    ? columnsCourseBatch
+                    : selectedMenu === 'certificate_after_end'
+                    ? columnsCertificateAfterEnd
+                    : selectedMenu === 'payment'
+                    ? columnsPayment
+                    : []
+                }
+                isLoading={isStudentLoading}
               />
             </div>
           </div>
         </div>
+        <StudentDetailModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          data={studentData?.data}
+          title="รายละเอียดข้อมูล"
+          type={modalType}
+        />
       </div>
     </>
   );

@@ -1,3 +1,4 @@
+import { CourseGroupTable } from './course_group';
 import { Student } from './student';
 
 interface Enrollment {
@@ -8,6 +9,9 @@ interface Enrollment {
   date_start: string;
   date_end: string;
   course_price_id: number;
+  created_at: string;
+  updated_at: string;
+  course_group: CourseGroupTable;
 }
 
 interface EnrollmentWithStudent extends Student {

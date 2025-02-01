@@ -164,7 +164,8 @@ class StudentController extends Controller
                 'medical_condition',
                 'enrollments',
                 'enrollments.course_group',
-                'enrollments.course_group.course'
+                'enrollments.course_group.course',
+                'bill_infos'
             ])->findOrFail($id);
             return $this->successResponse($student, 'Student fetched successfully', 200);
         } catch (ModelNotFoundException $e) {

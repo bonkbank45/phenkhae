@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->unsignedInteger('vol');
             $table->unsignedInteger('no');
             $table->dateTime('date_submit');
+            $table->foreignId('course_group_id')->constrained('course_groups', 'id');
             $table->foreignId('student_id')->constrained('students', 'id');
             $table->timestamps();
         });
