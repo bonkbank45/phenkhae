@@ -1,10 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import IconBxsUserCircle from '../../../common/BxsUserCircle';
 import AttachFile from '../../../components/Forms/AttachFile';
-const UploadImage = () => {
+const UploadImage = ({
+  isEditMode = false,
+  studentId,
+}: {
+  isEditMode: boolean;
+  studentId: string;
+}) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { setValue } = useFormContext();
+
+  useEffect(() => {
+    if (isEditMode) {
+      setImagePreview(
+        `${process.env.VITE_API_URL}/profiles/students/student_profile_image_${studentId}`,
+      );
+    }
+  }, [isEditMode, studentId]);
 
   const handleImageChange = (file: File) => {
     const reader = new FileReader();

@@ -42,7 +42,13 @@ export const fetchDistricts = () => {
   return api.get('/district');
 };
 
-export const fetchPrefixNames = async (): Promise<
+export const fetchStudentById = (studentId: string) => {
+  return api.get(`/student/${studentId}`);
+};
+
+export const fetchPrefixNames = async (
+  isEditMode: boolean = false,
+): Promise<
   AxiosResponse<
     {
       id: number;
@@ -53,7 +59,9 @@ export const fetchPrefixNames = async (): Promise<
     }[]
   >
 > => {
-  return await api.get('/prename?show_status=1');
+  return await api.get(
+    `/prename?${isEditMode ? 'show_status=all' : 'show_status=1'}`,
+  );
 };
 
 export default api;

@@ -10,7 +10,15 @@ type districtValue = number;
 type subDistrictValue = number;
 type educationQualValue = string;
 
-const CurrentAddress = () => {
+interface CurrentAddressProps {
+  isEditMode?: boolean;
+  studentId?: string;
+}
+
+const CurrentAddress = ({
+  isEditMode = false,
+  studentId,
+}: CurrentAddressProps) => {
   useEffect(() => {
     document.getElementById('scroll-target')?.scrollTo({
       top: 0,
@@ -49,15 +57,19 @@ const CurrentAddress = () => {
   });
 
   useEffect(() => {
-    if (provinceId) {
-      setValue('address_district', null);
-      setValue('address_sub_district', null);
+    if (!isEditMode) {
+      if (provinceId) {
+        setValue('address_district', null);
+        setValue('address_sub_district', null);
+      }
     }
   }, [provinceId, setValue]);
 
   useEffect(() => {
-    if (districtId) {
-      setValue('address_sub_district', null);
+    if (!isEditMode) {
+      if (districtId) {
+        setValue('address_sub_district', null);
+      }
     }
   }, [districtId, setValue]);
 

@@ -4,11 +4,13 @@ import DropdownSearchWithController from '../../../components/Forms/DropdownSear
 import DatePickerWithController from '../../../components/Forms/DatePicker/DatePickerWithController';
 import { useFormContext } from 'react-hook-form';
 import { AxiosResponse } from 'axios';
+import { format } from 'date-fns';
 
 import {
   fetchMaritalStatuses,
   fetchProvinces,
   fetchPrefixNames,
+  fetchStudentById,
 } from '../../../services/api';
 
 interface SelectOption {
@@ -31,7 +33,15 @@ interface ProvinceResponse {
   }[];
 }
 
-const PersonalInformation = () => {
+interface PersonalInformationProps {
+  isEditMode?: boolean;
+  studentId?: string;
+  studentData?: any;
+}
+
+const PersonalInformation = ({
+  isEditMode = false,
+}: PersonalInformationProps) => {
   const {
     register,
     control,
@@ -70,7 +80,7 @@ const PersonalInformation = () => {
           prename_short_tha?: string;
           prename_short_eng?: string;
         }[]
-      > = await fetchPrefixNames();
+      > = await fetchPrefixNames(isEditMode);
       const formattedPrefixNames = response.data.map((prefixName) => ({
         value: prefixName.id,
         label: prefixName.prename_tha,
@@ -85,6 +95,20 @@ const PersonalInformation = () => {
   return (
     <>
       <div className="mt-8 mb-8">
+        {isEditMode && (
+          <div className="border-b-4 border-gray-300 pb-4">
+            <h1 className="mt-[2rem] mb-6 text-5xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
+              หน้าแก้ไขข้อมูลนักเรียน
+              <div className="hidden lg:block">
+                {/* <span className="font-notoLoopThaiRegular">
+                  -&ensp; {studentData.data.prename.prename_tha}{' '}
+                  {studentData.data.firstname_tha}{' '}
+                  {studentData.data.lastname_tha}
+                </span> */}
+              </div>
+            </h1>
+          </div>
+        )}
         <h1 className="mt-[2rem] mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
           วันที่สมัครจากใบสมัครนักเรียน
         </h1>
