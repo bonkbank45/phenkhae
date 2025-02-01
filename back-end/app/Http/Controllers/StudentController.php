@@ -160,9 +160,12 @@ class StudentController extends Controller
                 'edu_qual' => function ($query) {
                     $query->select(['id', 'edu_qual_name', 'edu_qual_eng']);
                 },
+                'marital_status',
                 'medical_condition',
                 'enrollments',
-                'enrollments.course_group'
+                'enrollments.course_group',
+                'enrollments.course_group.course',
+                'bill_infos'
             ])->findOrFail($id);
             return $this->successResponse($student, 'Student fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
@@ -235,7 +238,11 @@ class StudentController extends Controller
     {
         try {
             $student = Student::findOrFail($id);
-            $pdfGenerator->generate($student);
+            $pdfContent = $pdfGenerator->generate($student);
+            return response($pdfContent, 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="application-form.pdf"',
+            ]);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse($e->getMessage(), 404);
         }

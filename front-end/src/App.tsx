@@ -179,6 +179,7 @@ function App() {
           <Route path="/students/:id/edit" element={<EditStudentPage />} />
           <Route path="/students/add" element={<AddStudent />} />
           <Route path="/courses/list" element={<CourseManagePage />} />
+          <Route path="/students/:id" element={<StudentViewPage />} />
           <Route path="/settings/datas/prenames" element={<Prename />} />
           <Route path="/settings/datas/prenames/add" element={<AddPrename />} />
           <Route

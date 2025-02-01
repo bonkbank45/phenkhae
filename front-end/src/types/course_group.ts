@@ -46,6 +46,9 @@ export interface CourseGroupTable {
   batch: number;
   date_start: string;
   date_end: string | null;
+  created_at: string;
+  updated_at: string;
+  course: Course;
 }
 
 interface CourseGroupResponse {
