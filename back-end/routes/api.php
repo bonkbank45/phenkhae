@@ -24,7 +24,7 @@ use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\SubDistrictController;
 use App\Http\Controllers\EducationQualController;
-
+use App\Http\Controllers\BillInfoController;
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -160,5 +160,12 @@ Route::group(['middleware' => ['api']], function () {
 
     Route::prefix('education_qual')->group(function () {
         Route::get('/', [EducationQualController::class, 'index']);
+    });
+
+    Route::prefix('bill_info')->group(function () {
+        Route::get('/', [BillInfoController::class, 'index']);
+        Route::post('/', [BillInfoController::class, 'store']);
+        Route::get('/get-bill-info/{courseBatchId}', [BillInfoController::class, 'getBillInfo']);
+        Route::get('/get-latest-bill-vol', [BillInfoController::class, 'getLatestBillVol']);
     });
 });

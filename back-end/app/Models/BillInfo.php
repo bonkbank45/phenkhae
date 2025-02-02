@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class BillInfo extends Model
 {
     protected $table = 'bill_infos';
-    protected $fillable = ['vol', 'no', 'date_submit'];
+    protected $fillable = ['vol', 'no', 'bill_receiver', 'date_submit', 'course_group_id', 'student_id'];
 
     public function student(): BelongsTo
     {
