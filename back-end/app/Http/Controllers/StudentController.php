@@ -189,8 +189,16 @@ class StudentController extends Controller
         try {
             DB::beginTransaction();
             $student = Student::findOrFail($id);
-            if ($request->hasFile('profile_image')) {
-                $this->imageService->deleteStudentProfile($student->profile_image);
+            if ($request->has(key: 'is_remove_image') && $request->is_remove_image === true) {
+                if ($student->profile_image) {
+                    $this->imageService->deleteStudentProfile($student->profile_image);
+                    $student->profile_image = null;
+                    $student->save();
+                }
+            } else if ($request->hasFile('profile_image')) {
+                if ($student->profile_image) {
+                    $this->imageService->deleteStudentProfile($student->profile_image);
+                }
                 $fileName = $this->imageService->uploadStudentProfileImage(
                     $request->file('profile_image'),
                     $student->id
@@ -198,8 +206,7 @@ class StudentController extends Controller
                 $student->profile_image = $fileName;
                 $student->save();
             }
-
-            $student->update($request->all());
+            $student->update($request->except(['profile_image']));
             DB::commit();
             return $this->successResponse($student, 'Student updated successfully', 200);
         } catch (ModelNotFoundException $e) {

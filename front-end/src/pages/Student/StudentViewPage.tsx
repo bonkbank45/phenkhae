@@ -44,7 +44,7 @@ const StudentViewPage = () => {
   const imageUrl = studentData?.data.profile_image
     ? `${import.meta.env.VITE_API_URL}/storage/profiles/students/${
         studentData.data.profile_image
-      }.jpg`
+      }.jpg?t=${new Date().getTime()}`
     : `${
         import.meta.env.VITE_API_URL
       }/storage/profiles/students/default-profile.png`;
@@ -288,7 +288,7 @@ const StudentViewPage = () => {
               {/* หัวข้อจะกว้าง 4 ตลอด เพราะเป็นหัวข้อใหญ่ */}
               <h2 className="col-span-3 text-xl font-bold">ประวัติส่วนตัว</h2>
               <div className="col-span-1 flex justify-end items-center">
-                <button onClick={() => navigate(`/student/${id}/edit`)}>
+                <button onClick={() => navigate(`/students/${id}/edit`)}>
                   <IconEdit className="w-[1.6em] h-[1.6em] cursor-pointer" />
                 </button>
                 <button onClick={() => setIsClickDownload(true)}>

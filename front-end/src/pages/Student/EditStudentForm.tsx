@@ -1,20 +1,30 @@
-import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import PersonalInformation from './AddStudentForm/PersonalInformation';
 import AdditionalPersonalInformation from './AddStudentForm/AdditionalPersonalInformation';
 import CurrentAddress from './AddStudentForm/CurrentAddress';
 import MassageExperience from './AddStudentForm/MassageExperience';
-import CourseTraining from './AddStudentForm/CourseTraining';
 import UploadImage from './AddStudentForm/UploadImage';
-import { fetchStudentById } from '../../services/api';
+import { Student } from '../../types/student';
 
-const EditStudentForm = ({ activeStep }: { activeStep: number }) => {
+const EditStudentForm = ({
+  stepNames,
+  activeStep,
+  studentData,
+  handleSkip,
+}: {
+  stepNames: string[];
+  activeStep: number;
+  studentData: Student;
+  handleSkip: (step: number) => void;
+}) => {
   const { id } = useParams<{ id: string }>();
-  const [studentData, setStudentData] = useState<any>(null);
 
   const commonProps = {
     isEditMode: true,
     studentId: id,
+    studentData: studentData,
+    stepNames: stepNames,
+    handleSkip: handleSkip,
   };
 
   switch (activeStep) {
@@ -27,7 +37,12 @@ const EditStudentForm = ({ activeStep }: { activeStep: number }) => {
     case 3:
       return <MassageExperience />;
     case 4:
-      return <UploadImage {...commonProps} />;
+      return (
+        <UploadImage
+          {...commonProps}
+          haveProfileImage={!!studentData?.profile_image}
+        />
+      );
   }
 };
 

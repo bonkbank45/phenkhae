@@ -13,12 +13,10 @@ export interface AddStudentData {
   birth_province: number;
   birthdate: string;
   citizenid_card: string;
-  course_training: {
+  course_training?: {
     [key: string]: boolean;
   };
   email: string;
-  edu_inses: undefined;
-  edu_qual: undefined;
   father_fname: string;
   father_lname: string;
   firstname_eng: string;
@@ -33,6 +31,14 @@ export interface AddStudentData {
   mother_lname: string;
   prename_tha: number;
   surgery_history: string | null;
+  date_register_from_form: string;
+  edu_ins: string;
+  edu_qual: string;
+  has_medical_condition: string;
+  has_surgery_history: string;
+  learn_massage: string;
+  work_massage: string;
+  profile_image?: string;
 }
 
 export const useStudentDataById = (id: number) => {
@@ -108,6 +114,35 @@ export const useAddStudentData = () => {
     },
     onError: (error: Error) => {
       console.error('Failed to add student:', error.message);
+    },
+  });
+};
+
+export const useEditStudentData = (id: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: AddStudentData) => {
+      if (data.profile_image) {
+        const formData = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
+        formData.append('_method', 'PUT');
+        const response = await api.post(`/student/${id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        return response.data;
+      }
+      const response = await api.put(`/student/${id}`, data);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['students'], exact: false });
+    },
+    onError: (error: Error) => {
+      console.error('Failed to edit student:', error.message);
     },
   });
 };
