@@ -4,12 +4,17 @@ import DropdownSearchWithController from '../../../components/Forms/DropdownSear
 import DatePickerWithController from '../../../components/Forms/DatePicker/DatePickerWithController';
 import { useFormContext } from 'react-hook-form';
 import { AxiosResponse } from 'axios';
+import { format } from 'date-fns';
 
 import {
   fetchMaritalStatuses,
   fetchProvinces,
   fetchPrefixNames,
+  fetchStudentById,
 } from '../../../services/api';
+import IconArrowLeft from '../../../common/ArrowLeft';
+import { Button } from '@material-tailwind/react';
+import { useNavigate } from 'react-router-dom';
 
 interface SelectOption {
   value: number;
@@ -31,12 +36,25 @@ interface ProvinceResponse {
   }[];
 }
 
-const PersonalInformation = () => {
+interface PersonalInformationProps {
+  isEditMode?: boolean;
+  studentId?: string;
+  studentData?: any;
+  stepNames: string[];
+  handleSkip: (step: number) => void;
+}
+
+const PersonalInformation = ({
+  isEditMode = false,
+  stepNames,
+  handleSkip,
+}: PersonalInformationProps) => {
   const {
     register,
     control,
     formState: { errors },
   } = useFormContext();
+  const navigate = useNavigate();
   const [maritalStatuses, setMaritalStatuses] = useState<MaritalStatus[]>([]);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [prefixNames, setPrefixNames] = useState<PrefixName[]>([]);
@@ -70,7 +88,7 @@ const PersonalInformation = () => {
           prename_short_tha?: string;
           prename_short_eng?: string;
         }[]
-      > = await fetchPrefixNames();
+      > = await fetchPrefixNames(isEditMode);
       const formattedPrefixNames = response.data.map((prefixName) => ({
         value: prefixName.id,
         label: prefixName.prename_tha,
@@ -85,6 +103,37 @@ const PersonalInformation = () => {
   return (
     <>
       <div className="mt-8 mb-8">
+        {isEditMode && (
+          <div className="border-b-4 border-gray-300 pb-4">
+            <Button
+              variant="text"
+              type="button"
+              className="underline px-0 py-0 flex items-center gap-2"
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              <IconArrowLeft className="w-4 h-4 text-black dark:text-white" />{' '}
+              <span className="text-black dark:text-white">ย้อนกลับ</span>
+            </Button>
+            <h1 className="mt-[1rem] mb-6 text-5xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
+              หน้าแก้ไขข้อมูลนักเรียน
+            </h1>
+            <span className="text-xl text-slate-500 font-notoRegular dark:text-white">
+              ข้ามไปหน้าที่
+            </span>
+            {stepNames.map((step, index) => (
+              <button
+                type="button"
+                key={index}
+                className="flex items-center gap-2 text-slate-500 hover:underline dark:text-white font-notoLoopThaiRegular"
+                onClick={() => handleSkip(index)}
+              >
+                {index + 1}. {step}
+              </button>
+            ))}
+          </div>
+        )}
         <h1 className="mt-[2rem] mb-6 text-4xl font-bold text-gray-700 dark:text-white font-notoExtraBold">
           วันที่สมัครจากใบสมัครนักเรียน
         </h1>

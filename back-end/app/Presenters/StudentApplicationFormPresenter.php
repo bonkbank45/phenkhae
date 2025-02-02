@@ -217,7 +217,7 @@ class StudentApplicationFormPresenter
         $html .= $this->createPositionedDivAddSpace(
             FormLayoutConfig::POSITION['TENTH_LINE_Y'],
             FormLayoutConfig::THAI_TEXT['MEDICAL_CONDITION_X'],
-            $this->student->medical_condition->name
+            $this->student->medical_condition->name ?? '-'
         );
 
         // Surgery history *add - later
@@ -454,15 +454,17 @@ class StudentApplicationFormPresenter
         return strlen($text);
     }
 
-    private function createPositionedDiv(int $top, int $left, string $content): string
+    private function createPositionedDiv(int $top, int $left, ?string $content): string
     {
+        $content = $content ?? '-';
         return "<div style='position: absolute; top: {$top}px; left: {$left}px;'>
             <span>{$content}</span>
         </div>";
     }
 
-    private function createPositionedDivAddSpace(int $top, int $left, string $content): string
+    private function createPositionedDivAddSpace(int $top, int $left, ?string $content): string
     {
+        $content = $content ?? '-';
         $paddedContent = $content . '&nbsp;&nbsp;&nbsp;&nbsp;';
         return "<div style='position: absolute; top: {$top}px; left: {$left}px;'>
             <span style=''>{$paddedContent}</span>

@@ -40,7 +40,7 @@ class ApplicationFormGenerator implements PDFGenInterface
 
         $this->handlePrenameStrikethrough($prenames);
         /*-- Strikethrough Prename PDF --*/
-        return $this->pdf->Output('application-form.pdf', 'D');
+        return $this->pdf->Output('application-form.pdf', 'S');
     }
 
     private function setupPage(): void

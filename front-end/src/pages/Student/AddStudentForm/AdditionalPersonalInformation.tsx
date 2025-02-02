@@ -80,7 +80,7 @@ const AdditionalPersonalInformation = () => {
 
   useEffect(() => {
     // Only set default values if they don't exist
-    if (!hasMedicalCondition) {
+    if (!hasMedicalCondition || hasMedicalCondition === 'ไม่มี') {
       setMedicalConditionCheckBox('ไม่มี');
       setValue('has_medical_condition', 'ไม่มี');
       setValue('medical_condition', null);
@@ -88,7 +88,7 @@ const AdditionalPersonalInformation = () => {
       setMedicalConditionCheckBox(hasMedicalCondition);
     }
 
-    if (!hasSurgeryHistory) {
+    if (!hasSurgeryHistory || hasSurgeryHistory === 'ไม่เคยผ่าตัด') {
       setSurgeryHistoryCheckBox('ไม่เคยผ่าตัด');
       setValue('has_surgery_history', 'ไม่เคยผ่าตัด');
       setValue('surgery_history', null);

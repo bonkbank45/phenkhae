@@ -160,9 +160,12 @@ class StudentController extends Controller
                 'edu_qual' => function ($query) {
                     $query->select(['id', 'edu_qual_name', 'edu_qual_eng']);
                 },
+                'marital_status',
                 'medical_condition',
                 'enrollments',
-                'enrollments.course_group'
+                'enrollments.course_group',
+                'enrollments.course_group.course',
+                'bill_infos'
             ])->findOrFail($id);
             return $this->successResponse($student, 'Student fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
@@ -186,8 +189,16 @@ class StudentController extends Controller
         try {
             DB::beginTransaction();
             $student = Student::findOrFail($id);
-            if ($request->hasFile('profile_image')) {
-                $this->imageService->deleteStudentProfile($student->profile_image);
+            if ($request->has(key: 'is_remove_image') && $request->is_remove_image === true) {
+                if ($student->profile_image) {
+                    $this->imageService->deleteStudentProfile($student->profile_image);
+                    $student->profile_image = null;
+                    $student->save();
+                }
+            } else if ($request->hasFile('profile_image')) {
+                if ($student->profile_image) {
+                    $this->imageService->deleteStudentProfile($student->profile_image);
+                }
                 $fileName = $this->imageService->uploadStudentProfileImage(
                     $request->file('profile_image'),
                     $student->id
@@ -195,8 +206,7 @@ class StudentController extends Controller
                 $student->profile_image = $fileName;
                 $student->save();
             }
-
-            $student->update($request->all());
+            $student->update($request->except(['profile_image']));
             DB::commit();
             return $this->successResponse($student, 'Student updated successfully', 200);
         } catch (ModelNotFoundException $e) {
@@ -235,7 +245,11 @@ class StudentController extends Controller
     {
         try {
             $student = Student::findOrFail($id);
-            $pdfGenerator->generate($student);
+            $pdfContent = $pdfGenerator->generate($student);
+            return response($pdfContent, 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="application-form.pdf"',
+            ]);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse($e->getMessage(), 404);
         }
