@@ -128,6 +128,10 @@ export const useEditStudentData = (id: number) => {
           formData.append(key, value);
         });
         formData.append('_method', 'PUT');
+        console.log('ก่อนส่ง');
+        formData.forEach((value, key) => {
+          console.log(key, value);
+        });
         const response = await api.post(`/student/${id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
