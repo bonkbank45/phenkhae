@@ -32,8 +32,10 @@ const CourseBatchBillDelete = ({
   return (
     <div className="p-4">
       <p className="mb-4 font-notoLoopThaiRegular">
-        คุณต้องการลบใบเสร็จของนักเรียน "{studentBillInfo.firstname_tha}{' '}
-        {studentBillInfo.lastname_tha}" ใช่หรือไม่?
+        คุณต้องการลบใบเสร็จ Vol.{studentBillInfo.bill_infos_vol} / No.
+        {studentBillInfo.bill_infos_no} ของนักเรียน "
+        {studentBillInfo.firstname_tha} {studentBillInfo.lastname_tha}"
+        ใช่หรือไม่?
       </p>
       <p className="mb-4 text-red-500 font-notoExtraBold">
         คำเตือน:
@@ -52,7 +54,6 @@ const CourseBatchBillDelete = ({
           disabled={isDeleting}
           className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600 disabled:bg-red-300 font-notoLoopThaiRegular"
         >
-          ลบ
           {isDeleting ? 'กำลังลบ...' : 'ลบ'}
         </button>
       </div>

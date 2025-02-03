@@ -22,22 +22,18 @@ class UpdateBillInfoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'course_group_id' => 'required|exists:course_groups,id',
-            'student_id' => 'required|exists:students,id',
-            'vol' => 'required|numeric',
-            'no' => 'required|numeric',
             'bill_receiver' => 'required|string',
             'date_submit' => 'required|date',
+            'note' => 'nullable|string',
         ];
     }
 
     public function prepareForValidation()
     {
         $this->merge([
-            'vol' => $this->bill_infos_vol,
-            'no' => $this->bill_infos_no,
             'bill_receiver' => $this->bill_infos_receiver,
             'date_submit' => Carbon::createFromFormat('d/m/Y', $this->bill_infos_date)->format('Y-m-d'),
+            'note' => $this->bill_infos_note,
         ]);
     }
 }

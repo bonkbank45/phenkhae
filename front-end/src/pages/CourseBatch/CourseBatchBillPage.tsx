@@ -16,11 +16,14 @@ import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import CourseBatchBillDelete from './CourseBatchBillPageForm/CourseBatchBillDelete';
 import { ErrorResponse } from '../../types/error_response';
+import RoundRemoveRedEye from '../../common/RoundRemoveRedEye';
+import CourseBatchBillView from './CourseBatchBillPageForm/CourseBatchBillView';
 
 const CourseBatchBillPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isAddBillModalOpen, setIsAddBillModalOpen] = useState(false);
+  const [isViewBillModalOpen, setIsViewBillModalOpen] = useState(false);
   const [isEditBillModalOpen, setIsEditBillModalOpen] = useState(false);
   const [isDeleteBillModalOpen, setIsDeleteBillModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -128,6 +131,18 @@ const CourseBatchBillPage = () => {
                   setSelectedStudent(student);
                   setIsAddBillModalOpen(false);
                   setIsDeleteBillModalOpen(false);
+                  setIsEditBillModalOpen(false);
+                  setIsViewBillModalOpen(true);
+                }}
+              >
+                <RoundRemoveRedEye />
+              </button>
+              <button
+                className="cursor-pointer"
+                onClick={() => {
+                  setSelectedStudent(student);
+                  setIsAddBillModalOpen(false);
+                  setIsDeleteBillModalOpen(false);
                   setIsEditBillModalOpen(true);
                 }}
               >
@@ -200,7 +215,7 @@ const CourseBatchBillPage = () => {
       <Modal
         isOpen={isAddBillModalOpen}
         onClose={() => setIsAddBillModalOpen(false)}
-        title="รายละเอียดใบเสร็จ"
+        title="เพิ่มใบเสร็จ"
       >
         {selectedStudent && (
           <CourseBatchBillAdd
@@ -208,6 +223,19 @@ const CourseBatchBillPage = () => {
             onError={handleFormSubmitError}
             courseGroupId={Number(id)}
             studentId={selectedStudent.student_id}
+          />
+        )}
+      </Modal>
+      <Modal
+        isOpen={isViewBillModalOpen}
+        onClose={() => setIsViewBillModalOpen(false)}
+        title="รายละเอียดใบเสร็จ"
+      >
+        {selectedStudent && (
+          <CourseBatchBillView
+            vol={selectedStudent.bill_infos_vol}
+            no={selectedStudent.bill_infos_no}
+            studentId={Number(selectedStudent.student_id)}
           />
         )}
       </Modal>

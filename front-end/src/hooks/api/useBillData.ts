@@ -43,7 +43,7 @@ export const useUpdateBillData = () => {
   return useMutation({
     mutationFn: async (data: BillInfoForm) => {
       const response = await api.put(
-        `/bill_info/${data.bill_infos_vol}-${data.bill_infos_no}`,
+        `/bill_info/${data.bill_infos_vol}-${data.bill_infos_no}-${data.course_group_id}`,
         data,
       );
       return response.data;

@@ -73,6 +73,14 @@ const CourseBatchBillEdit = ({
           defaultValue={studentBillInfo.bill_infos_receiver}
           error={errors.bill_infos_receiver?.message as string}
         />
+        <TextField
+          label="หมายเหตุ"
+          name="bill_infos_note"
+          placeholder="หมายเหตุ"
+          includeRegister={register}
+          defaultValue={studentBillInfo.bill_infos_note}
+          error={errors.bill_infos_note?.message as string}
+        />
         <DatePickerWithController
           label="วันที่จ่ายเงิน"
           name="bill_infos_date"

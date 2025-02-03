@@ -165,7 +165,7 @@ Route::group(['middleware' => ['api']], function () {
     Route::prefix('bill_info')->group(function () {
         Route::get('/', [BillInfoController::class, 'index']);
         Route::post('/', [BillInfoController::class, 'store']);
-        Route::put('/{billInfoId}-{billInfoNo}', [BillInfoController::class, 'update']);
+        Route::put('/{billInfoId}-{billInfoNo}-{courseGroupId}', [BillInfoController::class, 'update']);
         Route::delete('/{billInfoId}-{billInfoNo}', [BillInfoController::class, 'delete']);
         Route::get('/get-bill-info/{courseBatchId}', [BillInfoController::class, 'getBillInfo']);
         Route::get('/get-latest-bill-vol', [BillInfoController::class, 'getLatestBillVol']);

@@ -42,9 +42,6 @@ const CourseBatchBillAdd = ({
   const { mutate: addBillData, isPending: isAddBillDataPending } =
     useAddBillData();
 
-  const { mutate: updateBillData, isPending: isUpdateBillDataPending } =
-    useUpdateBillData();
-
   useEffect(() => {
     if (latestBillVolData && !isLatestBillVolDataLoading) {
       setValue('bill_infos_vol', latestBillVolData.data.vol);
@@ -117,6 +114,7 @@ const CourseBatchBillAdd = ({
           label="No"
           name="bill_infos_no"
           placeholder="ตัวอย่าง: 1"
+          required={true}
           includeRegister={register}
           error={errors.bill_infos_no?.message as string}
         />
@@ -124,13 +122,23 @@ const CourseBatchBillAdd = ({
           label="ผู้รับเงิน"
           name="bill_infos_receiver"
           placeholder="ชื่อผู้รับเงิน"
+          required={true}
           includeRegister={register}
           error={errors.bill_infos_receiver?.message as string}
+        />
+        <TextField
+          label="หมายเหตุ"
+          name="bill_infos_note"
+          placeholder="หมายเหตุ"
+          required={false}
+          includeRegister={register}
+          error={errors.bill_infos_note?.message as string}
         />
         <DatePickerWithController
           label="วันที่จ่ายเงิน"
           name="bill_infos_date"
           placeholder="วัน/เดือน/ปี"
+          required={true}
           control={control}
           error={errors.bill_infos_date?.message as string}
         />

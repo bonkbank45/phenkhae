@@ -28,20 +28,25 @@ class BillInfoController extends Controller
         return $this->successResponse($billInfo, 'Add bill info success', 200);
     }
 
-    public function update(UpdateBillInfoRequest $request, $vol, $no): JsonResponse
+    public function update(UpdateBillInfoRequest $request, $vol, $no, $courseGroupId): JsonResponse
     {
         DB::beginTransaction();
         try {
             $billInfo = BillInfo::where('vol', $vol)
-                ->where('no', $no)->firstOrFail();
+                ->where('no', $no)
+                ->where('course_group_id', $courseGroupId)
+                ->firstOrFail();
 
             // Can't use Model->update() directly because this table has composite key (ORM not support)
             BillInfo::where('vol', $vol)
                 ->where('no', $no)
+                ->where('course_group_id', $courseGroupId)
                 ->update($request->validated());
 
             $billInfo = BillInfo::where('vol', $vol)
-                ->where('no', $no)->first();
+                ->where('no', $no)
+                ->where('course_group_id', $courseGroupId)
+                ->first();
 
             DB::commit();
             return $this->successResponse($billInfo, 'Update bill info success', 200);
@@ -75,15 +80,23 @@ class BillInfoController extends Controller
     {
         $data = DB::table('courses')
             ->rightJoin('course_prices', 'courses.id', '=', 'course_prices.course_id')
+            ->join('course_category_bills', 'courses.course_category_bill_id', '=', 'course_category_bills.id')
             ->join('course_groups', 'courses.id', '=', 'course_groups.course_id')
-            ->join('enrollments as en', 'course_groups.id', '=', 'en.course_group_id')
+            ->join('enrollments as en', function ($join) {
+                $join->on('course_groups.id', '=', 'en.course_group_id')
+                    ->on('course_prices.id', '=', 'en.course_price_id');
+            })
             ->leftJoin('bill_infos', function ($join) {
                 $join->on('en.student_id', '=', 'bill_infos.student_id')
                     ->on('en.course_group_id', '=', 'bill_infos.course_group_id');
             })
             ->join('students', 'en.student_id', '=', 'students.id')
-            ->where('en.course_group_id', $courseBatchId)
+            ->where('en.course_group_id', $courseBatchId) // Use dynamic parameter
             ->select([
+                'courses.id as course_id',
+                'courses.course_name',
+                'course_category_bills.id as course_category_bill_id',
+                'course_category_bills.category_bill_name as course_category_bill_name',
                 'en.course_group_id',
                 'en.student_id',
                 'students.firstname_tha',
@@ -92,12 +105,14 @@ class BillInfoController extends Controller
                 'en.enrollment_date as enrollment_date',
                 'en.date_start as enrollment_date_start',
                 'en.date_end as enrollment_date_end',
+                'en.course_group_id',
                 'en.created_at as enrollments_created_at',
                 'en.updated_at as enrollments_updated_at',
                 'bill_infos.vol as bill_infos_vol',
                 'bill_infos.no as bill_infos_no',
-                'bill_infos.date_submit as bill_infos_date',
                 'bill_infos.bill_receiver as bill_infos_receiver',
+                'bill_infos.note as bill_infos_note',
+                'bill_infos.date_submit as bill_infos_date',
                 'bill_infos.created_at as bill_infos_create_at',
                 'bill_infos.updated_at as bill_infos_updated_at',
                 'course_prices.price as course_price',

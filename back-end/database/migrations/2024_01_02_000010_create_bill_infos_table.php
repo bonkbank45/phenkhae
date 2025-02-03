@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->dateTime('date_submit');
             $table->string('bill_receiver');
             $table->foreignId('student_id')->constrained('students', 'id');
+            $table->string('note')->nullable();
             $table->timestamps();
 
             $table->primary(['vol', 'no', 'course_group_id']);

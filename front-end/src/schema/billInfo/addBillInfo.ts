@@ -7,6 +7,7 @@ export const addBillInfoSchema = yup.object().shape({
     .typeError('กรุณากรอกตัวเลข')
     .required('กรุณากรอกตัวเลข'),
   bill_infos_receiver: yup.string().required('กรุณากรอกชื่อผู้รับใบเสร็จ'),
+  bill_infos_note: yup.string().optional(),
   bill_infos_date: yup
     .string()
     .typeError('กรุณากรอกวันที่ใบเสร็จ')

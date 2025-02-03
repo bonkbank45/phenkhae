@@ -28,6 +28,7 @@ class StoreBillInfoRequest extends FormRequest
             'no' => 'required|numeric',
             'bill_receiver' => 'required|string',
             'date_submit' => 'required|date',
+            'note' => 'nullable|string',
         ];
     }
 
@@ -38,6 +39,7 @@ class StoreBillInfoRequest extends FormRequest
             'no' => $this->bill_infos_no,
             'bill_receiver' => $this->bill_infos_receiver,
             'date_submit' => Carbon::createFromFormat('d/m/Y', $this->bill_infos_date)->format('Y-m-d'),
+            'note' => $this->bill_infos_note,
         ]);
     }
 }
