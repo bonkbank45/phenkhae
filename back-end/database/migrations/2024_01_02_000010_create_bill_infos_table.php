@@ -13,13 +13,14 @@ return new class extends Migration {
         Schema::create('bill_infos', function (Blueprint $table) {
             $table->unsignedInteger('vol');
             $table->unsignedInteger('no');
+            $table->unsignedBigInteger('course_group_id');
             $table->dateTime('date_submit');
             $table->string('bill_receiver');
-            $table->foreignId('course_group_id')->constrained('course_groups', 'id');
             $table->foreignId('student_id')->constrained('students', 'id');
             $table->timestamps();
 
-            $table->primary(['vol', 'no']);
+            $table->primary(['vol', 'no', 'course_group_id']);
+            $table->foreign('course_group_id')->references('id')->on('course_groups')->onDelete('cascade');
         });
     }
 

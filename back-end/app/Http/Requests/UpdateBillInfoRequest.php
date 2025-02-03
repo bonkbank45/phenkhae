@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Carbon\Carbon;
 class UpdateBillInfoRequest extends FormRequest
 {
     /**
@@ -24,10 +24,20 @@ class UpdateBillInfoRequest extends FormRequest
         return [
             'course_group_id' => 'required|exists:course_groups,id',
             'student_id' => 'required|exists:students,id',
-            'bill_vol' => 'required|numeric',
-            'bill_no' => 'required|numeric',
+            'vol' => 'required|numeric',
+            'no' => 'required|numeric',
             'bill_receiver' => 'required|string',
-            'bill_date' => 'required|date',
+            'date_submit' => 'required|date',
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'vol' => $this->bill_infos_vol,
+            'no' => $this->bill_infos_no,
+            'bill_receiver' => $this->bill_infos_receiver,
+            'date_submit' => Carbon::createFromFormat('d/m/Y', $this->bill_infos_date)->format('Y-m-d'),
+        ]);
     }
 }

@@ -24,8 +24,8 @@ class StoreBillInfoRequest extends FormRequest
         return [
             'course_group_id' => 'required|exists:course_groups,id',
             'student_id' => 'required|exists:students,id',
-            'bill_vol' => 'required|numeric',
-            'bill_no' => 'required|numeric',
+            'vol' => 'required|numeric',
+            'no' => 'required|numeric',
             'bill_receiver' => 'required|string',
             'date_submit' => 'required|date',
         ];
@@ -34,9 +34,10 @@ class StoreBillInfoRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'vol' => $this->bill_vol,
-            'no' => $this->bill_no,
-            'date_submit' => Carbon::createFromFormat('d/m/Y', $this->bill_date)->format('Y-m-d'),
+            'vol' => $this->bill_infos_vol,
+            'no' => $this->bill_infos_no,
+            'bill_receiver' => $this->bill_infos_receiver,
+            'date_submit' => Carbon::createFromFormat('d/m/Y', $this->bill_infos_date)->format('Y-m-d'),
         ]);
     }
 }
