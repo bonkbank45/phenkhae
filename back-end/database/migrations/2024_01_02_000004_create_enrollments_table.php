@@ -15,6 +15,8 @@ return new class extends Migration {
             $table->unsignedBigInteger("student_id");
             $table->tinyInteger("activity_case_status");
             $table->dateTime("enrollment_date");
+            $table->integer("theoretical_score")->nullable();
+            $table->integer("practical_score")->nullable();
             $table->dateTime("date_start");
             $table->dateTime("date_end")->nullable();
             $table->foreignId("course_price_id")->constrained('course_prices', 'id');

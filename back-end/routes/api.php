@@ -65,6 +65,8 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/courses', [CourseGroupController::class, 'getCourseGroupByCourseIds']);
         Route::get('/available', [CourseGroupController::class, 'available']);
         Route::post('/', [CourseGroupController::class, 'store']);
+        Route::patch('/{courseGroup}/score-criteria', [CourseGroupController::class, 'updateScoreCriteria']);
+        Route::post('/{courseGroup}/score-criteria/reset', [CourseGroupController::class, 'resetScoreCriteria']);
         Route::get('/{courseGroup}', [CourseGroupController::class, 'show']);
         Route::put('/{courseGroup}', [CourseGroupController::class, 'update']);
         Route::delete('/{courseGroup}', [CourseGroupController::class, 'destroy']);

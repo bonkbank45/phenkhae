@@ -21,6 +21,12 @@ interface UseCourseBatchDataTableParams {
   courseId: string;
 }
 
+interface CourseGroupCriteriaForm {
+  id: number;
+  theory_cri: number;
+  practical_cri: number;
+}
+
 export const useCourseBatchDataTable = ({
   page,
   searchTerm,
@@ -150,7 +156,6 @@ export const useEditCourseBatchData = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: EditCourseBatchData) => {
-      console.log(data);
       const response = await api.put(`/course_group/${data.id}`, data);
       return response.data;
     },
@@ -168,6 +173,53 @@ export const useEditCourseBatchData = () => {
     },
     onError: (error: Error) => {
       console.error('Failed to edit course batch:', error.message);
+    },
+  });
+};
+
+export const useUpdateCourseBatchScoreCri = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: CourseGroupCriteriaForm) => {
+      console.log('from useUpdateCourseBatchScoreCri', data);
+      const response = await api.patch(
+        `/course_group/${data.id}/score-criteria`,
+        {
+          theory_cri: Number(data.theory_cri),
+          practical_cri: Number(data.practical_cri),
+        },
+      );
+      return response.data;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: ['course_batch_data'],
+      });
+      console.log('Success', response.data);
+    },
+    onError: (error: Error) => {
+      console.error(
+        'Failed to update course batch score criteria:',
+        error.message,
+      );
+    },
+  });
+};
+
+export const useResetCourseBatchScoreCri = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const response = await api.post(
+        `/course_group/${id}/score-criteria/reset`,
+      );
+      return response.data;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: ['course_batch_data'],
+      });
+      console.log('Success', response.data);
     },
   });
 };

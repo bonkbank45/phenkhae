@@ -125,6 +125,8 @@ class CourseGroupController extends Controller
                 'date_start' => $request->date_start,
                 'date_end' => $request->date_end,
                 'course_id' => $request->course_id,
+                'theoretical_score_criteria' => 60,
+                'practical_score_criteria' => 80,
             ]);
             DB::commit();
             return $this->successResponse($course_group, 'Course group created successfully', 201);
@@ -194,6 +196,44 @@ class CourseGroupController extends Controller
             $course_group->delete();
             DB::commit();
             return $this->successResponse('Course group deleted successfully', 200);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return $this->errorResponse('Course group not found', 404);
+        }
+    }
+
+    public function updateScoreCriteria(Request $request, int $id): JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            $course_group = CourseGroup::findOrFail($id);
+            $course_group->update([
+                'theoretical_score_criteria' => $request->theory_cri,
+                'practical_score_criteria' => $request->practical_cri,
+            ]);
+
+            DB::commit();
+            return $this->successResponse($course_group, 'Course group updated successfully', 200);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return $this->errorResponse('Course group not found', 404);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse('Failed to update score criteria: ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function resetScoreCriteria(int $id): JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            $course_group = CourseGroup::findOrFail($id);
+            $course_group->update([
+                'theoretical_score_criteria' => 60,
+                'practical_score_criteria' => 80,
+            ]);
+            DB::commit();
+            return $this->successResponse($course_group, 'Course group updated successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course group not found', 404);

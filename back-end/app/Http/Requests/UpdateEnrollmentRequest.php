@@ -26,6 +26,8 @@ class UpdateEnrollmentRequest extends FormRequest
             'student_id' => 'required|exists:students,id',
             'activity_case_status' => 'required|in:0,1',
             'enrollment_date' => 'required|date',
+            'theoretical_score' => 'nullable|integer|min:0|max:100',
+            'practical_score' => 'nullable|integer|min:0|max:100',
             'date_start' => 'required|date',
             'date_end' => 'required|date:after:date_start',
             'course_price_id' => 'required|exists:course_prices,id',
