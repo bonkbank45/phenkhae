@@ -2,38 +2,61 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useStudentDataById } from '../../hooks/api/useStudentData';
 import { format } from 'date-fns';
-import Table from '../../components/Tables/Table';
-import RoundRemoveRedEye from '../../common/RoundRemoveRedEye';
 import IconEdit from '../../common/EditPen';
 import IconCrossCircled from '../../common/CrossCircle';
+import RoundRemoveRedEye from '../../common/RoundRemoveRedEye';
 import { OutlineFileDownload } from '../../common/Download';
-import { getCourseStatus } from '../../utils/student';
-import { usePdfRegisterStudent } from '../../hooks/api/usePdfData';
 import Spinner from '../../common/Spinner';
-import StudentDetailModal from './StudentViewPageForm/StudentDetailModal';
-import { getPaymentStatus } from '../../utils/bill_info';
 import { FileAdditionOne } from '../../common/FileAdditionOne';
-import Button from '@material-tailwind/react/components/Button';
+import Table from '../../components/Tables/Table';
+import { usePdfRegisterStudent } from '../../hooks/api/usePdfData';
+import StudentDetailModal from './StudentViewPageForm/StudentDetailModal';
+import CourseBatchBillAdd from '../CourseBatch/CourseBatchBillPageForm/CourseBatchBillAdd';
+import CourseBatchBillEdit from '../CourseBatch/CourseBatchBillPageForm/CourseBatchBillEdit';
+import CourseBatchBillDelete from '../CourseBatch/CourseBatchBillPageForm/CourseBatchBillDelete';
+import { getCourseStatus } from '../../utils/student';
+import { getPaymentStatus } from '../../utils/bill_info';
 import {
   getStudentLicenseQual,
   isCourseCanGetLicense,
 } from '../../utils/student_license_qual';
+import Modal from '../../components/Modal';
+import { toast } from 'react-toastify';
+import {
+  BillInfoViewGroup,
+  SelectedStudentBillInfo,
+} from '../../types/bill_info';
+import CourseBatchBillView from '../CourseBatch/CourseBatchBillPageForm/CourseBatchBillView';
 
 const StudentViewPage = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id: studentId } = useParams();
+  const [selectedCourseGroupId, setSelectedCourseGroupId] = useState<
+    number | null
+  >(null);
+
+  const [selectedBillInfo, setSelectedBillInfo] =
+    useState<SelectedStudentBillInfo | null>(null);
+
   const [selectedMenu, setSelectedMenu] = useState<
     'course' | 'certificate_after_end' | 'payment' | 'bill'
   >('course');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: studentData, isLoading: isStudentLoading } = useStudentDataById(
-    Number(id),
-  );
+  const [isModalBillView, setIsModalBillView] = useState(false);
+  const [isModalAddBill, setIsModalAddBill] = useState(false);
+  const [isModalEditBill, setIsModalEditBill] = useState(false);
+  const [isModalDeleteBill, setIsModalDeleteBill] = useState(false);
+  const {
+    data: studentData,
+    isLoading: isStudentLoading,
+    refetch: refetchStudentData,
+  } = useStudentDataById(Number(studentId));
   const [modalType, setModalType] = useState<
     'address' | 'surgery' | 'massage_exp'
   >('address');
+
   const [isClickDownload, setIsClickDownload] = useState(false);
-  const {} = usePdfRegisterStudent(id, isClickDownload);
+  const {} = usePdfRegisterStudent(studentId, isClickDownload);
 
   useEffect(() => {
     if (isClickDownload) {
@@ -204,6 +227,7 @@ const StudentViewPage = () => {
   const paymentDataTable = studentData?.data.enrollments?.map((enrollment) => ({
     course_id: enrollment.course_group?.course.id || '-',
     course_name: enrollment.course_group?.course.course_name || '-',
+    course_group_id: enrollment.course_group_id || '-',
     course_batch: `รุ่นที่ ${enrollment.course_group?.batch || '-'}`,
     payment_status: getPaymentStatus(enrollment, studentData?.data.bill_infos)
       ? 'ชำระเงินแล้ว'
@@ -242,25 +266,78 @@ const StudentViewPage = () => {
       render: (enrollment) => (
         <div className="flex items-center gap-2">
           {enrollment.payment_status === 'ชำระเงินแล้ว' ? (
-            <button>
-              <RoundRemoveRedEye className="cursor-pointer w-5 h-5" />
+            <>
+              <button
+                onClick={() => {
+                  getSelectedStudentBillInfo(enrollment.course_group_id);
+                  setIsModalBillView(true);
+                }}
+              >
+                <RoundRemoveRedEye className="cursor-pointer w-5 h-5" />
+              </button>
+              <button
+                onClick={() => {
+                  getSelectedStudentBillInfo(enrollment.course_group_id);
+                  setIsModalEditBill(true);
+                }}
+              >
+                <IconEdit className="cursor-pointer w-5 h-5" />
+              </button>
+              <button
+                onClick={() => {
+                  getSelectedStudentBillInfo(enrollment.course_group_id);
+                  setIsModalDeleteBill(true);
+                }}
+              >
+                <IconCrossCircled className="cursor-pointer w-5 h-5" />
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => {
+                setSelectedCourseGroupId(enrollment.course_group_id);
+                setIsModalAddBill(true);
+              }}
+            >
+              <FileAdditionOne
+                className="cursor-pointer w-5 h-5"
+                color="#808080"
+              />
             </button>
-          ) : null}
-          <button>
-            <FileAdditionOne
-              className="cursor-pointer w-5 h-5"
-              color="#808080"
-            />
-          </button>
-          {getPaymentStatus(enrollment, studentData?.data.bill_infos) ? (
-            <button>
-              <IconCrossCircled className="cursor-pointer w-5 h-5" />
-            </button>
-          ) : null}
+          )}
         </div>
       ),
     },
   ];
+
+  const getSelectedStudentBillInfo = (courseGroupId: number) => {
+    const bill = studentData?.data.bill_infos.find(
+      (bill) => bill.course_group_id === courseGroupId,
+    );
+    const courseBatch = studentData?.data.enrollments.find(
+      (enrollment) => enrollment.course_group_id === bill.course_group_id,
+    );
+    setSelectedBillInfo({
+      firstname_tha: studentData?.data.firstname_tha,
+      lastname_tha: studentData?.data.lastname_tha,
+      enrollment_date: courseBatch?.enrollment_date,
+      enrollment_date_start: courseBatch?.enrollment_date_start,
+      enrollment_date_end: courseBatch?.enrollment_date_end,
+      enrollment_created_at: courseBatch?.enrollment_created_at,
+      enrollment_updated_at: courseBatch?.enrollment_updated_at,
+      activity_case_status: courseBatch?.activity_case_status,
+      id: bill.id,
+      bill_infos_vol: bill.vol,
+      bill_infos_no: bill.no,
+      bill_infos_date: bill.date_submit,
+      bill_infos_receiver: bill.bill_receiver,
+      bill_infos_note: bill.note,
+      course_group_id: bill.course_group_id,
+      student_id: bill.student_id,
+      created_at: bill.created_at,
+      updated_at: bill.updated_at,
+    });
+  };
 
   return (
     <>
@@ -288,7 +365,7 @@ const StudentViewPage = () => {
               {/* หัวข้อจะกว้าง 4 ตลอด เพราะเป็นหัวข้อใหญ่ */}
               <h2 className="col-span-3 text-xl font-bold">ประวัติส่วนตัว</h2>
               <div className="col-span-1 flex justify-end items-center">
-                <button onClick={() => navigate(`/students/${id}/edit`)}>
+                <button onClick={() => navigate(`/students/${studentId}/edit`)}>
                   <IconEdit className="w-[1.6em] h-[1.6em] cursor-pointer" />
                 </button>
                 <button onClick={() => setIsClickDownload(true)}>
@@ -469,18 +546,10 @@ const StudentViewPage = () => {
                 }`}
                 onClick={() => setSelectedMenu('bill')}
               >
-                ใบเสร็จ
+                เอกสารใบเสร็จ
               </button>
             </div>
             <div className="mt-4">
-              {selectedMenu === 'payment' && (
-                <Button
-                  className="bg-green-500 text-white mb-4 px-4 py-2 rounded-md"
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  เพิ่มกลุ่มการจ่ายเงิน (กรณีหากจ่ายเงินพร้อมกันหลายหลักสูตร)
-                </Button>
-              )}
               <Table
                 data={
                   selectedMenu === 'course'
@@ -512,6 +581,73 @@ const StudentViewPage = () => {
           title="รายละเอียดข้อมูล"
           type={modalType}
         />
+        <Modal
+          isOpen={isModalAddBill}
+          onClose={() => setIsModalAddBill(false)}
+          title="เพิ่มใบเสร็จ"
+        >
+          <CourseBatchBillAdd
+            onSuccess={() => {
+              setIsModalAddBill(false);
+              refetchStudentData();
+              toast.success('เพิ่มใบเสร็จเรียบร้อย');
+            }}
+            onError={() => {
+              setIsModalAddBill(false);
+              toast.error('เพิ่มใบเสร็จไม่สำเร็จ');
+            }}
+            courseGroupId={selectedCourseGroupId}
+            studentId={Number(studentId)}
+          />
+        </Modal>
+        <Modal
+          isOpen={isModalBillView}
+          onClose={() => setIsModalBillView(false)}
+          title="รายละเอียดใบเสร็จ"
+        >
+          <CourseBatchBillView
+            vol={selectedBillInfo?.bill_infos_vol}
+            no={selectedBillInfo?.bill_infos_no}
+            studentId={Number(studentId)}
+          />
+        </Modal>
+        <Modal
+          isOpen={isModalEditBill}
+          onClose={() => setIsModalEditBill(false)}
+          title="แก้ไขใบเสร็จ"
+        >
+          <CourseBatchBillEdit
+            studentBillInfo={selectedBillInfo}
+            onSuccess={() => {
+              setIsModalEditBill(false);
+              refetchStudentData();
+              toast.success('แก้ไขใบเสร็จเรียบร้อย');
+            }}
+            onError={() => {
+              setIsModalEditBill(false);
+              toast.error('แก้ไขใบเสร็จไม่สำเร็จ');
+            }}
+          />
+        </Modal>
+        <Modal
+          isOpen={isModalDeleteBill}
+          onClose={() => setIsModalDeleteBill(false)}
+          title="ลบใบเสร็จ"
+        >
+          <CourseBatchBillDelete
+            studentBillInfo={selectedBillInfo}
+            onSuccess={() => {
+              setIsModalDeleteBill(false);
+              refetchStudentData();
+              toast.success('ลบใบเสร็จเรียบร้อย');
+            }}
+            onError={() => {
+              setIsModalDeleteBill(false);
+              toast.error('ลบใบเสร็จไม่สำเร็จ');
+            }}
+            onClose={() => setIsModalDeleteBill(false)}
+          />
+        </Modal>
       </div>
     </>
   );

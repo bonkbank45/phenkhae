@@ -165,6 +165,7 @@ class StudentController extends Controller
                 'enrollments',
                 'enrollments.course_group',
                 'enrollments.course_group.course',
+                'enrollments.course_group.course.course_category_bill',
                 'bill_infos'
             ])->findOrFail($id);
             return $this->successResponse($student, 'Student fetched successfully', 200);

@@ -11,13 +11,17 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('bill_infos', function (Blueprint $table) {
-            $table->id();
             $table->unsignedInteger('vol');
             $table->unsignedInteger('no');
+            $table->unsignedBigInteger('course_group_id');
             $table->dateTime('date_submit');
-            $table->foreignId('course_group_id')->constrained('course_groups', 'id');
+            $table->string('bill_receiver');
             $table->foreignId('student_id')->constrained('students', 'id');
+            $table->string('note')->nullable();
             $table->timestamps();
+
+            $table->primary(['vol', 'no', 'course_group_id']);
+            $table->foreign('course_group_id')->references('id')->on('course_groups')->onDelete('cascade');
         });
     }
 
