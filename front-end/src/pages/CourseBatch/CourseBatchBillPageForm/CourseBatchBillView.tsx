@@ -6,10 +6,12 @@ import { format } from 'date-fns';
 const CourseBatchBillView = ({
   vol,
   no,
+  exactCourseGroupId,
   studentId,
 }: {
   vol: number;
   no: number;
+  exactCourseGroupId?: number;
   studentId: number;
 }) => {
   const { data: studentData, isLoading } = useStudentDataById(studentId);
@@ -26,31 +28,43 @@ const CourseBatchBillView = ({
     );
   }
 
-  const studentBillInfos = studentData.data.bill_infos.filter(
+  const matchingBills = studentData.data.bill_infos.filter(
     (bill) => bill.vol === vol && bill.no === no,
   );
 
-  if (studentBillInfos.length === 0) {
+  if (matchingBills.length === 0) {
     return <div>ไม่พบข้อมูลใบเสร็จ</div>;
   }
 
   // เลือกข้อมูลแรกสำหรับข้อมูลทั่วไป
-  const firstBillInfo = studentBillInfos[0];
+  const firstBillInfo = matchingBills[0];
 
-  // รวบรวมข้อมูลหลักสูตรที่ไม่ซ้ำกัน
-  const uniqueCourses = studentData.data.enrollments
-    .map((enroll) => enroll.course_group?.course)
-    .filter(
-      (course): course is NonNullable<typeof course> => course !== undefined,
-    );
+  // แก้ไขส่วนการรวบรวมข้อมูลหลักสูตร
+  let coursesForBill = [];
+  if (!exactCourseGroupId) {
+    coursesForBill = studentData.data.enrollments
+      .filter((enroll) => {
+        return matchingBills.some(
+          (bill) => bill.course_group_id === enroll.course_group_id,
+        );
+      })
+      .map((enroll) => enroll.course_group?.course);
+  } else {
+    const foundCourse = studentData.data.enrollments.find((enroll) => {
+      return enroll.course_group_id === exactCourseGroupId;
+    })?.course_group?.course;
+    // ถ้าเจอให้ใส่ในarray ถ้าไม่เจอจะเป็น array ว่าง
+    coursesForBill = foundCourse ? [foundCourse] : [];
+  }
 
-  // สร้าง string รายชื่อหลักสูตร
+  // สร้าง string รายชื่อหลักสูตรเฉพาะของใบเสร็จนี้
   const courseNames = Array.from(
-    new Set(uniqueCourses.map((course) => course.course_name)),
+    new Set(coursesForBill.map((course) => course.course_name)),
   ).join(', ');
+
   const categoryNames = Array.from(
     new Set(
-      uniqueCourses.map(
+      coursesForBill.map(
         (course) => course.course_category_bill.category_bill_name,
       ),
     ),

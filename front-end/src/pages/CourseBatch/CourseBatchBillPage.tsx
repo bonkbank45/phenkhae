@@ -20,7 +20,7 @@ import RoundRemoveRedEye from '../../common/RoundRemoveRedEye';
 import CourseBatchBillView from './CourseBatchBillPageForm/CourseBatchBillView';
 
 const CourseBatchBillPage = () => {
-  const { id } = useParams();
+  const { id: courseBatchId } = useParams();
   const navigate = useNavigate();
   const [isAddBillModalOpen, setIsAddBillModalOpen] = useState(false);
   const [isViewBillModalOpen, setIsViewBillModalOpen] = useState(false);
@@ -29,11 +29,11 @@ const CourseBatchBillPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const { data: billData, isLoading: billLoading } = useBillByCourseBatchIdData(
-    id,
+    courseBatchId,
     currentPage,
   );
   const handleBack = () => {
-    navigate(`/courses/batchs/${id}`);
+    navigate(`/courses/batchs/${courseBatchId}`);
   };
 
   const handlePageChange = (page: number) => {
@@ -175,20 +175,25 @@ const CourseBatchBillPage = () => {
 
   return (
     <div>
-      <Button
-        variant="text"
-        type="button"
-        className="mb-4 px-0 py-0 flex items-center gap-2 underline"
-        onClick={() => {
-          navigate(-1);
-        }}
-      >
-        <IconArrowLeft className="w-4 h-4 text-black dark:text-white" />{' '}
-        <span className="text-black dark:text-white">ย้อนกลับ</span>
-      </Button>
+      <div className="flex flex-wrap lg:flex-nowrap justify-between items-center mb-4">
+        <Button
+          variant="text"
+          type="button"
+          className="mb-4 px-0 py-0 flex items-center gap-2 underline"
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          <IconArrowLeft className="w-4 h-4 text-black dark:text-white" />{' '}
+          <span className="text-black dark:text-white">ย้อนกลับ</span>
+        </Button>
+        <Button color="green" className="font-notoLoopThaiRegular">
+          เอกสารใบเสร็จ นักเรียนที่จ่ายเงินแล้ว
+        </Button>
+      </div>
       <div className="bg-white rounded-lg shadow p-4 dark:bg-boxdark">
         <h1 className="text-2xl font-semibold dark:text-white font-notoExtraBold">
-          ข้อมูลใบเสร็จของนักเรียน
+          ข้อมูลการชำระเงินของนักเรียน
         </h1>
         <div className="text-sm text-gray-500 font-notoLoopThaiRegular mt-4">
           <span className="font-bold text-red-500">* </span>
@@ -212,6 +217,7 @@ const CourseBatchBillPage = () => {
           isFetching={billLoading}
         />
       </div>
+
       <Modal
         isOpen={isAddBillModalOpen}
         onClose={() => setIsAddBillModalOpen(false)}
@@ -221,7 +227,7 @@ const CourseBatchBillPage = () => {
           <CourseBatchBillAdd
             onSuccess={handleFormSubmitSuccess}
             onError={handleFormSubmitError}
-            courseGroupId={Number(id)}
+            courseGroupId={Number(courseBatchId)}
             studentId={selectedStudent.student_id}
           />
         )}
@@ -235,6 +241,7 @@ const CourseBatchBillPage = () => {
           <CourseBatchBillView
             vol={selectedStudent.bill_infos_vol}
             no={selectedStudent.bill_infos_no}
+            exactCourseGroupId={Number(courseBatchId)}
             studentId={Number(selectedStudent.student_id)}
           />
         )}

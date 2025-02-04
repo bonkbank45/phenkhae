@@ -546,7 +546,7 @@ const StudentViewPage = () => {
                 }`}
                 onClick={() => setSelectedMenu('bill')}
               >
-                ใบเสร็จ
+                เอกสารใบเสร็จ
               </button>
             </div>
             <div className="mt-4">
