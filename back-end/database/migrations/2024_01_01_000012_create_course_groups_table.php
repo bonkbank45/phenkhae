@@ -15,6 +15,8 @@ return new class extends Migration {
             $table->foreignId("course_id")->constrained('courses', 'id');
             $table->integer("max_students");
             $table->integer("batch");
+            $table->integer("theoretical_score_criteria")->nullable();
+            $table->integer("practical_score_criteria")->nullable();
             $table->dateTime("date_start");
             $table->dateTime("date_end");
             $table->timestamps();

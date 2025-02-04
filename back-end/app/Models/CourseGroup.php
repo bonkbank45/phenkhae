@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class CourseGroup extends Model
 {
     protected $table = 'course_groups';
-    protected $fillable = ['course_id', 'max_students', 'batch', 'date_start', 'date_end'];
+    protected $fillable = ['course_id', 'max_students', 'batch', 'date_start', 'date_end', 'theoretical_score_criteria', 'practical_score_criteria'];
 
     public function scopeSearch($query, $searchTerm)
     {

@@ -43,6 +43,8 @@ class UpdateCourseGroupRequest extends FormRequest
                     ->where('course_id', $this->course_id)
                     ->ignore($this->id),
             ],
+            'theoretical_score_criteria' => 'nullable|integer|min:0|max:100',
+            'practical_score_criteria' => 'nullable|integer|min:0|max:100',
             'date_start' => 'required|date',
             'date_end' => 'required|date|after:date_start',
         ];

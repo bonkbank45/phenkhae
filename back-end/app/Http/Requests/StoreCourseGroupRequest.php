@@ -30,6 +30,8 @@ class StoreCourseGroupRequest extends FormRequest
                 'integer',
                 Rule::unique('course_groups')->where('course_id', $this->course_id),
             ],
+            'theoretical_score_criteria' => 'nullable|integer|min:0|max:100',
+            'practical_score_criteria' => 'nullable|integer|min:0|max:100',
             'date_start' => 'required|date',
             'date_end' => 'required|date|after:date_start',
         ];
