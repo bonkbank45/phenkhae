@@ -1,12 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@material-tailwind/react';
 import IconArrowLeft from '../../common/ArrowLeft';
 import { format } from 'date-fns';
+import { toast } from 'react-toastify';
+import Spinner from '../../common/Spinner';
+import Modal from '../../components/Modal';
+import CourseBatchScoreCri from './CourseBatchScoreCri';
+import { useCourseBatchDataById } from '../../hooks/api/useCourseBatchData';
 
 const CourseBatchShowPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { data: courseBatchData, isLoading: isCourseBatchDataLoading } =
+    useCourseBatchDataById(id);
+  const [isCriteriaScoreModalOpen, setIsCriteriaScoreModalOpen] =
+    useState(false);
+
+  if (isCourseBatchDataLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner />
+      </div>
+    );
+  }
 
   const handleAddStudent = () => {
     navigate(`/courses/batchs/${id}/add-students`);
@@ -18,6 +35,18 @@ const CourseBatchShowPage = () => {
 
   const handleBill = () => {
     navigate(`/courses/batchs/${id}/bills`);
+  };
+
+  const handleGraduate = () => {
+    navigate(`/courses/batchs/${id}/graduate`);
+  };
+
+  const handleScoreCri = () => {
+    navigate(`/courses/batchs/${id}/score-criteria`);
+  };
+
+  const handleCriteriaScoreSuccess = () => {
+    toast.success('แก้ไขเกณฑ์คะแนนการสอบทฤษฎีและปฏิบัติที่ตั้งไว้เรียบร้อย');
   };
 
   const mockBatchData = {
@@ -113,19 +142,31 @@ const CourseBatchShowPage = () => {
           จัดการการจ่ายเงิน
         </Button>
         <Button
-          onClick={handleBill}
+          onClick={() => setIsCriteriaScoreModalOpen(true)}
           className="bg-gray-500 font-notoLoopThaiRegular"
         >
           จัดการเกณฑ์คะแนนการสอบทฤษฎีและปฏิบัติ
         </Button>
         <Button
           color="gray"
-          onClick={handleBill}
+          onClick={handleGraduate}
           className="bg-gray-500 font-notoLoopThaiRegular"
         >
           ตรวจสอบการจบของนักเรียน
         </Button>
       </div>
+      <Modal
+        isOpen={isCriteriaScoreModalOpen}
+        onClose={() => setIsCriteriaScoreModalOpen(false)}
+        title="จัดการเกณฑ์คะแนนจบ"
+      >
+        <CourseBatchScoreCri
+          id={courseBatchData?.data.id}
+          theory_cri={courseBatchData?.data.theoretical_score_criteria}
+          practical_cri={courseBatchData?.data.practical_score_criteria}
+          onSuccess={handleCriteriaScoreSuccess}
+        />
+      </Modal>
     </>
   );
 };

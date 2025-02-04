@@ -34,7 +34,8 @@ import StudentIndexPage from './pages/Student/StudentIndexPage';
 import EditStudentPage from './pages/Student/EditStudentPage';
 import StudentViewPage from './pages/Student/StudentViewPage';
 import CourseBatchBillPage from './pages/CourseBatch/CourseBatchBillPage';
-
+import CourseBatchGraduatePage from './pages/CourseBatch/CourseBatchGraduatePage';
+import CourseBatchScoreCri from './pages/CourseBatch/CourseBatchScoreCri';
 function App() {
   const { pathname } = useLocation();
   const { isAuthenticated, authLoading } = useAuth();
@@ -196,6 +197,14 @@ function App() {
           <Route
             path="/courses/batchs/:id/add-students"
             element={<CourseBatchAddStudent />}
+          />
+          {/* <Route
+            path="/courses/batchs/:id/score-criteria"
+            element={<CourseBatchScoreCri />}
+          /> */}
+          <Route
+            path="/courses/batchs/:id/graduate"
+            element={<CourseBatchGraduatePage />}
           />
           <Route
             path="/courses/batchs/:id/remove-students"
