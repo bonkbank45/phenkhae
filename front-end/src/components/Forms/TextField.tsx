@@ -12,6 +12,7 @@ interface TextFieldProps {
   className?: string;
   required?: boolean;
   defaultValue?: string | number;
+  disabled?: boolean;
 }
 
 const TextField = ({
@@ -24,6 +25,7 @@ const TextField = ({
   className,
   required = false,
   defaultValue,
+  disabled = false,
 }: TextFieldProps) => {
   return (
     <div className={`${className} mb-6 md:mb-0`}>
@@ -39,7 +41,10 @@ const TextField = ({
         defaultValue={defaultValue}
         className={`font-notoLoopThaiRegular w-full rounded-lg border bg-transparent py-2 pl-4 pr-10 bg-white text-black outline-none focus-visible:border-primary dark:bg-form-input dark:text-white ${
           error ? 'border-red-500' : 'border-stroke'
+        } ${disabled ? 'bg-gray-100' : ''} ${
+          disabled ? 'cursor-not-allowed' : ''
         }`}
+        disabled={disabled}
       />
       {error && <div className="text-xs text-red-500 mt-1">{error}</div>}
     </div>

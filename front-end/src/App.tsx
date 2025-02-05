@@ -35,7 +35,7 @@ import EditStudentPage from './pages/Student/EditStudentPage';
 import StudentViewPage from './pages/Student/StudentViewPage';
 import CourseBatchBillPage from './pages/CourseBatch/CourseBatchBillPage';
 import CourseBatchGraduatePage from './pages/CourseBatch/CourseBatchGraduatePage';
-import CourseBatchScoreCri from './pages/CourseBatch/CourseBatchScoreCri';
+import CoursePriceManagePage from './pages/Course/CoursePriceManagePage';
 function App() {
   const { pathname } = useLocation();
   const { isAuthenticated, authLoading } = useAuth();
@@ -183,6 +183,10 @@ function App() {
           <Route path="/students/:id" element={<StudentViewPage />} />
           <Route path="/students/add" element={<AddStudent />} />
           <Route path="/courses/list" element={<CourseManagePage />} />
+          <Route
+            path="/courses/prices/list"
+            element={<CoursePriceManagePage />}
+          />
           <Route path="/settings/datas/prenames" element={<Prename />} />
           <Route path="/settings/datas/prenames/add" element={<AddPrename />} />
           <Route
@@ -198,10 +202,6 @@ function App() {
             path="/courses/batchs/:id/add-students"
             element={<CourseBatchAddStudent />}
           />
-          {/* <Route
-            path="/courses/batchs/:id/score-criteria"
-            element={<CourseBatchScoreCri />}
-          /> */}
           <Route
             path="/courses/batchs/:id/graduate"
             element={<CourseBatchGraduatePage />}

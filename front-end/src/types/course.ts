@@ -19,6 +19,17 @@ interface Course {
 interface CourseWithCategory extends Course {
   course_category: CourseCategory;
   course_category_bill: CourseCategoryBill;
+  course_prices: CoursePrice[];
+}
+
+interface CoursePrice {
+  id: number;
+  course_id: number;
+  price: string;
+  date_start: string;
+  date_end: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 interface PaginationLink {
