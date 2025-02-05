@@ -67,7 +67,7 @@ const DropdownSearchWithController = <Type,>({
           <Select
             menuPlacement="auto"
             onChange={(option: DropdownSearchOption<Type> | null) => {
-              field.onChange(option?.value || '');
+              field.onChange(option?.value);
             }}
             value={
               options.find((option) => option.value === field.value) || null

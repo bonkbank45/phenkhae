@@ -53,6 +53,7 @@ class CourseGroupController extends Controller
                 $query->select('id', 'category_bill_name');
             },
             'course.latest_course_price',
+            'enrollments'
         ])
             ->withCount('enrollments as students_enrolled')
             ->orderBy('date_start', 'desc')
@@ -152,7 +153,9 @@ class CourseGroupController extends Controller
                     $query->select('id', 'category_bill_name');
                 },
                 'course.latest_course_price',
-                'enrollments'
+                'enrollments',
+                'enrollments.student',
+                'enrollments.student.bill_infos'
             ])->findOrFail($id);
             $course_group->students_enrolled = $course_group->enrollments->count();
             return $this->successResponse($course_group, 'Course group fetched successfully', 200);

@@ -44,8 +44,6 @@ const StudentViewPage = () => {
   const [selectedEnrollment, setSelectedEnrollment] =
     useState<StudentCourseDataTable | null>(null);
 
-  console.log(selectedEnrollment);
-
   const [selectedMenu, setSelectedMenu] = useState<
     'course' | 'certificate_after_end' | 'payment' | 'bill'
   >('course');

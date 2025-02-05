@@ -70,6 +70,7 @@ interface EnrollmentExtended {
   created_at: string;
   updated_at: string;
   course_group: CourseGroupExtended;
+  student: Student;
 }
 
 export interface StudentCourseDataTable {
@@ -78,7 +79,7 @@ export interface StudentCourseDataTable {
   student_name: string;
   course_name: string;
   batch_name: string;
-  course_status: string;
+  course_status?: string;
   enrollment_date: string;
   student_start_date: string;
   student_end_date: string;

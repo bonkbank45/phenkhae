@@ -68,6 +68,18 @@ class EnrollmentController extends Controller
         }
     }
 
+    public function getEnrollmentStudentStatusByCourseGroupId(int $courseGroupId): JsonResponse
+    {
+        try {
+            $enrollment = Enrollment::where('course_group_id', $courseGroupId)
+                ->with('student', 'course_group', 'course_group.course')
+                ->paginate(10);
+            return $this->successResponse($enrollment, 'Enrollment retrieved successfully', 200);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('Enrollment not found', 404);
+        }
+    }
+
     /**
      * Show the form for editing the specified resource.
      */

@@ -44,6 +44,8 @@ const EditEnrollmentForm = ({
     resolver: yupResolver(enrollmentStudentEditSchema),
   });
 
+  console.log(enrollment);
+
   const onSubmit = (data) => {
     editEnrollment(
       {

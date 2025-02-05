@@ -86,6 +86,22 @@ export const useEnrolledStudentsByBatchIds = (
   });
 };
 
+export const useEnrollmentStudentStatusByCourseGroupId = (
+  courseGroupId: number,
+) => {
+  return useQuery({
+    queryKey: ['enrollments', courseGroupId],
+    queryFn: async () => {
+      const response = await api.get(
+        `/enrollment/course-group/${courseGroupId}`,
+      );
+      return response.data;
+    },
+    staleTime: 1000 * 60 * 5,
+    placeholderData: (previousData) => previousData,
+  });
+};
+
 export const useAddEnrolledStudents = () => {
   const queryClient = useQueryClient();
   // Reminder: add api.post<HERE> later
