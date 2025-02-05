@@ -3,6 +3,7 @@ import { Enrollment, GroupEnrollmentSubmit } from '../../types/enrollment';
 import api from '../../services/api';
 import { ErrorResponse } from '../../types/error_response';
 import { SelectedBatch } from '../../pages/Student/StudentIndexPage';
+import { StudentCourseDataTable } from '../../types/enrollment';
 
 interface StudentSelected {
   id: number;
@@ -100,6 +101,42 @@ export const useAddEnrolledStudents = () => {
         exact: false,
       });
       console.log('เพิ่มการสมัครสำเร็จ');
+    },
+    onError: (error: ErrorResponse) => {
+      console.error('Error', error);
+    },
+  });
+};
+
+export const useEditEnrollment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: any) =>
+      api.patch(`/enrollment/${data.course_group_id}-${data.student_id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['enrollments'],
+        exact: false,
+      });
+    },
+    onError: (error: ErrorResponse) => {
+      console.error('Error', error);
+    },
+  });
+};
+
+export const useDeleteEnrollment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { courseGroupId: number; studentId: number }) =>
+      api.delete(`/enrollment/${data.courseGroupId}`, {
+        data: { student_ids: [data.studentId] },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['enrollments'],
+        exact: false,
+      });
     },
     onError: (error: ErrorResponse) => {
       console.error('Error', error);
