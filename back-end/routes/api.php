@@ -74,6 +74,7 @@ Route::group(['middleware' => ['api']], function () {
     Route::prefix('course_price')->group(function () {
         Route::get('/', [CoursePriceController::class, 'index']);
         Route::post('/', [CoursePriceController::class, 'store']);
+        Route::post('/{coursePrice}', [CoursePriceController::class, 'updateNewPrice']);
         Route::get('/{coursePrice}', [CoursePriceController::class, 'show']);
         Route::put('/{coursePrice}', [CoursePriceController::class, 'update']);
         Route::delete('/{coursePrice}', [CoursePriceController::class, 'destroy']);

@@ -20,7 +20,8 @@ class CourseCategoryController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            $courseCategory = CourseCategory::findOrFail($id);
+            $courseCategory = CourseCategory::with('courses')
+                ->findOrFail($id);
             return $this->successResponse($courseCategory, 'Course category retrieved successfully', 200);
         } catch (ModelNotFoundException $exception) {
             return $this->errorResponse('Course category not found', 404);

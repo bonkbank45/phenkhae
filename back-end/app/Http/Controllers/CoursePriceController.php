@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use App\Models\CoursePrice;
-
+use Exception;
 class CoursePriceController extends Controller
 {
     use JsonResponseTrait;
@@ -34,8 +34,23 @@ class CoursePriceController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $course_price = CoursePrice::create($request->all());
-        return $this->successResponse($course_price, 'Course price created successfully', 201);
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'price' => 'required|numeric|min:0',
+        ]);
+        $request->merge([
+            'date_start' => now(),
+            'date_end' => null,
+        ]);
+        DB::beginTransaction();
+        try {
+            $course_price = CoursePrice::create($request->all());
+            DB::commit();
+            return $this->successResponse($course_price, 'Course price created successfully', 201);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse('Failed to create course price: ' . $e->getMessage(), 500);
+        }
     }
 
     /**
@@ -95,6 +110,28 @@ class CoursePriceController extends Controller
             $course_price->delete();
             DB::commit();
             return $this->successResponse(null, 'Course price deleted successfully', 200);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return $this->errorResponse('Course price not found', 404);
+        }
+    }
+
+    public function updateNewPrice(Request $request, int $id): JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            $course_price = CoursePrice::findOrFail($id);
+            $course_price->update([
+                'date_end' => now(),
+            ]);
+            $new_course_price = CoursePrice::create([
+                'course_id' => $course_price->course_id,
+                'price' => $request->new_price,
+                'date_start' => now(),
+                'date_end' => null,
+            ]);
+            DB::commit();
+            return $this->successResponse($new_course_price, 'Course price updated successfully', 200);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course price not found', 404);
