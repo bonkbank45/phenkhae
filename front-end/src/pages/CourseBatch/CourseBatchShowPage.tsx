@@ -22,6 +22,10 @@ import { transformToStudentCourseDataTable } from '../../utils/enrollment';
 const CourseBatchShowPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedEnrollment, setSelectedEnrollment] = useState(null);
+  const [isModalEnrollmentEdit, setIsModalEnrollmentEdit] = useState(false);
+  const [isModalEnrollmentDelete, setIsModalEnrollmentDelete] = useState(false);
   const {
     data: courseBatchData,
     isLoading: isCourseBatchDataLoading,
@@ -31,12 +35,7 @@ const CourseBatchShowPage = () => {
     data: enrollmentStudentStatus,
     isLoading: isEnrollmentStudentStatusLoading,
     refetch: refetchEnrollmentStudentStatus,
-  } = useEnrollmentStudentStatusByCourseGroupId(Number(id));
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedEnrollment, setSelectedEnrollment] = useState(null);
-  const [isModalEnrollmentEdit, setIsModalEnrollmentEdit] = useState(false);
-  const [isModalEnrollmentDelete, setIsModalEnrollmentDelete] = useState(false);
+  } = useEnrollmentStudentStatusByCourseGroupId(Number(id), currentPage);
 
   const [isCriteriaScoreModalOpen, setIsCriteriaScoreModalOpen] =
     useState(false);

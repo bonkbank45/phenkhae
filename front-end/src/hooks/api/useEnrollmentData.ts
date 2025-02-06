@@ -88,12 +88,16 @@ export const useEnrolledStudentsByBatchIds = (
 
 export const useEnrollmentStudentStatusByCourseGroupId = (
   courseGroupId: number,
+  page: number,
 ) => {
   return useQuery({
-    queryKey: ['enrollments', courseGroupId],
+    queryKey: ['enrollments', courseGroupId, page],
     queryFn: async () => {
+      const params = new URLSearchParams({
+        page: page?.toString() || '1',
+      });
       const response = await api.get(
-        `/enrollment/course-group/${courseGroupId}`,
+        `/enrollment/course_group/${courseGroupId}?${params}`,
       );
       return response.data;
     },
