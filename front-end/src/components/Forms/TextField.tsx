@@ -41,7 +41,7 @@ const TextField = ({
         defaultValue={defaultValue}
         className={`font-notoLoopThaiRegular w-full rounded-lg border bg-transparent py-2 pl-4 pr-10 bg-white text-black outline-none focus-visible:border-primary dark:bg-form-input dark:text-white ${
           error ? 'border-red-500' : 'border-stroke'
-        } ${disabled ? 'bg-gray-100' : ''} ${
+        } ${disabled ? '!bg-gray-100' : ''} ${
           disabled ? 'cursor-not-allowed' : ''
         }`}
         disabled={disabled}

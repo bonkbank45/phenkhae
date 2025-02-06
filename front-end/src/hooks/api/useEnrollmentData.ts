@@ -3,6 +3,7 @@ import { Enrollment, GroupEnrollmentSubmit } from '../../types/enrollment';
 import api from '../../services/api';
 import { ErrorResponse } from '../../types/error_response';
 import { SelectedBatch } from '../../pages/Student/StudentIndexPage';
+import { StudentCourseDataTable } from '../../types/enrollment';
 
 interface StudentSelected {
   id: number;
@@ -85,6 +86,26 @@ export const useEnrolledStudentsByBatchIds = (
   });
 };
 
+export const useEnrollmentStudentStatusByCourseGroupId = (
+  courseGroupId: number,
+  page: number,
+) => {
+  return useQuery({
+    queryKey: ['enrollments', courseGroupId, page],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: page?.toString() || '1',
+      });
+      const response = await api.get(
+        `/enrollment/course_group/${courseGroupId}?${params}`,
+      );
+      return response.data;
+    },
+    staleTime: 1000 * 60 * 5,
+    placeholderData: (previousData) => previousData,
+  });
+};
+
 export const useAddEnrolledStudents = () => {
   const queryClient = useQueryClient();
   // Reminder: add api.post<HERE> later
@@ -100,6 +121,42 @@ export const useAddEnrolledStudents = () => {
         exact: false,
       });
       console.log('เพิ่มการสมัครสำเร็จ');
+    },
+    onError: (error: ErrorResponse) => {
+      console.error('Error', error);
+    },
+  });
+};
+
+export const useEditEnrollment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: any) =>
+      api.patch(`/enrollment/${data.course_group_id}-${data.student_id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['enrollments'],
+        exact: false,
+      });
+    },
+    onError: (error: ErrorResponse) => {
+      console.error('Error', error);
+    },
+  });
+};
+
+export const useDeleteEnrollment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { courseGroupId: number; studentId: number }) =>
+      api.delete(`/enrollment/${data.courseGroupId}`, {
+        data: { student_ids: [data.studentId] },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['enrollments'],
+        exact: false,
+      });
     },
     onError: (error: ErrorResponse) => {
       console.error('Error', error);

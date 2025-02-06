@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use App\Traits\JsonResponseTrait;
 use Illuminate\Support\Facades\DB;
 use App\Models\CourseGroup;
+use App\Models\Enrollment;
 use App\Http\Requests\StoreCourseGroupRequest;
 use App\Http\Requests\UpdateCourseGroupRequest;
 use App\Services\EnrollmentService;
@@ -52,6 +53,7 @@ class CourseGroupController extends Controller
                 $query->select('id', 'category_bill_name');
             },
             'course.latest_course_price',
+            'enrollments'
         ])
             ->withCount('enrollments as students_enrolled')
             ->orderBy('date_start', 'desc')
@@ -151,7 +153,9 @@ class CourseGroupController extends Controller
                     $query->select('id', 'category_bill_name');
                 },
                 'course.latest_course_price',
-                'enrollments'
+                'enrollments',
+                'enrollments.student',
+                'enrollments.student.bill_infos'
             ])->findOrFail($id);
             $course_group->students_enrolled = $course_group->enrollments->count();
             return $this->successResponse($course_group, 'Course group fetched successfully', 200);
@@ -177,6 +181,11 @@ class CourseGroupController extends Controller
         try {
             $course_group = CourseGroup::findOrFail($id);
             $course_group->update($request->all());
+            $course_group->refresh();
+
+            Enrollment::where('course_group_id', $id)->update([
+                'date_start' => $course_group->date_start,
+            ]);
             DB::commit();
             return $this->successResponse($course_group, 'Course group updated successfully', 200);
         } catch (ModelNotFoundException $e) {

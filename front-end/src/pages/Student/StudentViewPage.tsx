@@ -14,19 +14,22 @@ import StudentDetailModal from './StudentViewPageForm/StudentDetailModal';
 import CourseBatchBillAdd from '../CourseBatch/CourseBatchBillPageForm/CourseBatchBillAdd';
 import CourseBatchBillEdit from '../CourseBatch/CourseBatchBillPageForm/CourseBatchBillEdit';
 import CourseBatchBillDelete from '../CourseBatch/CourseBatchBillPageForm/CourseBatchBillDelete';
+import CourseBatchBillView from '../CourseBatch/CourseBatchBillPageForm/CourseBatchBillView';
+import EditEnrollmentForm from '../Enrollment/EditEnrollmentForm';
+import DeleteEnrollmentForm from '../Enrollment/DeleteEnrollmentForm';
 import { getCourseStatus } from '../../utils/student';
 import { getPaymentStatus } from '../../utils/bill_info';
-import {
-  getStudentLicenseQual,
-  isCourseCanGetLicense,
-} from '../../utils/student_license_qual';
+import { isCourseCanGetLicense } from '../../utils/student_license_qual';
 import Modal from '../../components/Modal';
 import { toast } from 'react-toastify';
 import {
   BillInfoViewGroup,
   SelectedStudentBillInfo,
 } from '../../types/bill_info';
-import CourseBatchBillView from '../CourseBatch/CourseBatchBillPageForm/CourseBatchBillView';
+import {
+  EnrollmentExtended,
+  StudentCourseDataTable,
+} from '../../types/enrollment';
 
 const StudentViewPage = () => {
   const navigate = useNavigate();
@@ -38,10 +41,15 @@ const StudentViewPage = () => {
   const [selectedBillInfo, setSelectedBillInfo] =
     useState<SelectedStudentBillInfo | null>(null);
 
+  const [selectedEnrollment, setSelectedEnrollment] =
+    useState<StudentCourseDataTable | null>(null);
+
   const [selectedMenu, setSelectedMenu] = useState<
     'course' | 'certificate_after_end' | 'payment' | 'bill'
   >('course');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalEnrollmentEdit, setIsModalEnrollmentEdit] = useState(false);
+  const [isModalEnrollmentDelete, setIsModalEnrollmentDelete] = useState(false);
   const [isModalBillView, setIsModalBillView] = useState(false);
   const [isModalAddBill, setIsModalAddBill] = useState(false);
   const [isModalEditBill, setIsModalEditBill] = useState(false);
@@ -81,6 +89,9 @@ const StudentViewPage = () => {
 
   const studentCourseDataTable =
     studentData?.data.enrollments?.map((enrollment) => ({
+      course_group_id: enrollment.course_group_id,
+      student_id: enrollment.student_id,
+      student_name: `${studentData.data.firstname_tha} ${studentData.data.lastname_tha}`,
       course_name: enrollment.course_group?.course.course_name || '-',
       batch_name: `รุ่นที่ ${enrollment.course_group?.batch || '-'}`,
       course_status: getCourseStatus(
@@ -100,6 +111,8 @@ const StudentViewPage = () => {
         : '-',
       case_status:
         enrollment.activity_case_status === 0 ? 'ยังไม่ส่งเคส' : 'ส่งเคสแล้ว',
+      theoretical_score: enrollment.theoretical_score,
+      practical_score: enrollment.practical_score,
     })) || [];
 
   const columnsCourseBatch = [
@@ -148,13 +161,27 @@ const StudentViewPage = () => {
       key: 'action',
       render: (courseBatch) => (
         <div className="flex items-center gap-2">
-          <button>
+          <button
+            onClick={() => {
+              navigate(`/courses/batchs/${courseBatch.course_group_id}`);
+            }}
+          >
             <RoundRemoveRedEye className="cursor-pointer w-5 h-5" />
           </button>
-          <button>
+          <button
+            onClick={() => {
+              setSelectedEnrollment(courseBatch);
+              setIsModalEnrollmentEdit(true);
+            }}
+          >
             <IconEdit className="cursor-pointer w-5 h-5" />
           </button>
-          <button>
+          <button
+            onClick={() => {
+              setSelectedEnrollment(courseBatch);
+              setIsModalEnrollmentDelete(true);
+            }}
+          >
             <IconCrossCircled className="cursor-pointer w-5 h-5" />
           </button>
         </div>
@@ -581,6 +608,43 @@ const StudentViewPage = () => {
           title="รายละเอียดข้อมูล"
           type={modalType}
         />
+        <Modal
+          isOpen={isModalEnrollmentEdit}
+          onClose={() => setIsModalEnrollmentEdit(false)}
+          title="แก้ไขการสมัครหลักสูตร"
+        >
+          <EditEnrollmentForm
+            enrollment={selectedEnrollment}
+            onSuccess={() => {
+              setIsModalEnrollmentEdit(false);
+              refetchStudentData();
+              toast.success('แก้ไขข้อมูลการลงทะเบียนรุ่นหลักสูตรเรียบร้อย');
+            }}
+            onError={(error) => {
+              setIsModalEnrollmentEdit(false);
+              toast.error(error.message);
+            }}
+          />
+        </Modal>
+        <Modal
+          isOpen={isModalEnrollmentDelete}
+          onClose={() => setIsModalEnrollmentDelete(false)}
+          title="ลบการสมัครหลักสูตร"
+        >
+          <DeleteEnrollmentForm
+            enrollmentInfo={selectedEnrollment}
+            onSuccess={() => {
+              setIsModalEnrollmentDelete(false);
+              refetchStudentData();
+              toast.success('ลบการสมัครหลักสูตรเรียบร้อย');
+            }}
+            onError={() => {
+              setIsModalEnrollmentDelete(false);
+              toast.error('ลบการสมัครหลักสูตรไม่สำเร็จ');
+            }}
+            onClose={() => setIsModalEnrollmentDelete(false)}
+          />
+        </Modal>
         <Modal
           isOpen={isModalAddBill}
           onClose={() => setIsModalAddBill(false)}

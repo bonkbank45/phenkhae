@@ -130,8 +130,9 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/course-batches', [EnrollmentController::class, 'getEnrolledStudentsByBatchIds']);
         Route::get('/course-batch/{courseBatchId}', [EnrollmentController::class, 'getEnrolledStudentsByBatchId']);
         Route::get('/{enrollment}', [EnrollmentController::class, 'show']);
-        Route::put('/{enrollment}', [EnrollmentController::class, 'update']);
+        Route::patch('/{enrollment}-{studentId}', [EnrollmentController::class, 'update']);
         Route::delete('/{enrollment}', [EnrollmentController::class, 'destroy']);
+        Route::get('/course_group/{courseGroupId}', [EnrollmentController::class, 'getEnrollmentStudentStatusByCourseGroupId']);
     });
     Route::prefix('exam')->group(function () {
         Route::get('/', [ExamController::class, 'index']);

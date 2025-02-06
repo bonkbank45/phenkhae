@@ -68,6 +68,18 @@ class EnrollmentController extends Controller
         }
     }
 
+    public function getEnrollmentStudentStatusByCourseGroupId(int $courseGroupId): JsonResponse
+    {
+        try {
+            $enrollment = Enrollment::where('course_group_id', $courseGroupId)
+                ->with('student', 'course_group', 'course_group.course')
+                ->paginate(10);
+            return $this->successResponse($enrollment, 'Enrollment retrieved successfully', 200);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('Enrollment not found', 404);
+        }
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -79,12 +91,22 @@ class EnrollmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateEnrollmentRequest $request, int $id): JsonResponse
+    public function update(UpdateEnrollmentRequest $request, int $courseGroupId, int $studentId): JsonResponse
     {
         DB::beginTransaction();
         try {
-            $enrollment = Enrollment::findOrFail($id);
-            $enrollment->update($request->all());
+            $enrollment = Enrollment::where('course_group_id', $courseGroupId)
+                ->where('student_id', $studentId)
+                ->firstOrFail();
+
+            Enrollment::where('course_group_id', $courseGroupId)
+                ->where('student_id', $studentId)
+                ->update($request->all());
+
+            $enrollment = Enrollment::where('course_group_id', $courseGroupId)
+                ->where('student_id', $studentId)
+                ->first();
+
             DB::commit();
             return $this->successResponse($enrollment, 'Enrollment updated successfully', 200);
         } catch (ModelNotFoundException $e) {
