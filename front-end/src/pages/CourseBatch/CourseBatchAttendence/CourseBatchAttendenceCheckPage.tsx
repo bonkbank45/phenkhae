@@ -8,7 +8,6 @@ import {
 } from '../../../hooks/api/useStudentAttendence';
 import { useEnrollmentStudentStatusByCourseGroupId } from '../../../hooks/api/useEnrollmentData';
 import { useCourseAttendenceById } from '../../../hooks/api/useCourseAttendence';
-import Table from '../../../components/Tables/Table';
 import PaginatedTable from '../../../components/Tables/PaginatedTable';
 import Pagination from '../../../components/Pagination';
 import Spinner from '../../../common/Spinner';
@@ -46,7 +45,11 @@ const CourseBatchAttendenceCheckPage = () => {
     }
   }, [studentAttendences]);
 
-  if (isLoadingStudentAttendence || isLoadingEnrollmentStudentStatus) {
+  if (
+    isLoadingStudentAttendence ||
+    isLoadingEnrollmentStudentStatus ||
+    isLoadingCourseAttendence
+  ) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Spinner />

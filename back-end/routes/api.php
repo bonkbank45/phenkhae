@@ -91,8 +91,10 @@ Route::group(['middleware' => ['api']], function () {
 
     Route::prefix('student_attendence')->group(function () {
         Route::get('/', [StudentAttendenceController::class, 'index']);
+        Route::get('/course_group/{courseGroupId}', [StudentAttendenceController::class, 'getStudentAttendencesByCourseGroupId']);
         Route::get('/course_attendence/{courseAttendenceId}', [StudentAttendenceController::class, 'getStudentAttendencesByCourseAttendenceId']);
         Route::put('/', [StudentAttendenceController::class, 'bulkUpdate']);
+        Route::put('/large_bulk_update', [StudentAttendenceController::class, 'largeBulkUpdate']);
     });
 
     Route::prefix('medical_condition')->group(function () {

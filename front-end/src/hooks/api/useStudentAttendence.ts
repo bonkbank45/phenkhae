@@ -15,6 +15,18 @@ export const useStudentAttendence = (courseAttendenceId: number) => {
   });
 };
 
+export const useStudentAttendenceByCourseBatchId = (courseBatchId: number) => {
+  return useQuery({
+    queryKey: ['studentAttendenceByCourseBatchId', courseBatchId],
+    queryFn: async () => {
+      const response = await api.get(
+        `/student_attendence/course_group/${courseBatchId}`,
+      );
+      return response.data;
+    },
+  });
+};
+
 export const useStudentAttendenceBulkUpdate = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -24,6 +36,26 @@ export const useStudentAttendenceBulkUpdate = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['studentAttendence'] });
+    },
+    onError: (error) => {
+      console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
+    },
+  });
+};
+
+export const useStudentAttendenceLargeBulkUpdate = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: any) => {
+      const response = await api.put(
+        `/student_attendence/large_bulk_update`,
+        data,
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['studentAttendence'] });
+      console.log('Student attendence updated successfully');
     },
     onError: (error) => {
       console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
