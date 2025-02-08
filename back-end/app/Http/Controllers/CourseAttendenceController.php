@@ -45,15 +45,19 @@ class CourseAttendenceController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        DB::beginTransaction();
         try {
-            $course_attendence = CourseAttendence::findOrFail($id);
-            DB::commit();
+            $course_attendence = CourseAttendence::with('course_group', 'course_group.course')->findOrFail($id);
             return $this->successResponse($course_attendence, 'Course attendence fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
-            DB::rollBack();
             return $this->errorResponse('Course attendence not found', 404);
         }
+    }
+
+    public function showByCourseGroupIdAndDate(int $courseGroupId, string $date): JsonResponse
+    {
+        $course_attendences = CourseAttendence::where('course_group_id', $courseGroupId)
+            ->where('attendence_date', $date)->get();
+        return $this->successResponse($course_attendences, 'Course attendences fetched successfully', 200);
     }
 
     /**
@@ -96,5 +100,13 @@ class CourseAttendenceController extends Controller
             DB::rollBack();
             return $this->errorResponse('Course attendence not found', 404);
         }
+    }
+
+    public function getCourseAttendencesByCourseGroupId(int $course_group_id): JsonResponse
+    {
+        $course_attendences = CourseAttendence::where('course_group_id', $course_group_id)
+            ->orderBy('attendence_date', 'asc')
+            ->get();
+        return $this->successResponse($course_attendences, 'Course attendences fetched successfully', 200);
     }
 }

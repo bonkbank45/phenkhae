@@ -51,4 +51,8 @@ class CourseGroup extends Model
     {
         return $this->hasMany(Enrollment::class);
     }
+    public function course_attendences(): HasMany
+    {
+        return $this->hasMany(CourseAttendence::class);
+    }
 }

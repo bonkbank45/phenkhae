@@ -36,6 +36,9 @@ import StudentViewPage from './pages/Student/StudentViewPage';
 import CourseBatchBillPage from './pages/CourseBatch/CourseBatchBillPage';
 import CourseBatchGraduatePage from './pages/CourseBatch/CourseBatchGraduatePage';
 import CoursePriceManagePage from './pages/Course/CoursePriceManagePage';
+import CourseBatchAttendencePage from './pages/CourseBatch/CourseBatchAttendence/CourseBatchAttendencePage';
+import CourseBatchAttendenceCheckPage from './pages/CourseBatch/CourseBatchAttendence/CourseBatchAttendenceCheckPage';
+import CourseBatchAttendenceBulkPage from './pages/CourseBatch/CourseBatchAttendence/CourseBatchAttendenceBulkPage';
 function App() {
   const { pathname } = useLocation();
   const { isAuthenticated, authLoading } = useAuth();
@@ -205,6 +208,18 @@ function App() {
           <Route
             path="/courses/batchs/:id/graduate"
             element={<CourseBatchGraduatePage />}
+          />
+          <Route
+            path="/courses/batchs/:id/attendence"
+            element={<CourseBatchAttendencePage />}
+          />
+          <Route
+            path="/courses/batchs/:id/attendence/:attendenceId"
+            element={<CourseBatchAttendenceCheckPage />}
+          />
+          <Route
+            path="/courses/batchs/:id/attendence/bulk"
+            element={<CourseBatchAttendenceBulkPage />}
           />
           <Route
             path="/courses/batchs/:id/remove-students"

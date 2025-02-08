@@ -264,7 +264,9 @@ const CourseBatchShowPage = () => {
             <Button
               color="blue"
               size="sm"
-              onClick={() => {}}
+              onClick={() => {
+                navigate(`/courses/batchs/${id}/attendence`);
+              }}
               className="font-notoLoopThaiRegular flex items-center gap-1"
             >
               บันทึกประวัติการเข้าเรียน
