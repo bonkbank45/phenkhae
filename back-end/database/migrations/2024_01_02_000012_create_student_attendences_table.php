@@ -10,11 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('course_attendences', function (Blueprint $table) {
+        Schema::create('student_attendences', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('course_group_id');
-            $table->date('attendence_date');
-            $table->timestamps();
+            $table->foreignId('course_attendence_id')->constrained('course_attendences')->onDelete('cascade');
+            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
+            $table->tinyInteger('status');
         });
     }
 
@@ -23,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('course_attendences');
+        Schema::dropIfExists('student_attendences');
     }
 };

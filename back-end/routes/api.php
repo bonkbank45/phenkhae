@@ -25,6 +25,7 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\SubDistrictController;
 use App\Http\Controllers\EducationQualController;
 use App\Http\Controllers\BillInfoController;
+use App\Http\Controllers\StudentAttendenceController;
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -85,7 +86,15 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/{courseAttendence}', [CourseAttendenceController::class, 'show']);
         Route::put('/{courseAttendence}', [CourseAttendenceController::class, 'update']);
         Route::delete('/{courseAttendence}', [CourseAttendenceController::class, 'destroy']);
+        Route::get('/course_group/{courseGroupId}', [CourseAttendenceController::class, 'getCourseAttendencesByCourseGroupId']);
     });
+
+    Route::prefix('student_attendence')->group(function () {
+        Route::get('/', [StudentAttendenceController::class, 'index']);
+        Route::get('/course_attendence/{courseAttendenceId}', [StudentAttendenceController::class, 'getStudentAttendencesByCourseAttendenceId']);
+        Route::put('/', [StudentAttendenceController::class, 'bulkUpdate']);
+    });
+
     Route::prefix('medical_condition')->group(function () {
         Route::get('/', [MedicalConditionController::class, 'index']);
         Route::post('/', [MedicalConditionController::class, 'store']);

@@ -23,9 +23,7 @@ class StoreCourseAttendenceRequest extends FormRequest
     {
         return [
             'course_group_id' => 'required|exists:course_groups,id',
-            'student_id' => 'required|exists:students,id',
-            'attendence_date' => 'required|date',
-            'status' => 'required|in:0,1',
+            'attendence_date' => 'required|date_format:Y-m-d',
         ];
     }
 }
