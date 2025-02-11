@@ -5,9 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+
 class Enrollment extends Model
 {
     protected $table = 'enrollments';
+    protected $primaryKey = ['course_group_id', 'student_id'];
+    public $incrementing = false;
     protected $fillable = [
         'course_group_id',
         'student_id',
@@ -85,9 +90,23 @@ class Enrollment extends Model
     {
         return $this->belongsTo(Student::class, 'student_id');
     }
-    public function course_attendences(): HasMany
+    public function billInfo(): HasOne
     {
-        return $this->hasMany(CourseAttendence::class);
+        return $this->hasOne(BillInfo::class)
+            ->where('course_group_id', $this->course_group_id)
+            ->where('student_id', $this->student_id);
+    }
+    public function attendances(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            StudentAttendence::class,
+            CourseAttendence::class,
+            'course_group_id',
+            'student_id',
+            'course_group_id',
+            'id'
+        )->where('course_attendences.course_group_id', $this->course_group_id)
+            ->where('student_attendences.student_id', $this->student_id);
     }
     public function course_price(): BelongsTo
     {

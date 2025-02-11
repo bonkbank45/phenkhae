@@ -26,6 +26,7 @@ use App\Http\Controllers\SubDistrictController;
 use App\Http\Controllers\EducationQualController;
 use App\Http\Controllers\BillInfoController;
 use App\Http\Controllers\StudentAttendenceController;
+use App\Http\Controllers\CourseCompletionController;
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -143,6 +144,7 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/{enrollment}', [EnrollmentController::class, 'show']);
         Route::patch('/{enrollment}-{studentId}', [EnrollmentController::class, 'update']);
         Route::delete('/{enrollment}', [EnrollmentController::class, 'destroy']);
+        Route::get('/course_group/{courseGroupId}/graduate', [EnrollmentController::class, 'getEnrollmentStatusGraduateByBatchId']);
         Route::get('/course_group/{courseGroupId}', [EnrollmentController::class, 'getEnrollmentStudentStatusByCourseGroupId']);
     });
     Route::prefix('exam')->group(function () {
@@ -184,5 +186,10 @@ Route::group(['middleware' => ['api']], function () {
         Route::delete('/{billInfoId}-{billInfoNo}', [BillInfoController::class, 'delete']);
         Route::get('/get-bill-info/{courseBatchId}', [BillInfoController::class, 'getBillInfo']);
         Route::get('/get-latest-bill-vol', [BillInfoController::class, 'getLatestBillVol']);
+    });
+
+    Route::prefix('course_completion')->group(function () {
+        Route::get('/', [CourseCompletionController::class, 'index']);
+        Route::post('/', [CourseCompletionController::class, 'store']);
     });
 });

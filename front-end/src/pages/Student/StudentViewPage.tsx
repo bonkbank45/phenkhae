@@ -22,14 +22,8 @@ import { getPaymentStatus } from '../../utils/bill_info';
 import { isCourseCanGetLicense } from '../../utils/student_license_qual';
 import Modal from '../../components/Modal';
 import { toast } from 'react-toastify';
-import {
-  BillInfoViewGroup,
-  SelectedStudentBillInfo,
-} from '../../types/bill_info';
-import {
-  EnrollmentExtended,
-  StudentCourseDataTable,
-} from '../../types/enrollment';
+import { SelectedStudentBillInfo } from '../../types/bill_info';
+import { StudentCourseDataTable } from '../../types/enrollment';
 
 const StudentViewPage = () => {
   const navigate = useNavigate();
