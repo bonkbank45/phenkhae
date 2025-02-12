@@ -2,6 +2,7 @@ import {
   EnrollmentExtended,
   StudentCourseDataTable,
 } from '../types/enrollment';
+import { GraduateStudent } from '../types/graduate';
 import { getCourseStatus } from './student';
 import { format } from 'date-fns';
 export const transformToStudentCourseDataTable = (
@@ -28,4 +29,46 @@ export const transformToStudentCourseDataTable = (
     theoretical_score: enrollment.theoretical_score,
     practical_score: enrollment.practical_score,
   };
+};
+
+export const isStudentGraduate = (graduate: GraduateStudent): boolean => {
+  // ตรวจสอบว่ามีข้อมูลใบเสร็จครบถ้วน
+  if (graduate.bill_infos.vol === null || graduate.bill_infos.no === null) {
+    return false;
+  }
+
+  // คำนวณเปอร์เซ็นต์การเข้าเรียน
+  const percentage =
+    (Number(graduate.student_attendance.present_count) /
+      graduate.student_attendance.total_classes) *
+    100;
+
+  // ตรวจสอบการเข้าเรียนต้องไม่ต่ำกว่า 80%
+  if (percentage < 80) {
+    return false;
+  }
+
+  // ตรวจสอบสถานะการส่งเคส
+  if (graduate.enrollment.activity_case_status === 0) {
+    return false;
+  }
+
+  // ตรวจสอบคะแนนภาคปฏิบัติ
+  if (
+    graduate.enrollment.practical_score <
+    graduate.course_group.practical_score_criteria
+  ) {
+    return false;
+  }
+
+  // ตรวจสอบคะแนนภาคทฤษฎี
+  if (
+    graduate.enrollment.theoretical_score <
+    graduate.course_group.theoretical_score_criteria
+  ) {
+    return false;
+  }
+
+  // ถ้าผ่านทุกเงื่อนไข
+  return true;
 };

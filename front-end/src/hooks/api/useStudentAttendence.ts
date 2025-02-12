@@ -62,3 +62,29 @@ export const useStudentAttendenceLargeBulkUpdate = () => {
     },
   });
 };
+
+export const useDeleteStudentAttendence = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      courseAttendenceId,
+      studentId,
+    }: {
+      courseAttendenceId: number;
+      studentId: number;
+    }) => {
+      console.log(courseAttendenceId, studentId);
+      const response = await api.delete(
+        `/student_attendence/${courseAttendenceId}`,
+        { data: { student_id: studentId } },
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['studentAttendence'] });
+    },
+    onError: (error) => {
+      console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล:', error);
+    },
+  });
+};

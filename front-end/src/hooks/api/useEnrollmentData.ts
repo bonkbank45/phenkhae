@@ -164,6 +164,24 @@ export const useDeleteEnrollment = () => {
   });
 };
 
+export const useEnrollmentStatusGraduateByBatchId = (
+  batchId: number,
+  page: number,
+) => {
+  return useQuery({
+    queryKey: ['enrollment_status_graduate', batchId, page],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: page?.toString() || '1',
+      });
+      const response = await api.get(
+        `/enrollment/course_group/${batchId}/graduate?${params}`,
+      );
+      return response.data;
+    },
+  });
+};
+
 export const useRemoveEnrollment = () => {
   const queryClient = useQueryClient();
   return useMutation({

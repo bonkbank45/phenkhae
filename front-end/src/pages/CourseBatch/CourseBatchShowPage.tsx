@@ -40,6 +40,13 @@ const CourseBatchShowPage = () => {
   const [isCriteriaScoreModalOpen, setIsCriteriaScoreModalOpen] =
     useState(false);
 
+  console.log(
+    'isEnrollmentStudentStatusLoading',
+    isEnrollmentStudentStatusLoading,
+  );
+
+  console.log('isCourseBatchDataLoading', isCourseBatchDataLoading);
+
   if (isCourseBatchDataLoading || isEnrollmentStudentStatusLoading) {
     return (
       <div className="flex justify-center items-center h-screen">

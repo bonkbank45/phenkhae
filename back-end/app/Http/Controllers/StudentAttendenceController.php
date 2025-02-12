@@ -19,6 +19,23 @@ class StudentAttendenceController extends Controller
         return $this->successResponse($student_attendences, 'Student attendences fetched successfully', 200);
     }
 
+    public function destroy(Request $request, string $courseAttendenceId): JsonResponse
+    {
+        $studentId = $request->input('student_id');
+        \Log::info($courseAttendenceId . ' ' . $studentId);
+        try {
+            $studentAttendence = StudentAttendence::where('course_attendence_id', (int) $courseAttendenceId)
+                ->where('student_id', $studentId)
+                ->firstOrFail();
+            $studentAttendence->delete();
+            return $this->successResponse(true, 'Student attendence deleted successfully', 200);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('Student attendence not found', 404);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Delete Student attendence failed ' . $e->getMessage(), 400);
+        }
+    }
+
     public function bulkUpdate(Request $request): JsonResponse
     {
         DB::beginTransaction();

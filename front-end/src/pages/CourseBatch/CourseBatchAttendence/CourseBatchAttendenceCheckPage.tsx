@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@material-tailwind/react';
 import IconArrowLeft from '../../../common/ArrowLeft';
+import IconCrossCircled from '../../../common/CrossCircle';
 import {
   useStudentAttendence,
   useStudentAttendenceBulkUpdate,
@@ -13,11 +14,17 @@ import Pagination from '../../../components/Pagination';
 import Spinner from '../../../common/Spinner';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
+import Modal from '../../../components/Modal';
+import CourseBatchAttendenceCheckDelete from './CourseBatchAttendenceCheckDelete';
 
 const CourseBatchAttendenceCheckPage = () => {
   const { id, attendenceId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
+  const [selectedStudentAttendence, setSelectedStudentAttendence] = useState(
+    {},
+  );
   const { data: courseAttendence, isLoading: isLoadingCourseAttendence } =
     useCourseAttendenceById(Number(attendenceId));
   const { data: studentAttendences, isLoading: isLoadingStudentAttendence } =
@@ -111,6 +118,7 @@ const CourseBatchAttendenceCheckPage = () => {
 
   const studentAttendencesTable = {
     data: enrollmentStudentStatusData.data.data.map((student) => ({
+      course_attendence_id: Number(attendenceId),
       student_id: student.student_id,
       firstname_tha: student.student.firstname_tha,
       lastname_tha: student.student.lastname_tha,
@@ -134,6 +142,8 @@ const CourseBatchAttendenceCheckPage = () => {
     to: enrollmentStudentStatusData.data.to,
     total: enrollmentStudentStatusData.data.total,
   };
+
+  console.log(studentAttendencesTable);
 
   const columns = [
     {
@@ -173,6 +183,26 @@ const CourseBatchAttendenceCheckPage = () => {
             <span className="text-gray-500">ยังไม่ได้เช็คชื่อ</span>
           )}
         </div>
+      ),
+    },
+    {
+      header: 'จัดการ',
+      key: 'action',
+      render: (row) => (
+        <>
+          {row.status === 1 || row.status === 0 ? (
+            <button
+              onClick={() => {
+                setIsOpenDeleteModal(true);
+                setSelectedStudentAttendence(row);
+              }}
+            >
+              <IconCrossCircled className="w-4 h-4" />
+            </button>
+          ) : (
+            <span>-</span>
+          )}
+        </>
       ),
     },
   ];
@@ -258,6 +288,27 @@ const CourseBatchAttendenceCheckPage = () => {
           </Button>
         </div>
       </div>
+      {selectedStudentAttendence && (
+        <Modal
+          title="ลบการเช็คชื่อนักเรียน"
+          isOpen={isOpenDeleteModal}
+          onClose={() => setIsOpenDeleteModal(false)}
+        >
+          <CourseBatchAttendenceCheckDelete
+            studentAttendencesTableData={selectedStudentAttendence}
+            onSuccess={() => {
+              setIsOpenDeleteModal(false);
+              toast.success('ลบการเช็คชื่อนักเรียนเรียบร้อย');
+              setSelectedStudentAttendence({});
+            }}
+            onError={() => {
+              setIsOpenDeleteModal(false);
+              toast.error('ลบการเช็คชื่อนักเรียนไม่สำเร็จ');
+            }}
+            onClose={() => setIsOpenDeleteModal(false)}
+          />
+        </Modal>
+      )}
     </>
   );
 };

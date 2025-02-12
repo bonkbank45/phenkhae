@@ -197,4 +197,155 @@ class EnrollmentController extends Controller
 
         return $this->successResponse($students, 'Enrolled students retrieved successfully', 200);
     }
+
+    public function getEnrollmentStatusGraduateByBatchId(int $courseGroupId): JsonResponse
+    {
+        $enrollmentStatusGraduate = DB::table('enrollments as en')
+            ->join('students', 'en.student_id', '=', 'students.id')
+            ->join('course_groups', 'en.course_group_id', '=', 'course_groups.id')
+            ->join('courses', 'course_groups.course_id', '=', 'courses.id')
+            ->join('course_prices', function ($join) {
+                $join->on('courses.id', '=', 'course_prices.course_id')
+                    ->whereColumn('course_prices.id', '=', 'en.course_price_id');
+            })
+            ->join('course_category_bills', 'courses.course_category_bill_id', '=', 'course_category_bills.id')
+            ->leftJoin('course_completions', function ($join) {
+                $join->on('en.student_id', '=', 'course_completions.student_id')
+                    ->whereColumn('en.course_group_id', '=', 'course_completions.course_group_id');
+            })
+            ->leftJoin('bill_infos', function ($join) {
+                $join->on('en.student_id', '=', 'bill_infos.student_id')
+                    ->whereColumn('en.course_group_id', '=', 'bill_infos.course_group_id');
+            })
+            ->leftJoin('course_attendences as ca', 'en.course_group_id', '=', 'ca.course_group_id')
+            ->leftJoin('student_attendences as sa', function ($join) {
+                $join->on('ca.id', '=', 'sa.course_attendence_id')
+                    ->whereColumn('en.student_id', '=', 'sa.student_id');
+            })
+            ->select(
+                'courses.id as course_id',
+                'courses.course_name',
+                'course_category_bills.id as course_category_bill_id',
+                'course_category_bills.category_bill_name as course_category_bill_name',
+                'en.course_group_id',
+                'course_groups.batch',
+                'course_groups.theoretical_score_criteria as course_group_theoretical_score_criteria',
+                'course_groups.practical_score_criteria as course_group_practical_score_criteria',
+                'course_groups.date_start as course_group_date_start',
+                'course_groups.date_end as course_group_date_end',
+                'en.student_id',
+                'students.firstname_tha',
+                'students.lastname_tha',
+                'en.activity_case_status',
+                'en.theoretical_score',
+                'en.practical_score',
+                'en.enrollment_date',
+                'en.date_start as enrollment_date_start',
+                'en.date_end as enrollment_date_end',
+                'en.created_at as enrollments_created_at',
+                'en.updated_at as enrollments_updated_at',
+                'bill_infos.vol as bill_infos_vol',
+                'bill_infos.no as bill_infos_no',
+                'bill_infos.date_submit',
+                'bill_infos.created_at as bill_infos_create_at',
+                'bill_infos.updated_at as bill_infos_updated_at',
+                'course_prices.price as course_price',
+                DB::raw('COUNT(ca.id) as total_classes'),
+                DB::raw('SUM(CASE WHEN COALESCE(sa.status, 0) = 1 THEN 1 ELSE 0 END) as present_count'),
+                DB::raw('SUM(CASE WHEN COALESCE(sa.status, 0) = 0 THEN 1 ELSE 0 END) as absent_count'),
+                'course_completions.id as course_completion_id',
+                'course_completions.date_start as course_completion_date_start',
+                'course_completions.date_end as course_completion_date_end',
+                'course_completions.completion_date as course_completion_completed_date'
+            )
+            ->where('en.course_group_id', $courseGroupId)
+            ->groupBy(
+                'courses.id',
+                'courses.course_name',
+                'course_category_bills.id',
+                'course_category_bills.category_bill_name',
+                'en.course_group_id',
+                'course_groups.batch',
+                'course_groups.theoretical_score_criteria',
+                'course_groups.practical_score_criteria',
+                'course_groups.date_start',
+                'course_groups.date_end',
+                'en.student_id',
+                'students.firstname_tha',
+                'students.lastname_tha',
+                'en.activity_case_status',
+                'en.theoretical_score',
+                'en.practical_score',
+                'en.enrollment_date',
+                'en.date_start',
+                'en.date_end',
+                'en.created_at',
+                'en.updated_at',
+                'bill_infos.vol',
+                'bill_infos.no',
+                'bill_infos.date_submit',
+                'bill_infos.created_at',
+                'bill_infos.updated_at',
+                'course_prices.price',
+                'course_completions.id',
+                'course_completions.student_id',
+                'course_completions.course_group_id',
+                'course_completions.date_start',
+                'course_completions.date_end',
+                'course_completions.completion_date'
+            )
+            ->paginate(10)
+            ->through(function ($item) {
+                return [
+                    'course_id' => $item->course_id,
+                    'course_name' => $item->course_name,
+                    'course_category' => [
+                        'course_category_bill_id' => $item->course_category_bill_id,
+                        'course_category_bill_name' => $item->course_category_bill_name,
+                    ],
+                    'course_group' => [
+                        'course_group_id' => $item->course_group_id,
+                        'batch' => $item->batch,
+                        'date_start' => $item->course_group_date_start,
+                        'date_end' => $item->course_group_date_end,
+                        'theoretical_score_criteria' => $item->course_group_theoretical_score_criteria,
+                        'practical_score_criteria' => $item->course_group_practical_score_criteria,
+                    ],
+                    'enrollment' => [
+                        'course_group_id' => $item->course_group_id,
+                        'student_id' => $item->student_id,
+                        'firstname_tha' => $item->firstname_tha,
+                        'lastname_tha' => $item->lastname_tha,
+                        'activity_case_status' => $item->activity_case_status,
+                        'theoretical_score' => $item->theoretical_score,
+                        'practical_score' => $item->practical_score,
+                        'enrollment_date' => $item->enrollment_date,
+                        'enrollment_date_start' => $item->enrollment_date_start,
+                        'enrollment_date_end' => $item->enrollment_date_end,
+                        'created_at' => $item->enrollments_created_at,
+                        'updated_at' => $item->enrollments_updated_at,
+                    ],
+                    'bill_infos' => [
+                        'vol' => $item->bill_infos_vol,
+                        'no' => $item->bill_infos_no,
+                        'date_submit' => $item->date_submit,
+                        'created_at' => $item->bill_infos_create_at,
+                        'updated_at' => $item->bill_infos_updated_at,
+                        'course_price' => $item->course_price,
+                    ],
+                    'student_attendance' => [
+                        'total_classes' => $item->total_classes,
+                        'present_count' => $item->present_count,
+                        'absent_count' => $item->absent_count,
+                    ],
+                    'course_completion' => [
+                        'course_completion_id' => $item->course_completion_id,
+                        'course_completion_date_start' => $item->course_completion_date_start,
+                        'course_completion_date_end' => $item->course_completion_date_end,
+                        'course_completion_completed_date' => $item->course_completion_completed_date,
+                    ],
+                ];
+            });
+        return $this->successResponse($enrollmentStatusGraduate, 'Enrollment status retrieved successfully', 200);
+    }
 }

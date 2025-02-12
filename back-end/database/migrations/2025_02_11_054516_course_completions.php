@@ -10,13 +10,16 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('student_attendences', function (Blueprint $table) {
+        Schema::create('course_completions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('course_attendence_id')->constrained('course_attendences')->onDelete('cascade');
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
-            $table->tinyInteger('status');
+            $table->foreignId('course_group_id')->constrained('course_groups')->onDelete('cascade');
+            $table->date('date_start');
+            $table->date('date_end');
+            $table->date('completion_date');
+            $table->timestamps();
 
-            $table->unique(['course_attendence_id', 'student_id']);
+            $table->unique(['student_id', 'course_group_id']);
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('student_attendences');
+        //
     }
 };
