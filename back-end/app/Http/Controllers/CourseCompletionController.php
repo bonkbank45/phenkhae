@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Traits\JsonResponseTrait;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\CourseCompletion;
 use App\Services\GraduateService;
@@ -92,5 +93,137 @@ class CourseCompletionController extends Controller
     public function destroy(CourseCompletionController $courseCompletionController)
     {
         //
+    }
+
+    public function getCourseCompletionTable(Request $request): JsonResponse
+    {
+        $query = CourseCompletion::with(
+            'course_group',
+            'course_group.course',
+            'student'
+        );
+
+        if ($request->course_filter && $request->course_filter !== 'all') {
+            $query->courseFilter($request->course_filter);
+            if ($request->batch_filter && $request->batch_filter !== 'all') {
+                $query->batchFilter($request->batch_filter);
+            }
+        } else {
+            $query->availableLicense($request->available_license);
+        }
+
+        $courseCompletion = $query->paginate(10);
+        return $this->successResponse($courseCompletion, 'Course completion retrieved successfully', 200);
+    }
+
+    public function getUnlicensedCompletions(Request $request): JsonResponse
+    {
+        $query = DB::table('course_completions')
+            ->join('course_groups', 'course_completions.course_group_id', '=', 'course_groups.id')
+            ->join('courses', 'course_groups.course_id', '=', 'courses.id')
+            ->join('students', 'course_completions.student_id', '=', 'students.id')
+            ->leftJoin('student_license_quals', function ($join) {
+                $join->on('course_completions.student_id', '=', 'student_license_quals.student_id')
+                    ->on('course_groups.course_id', '=', 'student_license_quals.course_id');
+            })
+            ->whereNull('student_license_quals.id');
+
+        if ($request->course_filter && $request->course_filter !== 'all') {
+            $query->where('courses.id', $request->course_filter);
+            if ($request->batch_filter && $request->batch_filter !== 'all') {
+                $query->where('course_groups.batch', $request->batch_filter);
+            }
+        } else {
+            if ($request->available_license == 'true') {
+                $query->whereIn('courses.id', [7, 8, 9, 10]);
+            }
+        }
+
+        $unlicensedStudents = $query
+            ->select([
+                'course_completions.*',
+                'course_groups.*',
+                'courses.id as course_id',
+                'courses.course_category_id',
+                'courses.course_category_bill_id',
+                'courses.course_name',
+                'courses.course_description',
+                'courses.created_at as course_created_at',
+                'courses.updated_at as course_updated_at',
+                'students.*'
+            ])
+            ->paginate(10)
+            ->through(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'student_id' => $item->student_id,
+                    'course_group_id' => $item->course_group_id,
+                    'date_start' => $item->date_start,
+                    'date_end' => $item->date_end,
+                    'completion_date' => $item->completion_date,
+                    'created_at' => $item->created_at,
+                    'updated_at' => $item->updated_at,
+                    'course_group' => [
+                        'id' => $item->course_group_id,
+                        'course_id' => $item->course_id,
+                        'max_students' => $item->max_students,
+                        'batch' => $item->batch,
+                        'theoretical_score_criteria' => $item->theoretical_score_criteria,
+                        'practical_score_criteria' => $item->practical_score_criteria,
+                        'date_start' => $item->date_start,
+                        'date_end' => $item->date_end,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'course' => [
+                            'id' => $item->course_id,
+                            'course_category_id' => $item->course_category_id,
+                            'course_category_bill_id' => $item->course_category_bill_id,
+                            'course_name' => $item->course_name,
+                            'course_description' => $item->course_description,
+                            'created_at' => $item->course_created_at,
+                            'updated_at' => $item->course_updated_at,
+                        ]
+                    ],
+                    'student' => [
+                        'id' => $item->student_id,
+                        'prename_id' => $item->prename_id,
+                        'firstname_tha' => $item->firstname_tha,
+                        'lastname_tha' => $item->lastname_tha,
+                        'firstname_eng' => $item->firstname_eng,
+                        'lastname_eng' => $item->lastname_eng,
+                        'citizenid_card' => $item->citizenid_card,
+                        'birthdate' => $item->birthdate,
+                        'birth_province_id' => $item->birth_province_id,
+                        'father_fname' => $item->father_fname,
+                        'father_lname' => $item->father_lname,
+                        'mother_fname' => $item->mother_fname,
+                        'mother_lname' => $item->mother_lname,
+                        'marital_id' => $item->marital_id,
+                        'address_num' => $item->address_num,
+                        'address_moo' => $item->address_moo,
+                        'address_soi' => $item->address_soi,
+                        'address_road' => $item->address_road,
+                        'address_subdistrict_id' => $item->address_subdistrict_id,
+                        'address_zip_code' => $item->address_zip_code,
+                        'phonenumber' => $item->phonenumber,
+                        'email' => $item->email,
+                        'occupation_id' => $item->occupation_id,
+                        'medical_condition_id' => $item->medical_condition_id,
+                        'surgery_history' => $item->surgery_history,
+                        'edu_qual_id' => $item->edu_qual_id,
+                        'edu_ins' => $item->edu_ins,
+                        'learn_massage' => $item->learn_massage,
+                        'learn_massage_description' => $item->learn_massage_description,
+                        'work_massage' => $item->work_massage,
+                        'work_massage_description' => $item->work_massage_description,
+                        'profile_image' => $item->profile_image,
+                        'date_register_from_form' => $item->date_register_from_form,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                    ]
+                ];
+            });
+
+        return $this->successResponse($unlicensedStudents, 'Unlicensed completions retrieved successfully', 200);
     }
 }

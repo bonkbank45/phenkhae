@@ -61,7 +61,7 @@ const PaginatedTable = <Type extends object>({
                 <tr>
                   <td
                     colSpan={columns.length}
-                    className="mt-4 mb-4 text-center font-notoRegular"
+                    className="mt-4 mb-4 p-4 text-center font-notoRegular"
                   >
                     ไม่พบข้อมูล
                   </td>

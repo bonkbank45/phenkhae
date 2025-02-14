@@ -17,11 +17,16 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $courses = Course::with('course_category:id,category_name', 'course_category_bill:id,category_bill_name', 'latest_course_price:id,course_id,price,date_start,date_end')
-            ->select("id", "course_name", "course_description", "course_category_id", "course_category_bill_id", )
-            ->get();
+        $query = Course::with('course_category:id,category_name', 'course_category_bill:id,category_bill_name', 'latest_course_price:id,course_id,price,date_start,date_end')
+            ->select("id", "course_name", "course_description", "course_category_id", "course_category_bill_id");
+
+        if ($request->query('license_available') === 'true') {
+            $query->whereIn('id', [7, 8, 9, 10]);
+        }
+
+        $courses = $query->get();
         return $this->successResponse($courses, 'Courses fetched successfully', 200);
     }
 

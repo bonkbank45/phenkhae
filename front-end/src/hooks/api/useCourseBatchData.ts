@@ -245,3 +245,16 @@ export const useDeleteCourseBatchData = () => {
     },
   });
 };
+
+export const useGetAllCourseBatchNumberByCourseId = (
+  courseId: number | null,
+) => {
+  return useQuery({
+    queryKey: ['course_batch_number_by_course_id', courseId],
+    queryFn: async () => {
+      const response = await api.get(`/course_group/course/${courseId}/batch`);
+      return response.data;
+    },
+    enabled: !!courseId,
+  });
+};

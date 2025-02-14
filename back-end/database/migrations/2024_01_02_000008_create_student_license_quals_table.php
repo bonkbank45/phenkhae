@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->foreignId('course_id')->constrained('courses', 'id');
             $table->dateTime('date_qualified');
             $table->timestamps();
+
+            $table->unique(['student_id', 'course_id']);
         });
     }
 

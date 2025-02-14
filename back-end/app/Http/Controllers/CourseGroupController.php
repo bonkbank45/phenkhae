@@ -211,6 +211,26 @@ class CourseGroupController extends Controller
         }
     }
 
+    public function getAllCourseBatchNumberByCourseId(int $courseId): JsonResponse
+    {
+        try {
+            $batches = CourseGroup::where('course_id', $courseId)
+                ->orderBy('batch')
+                ->pluck('batch')
+                ->unique()
+                ->values()
+                ->toArray();
+
+            $response_data = [
+                'batch' => $batches
+            ];
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('Course group not found', 404);
+        }
+
+        return $this->successResponse($response_data, 'Course batch number fetched successfully', 200);
+    }
+
     public function updateScoreCriteria(Request $request, int $id): JsonResponse
     {
         DB::beginTransaction();

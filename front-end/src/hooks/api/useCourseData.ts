@@ -10,6 +10,17 @@ interface UseCourseDataParams {
   onLoadComplete?: () => void;
 }
 
+export const useCourseLicenseAvailable = () => {
+  return useQuery({
+    queryKey: ['course_license_available'],
+    queryFn: async () => {
+      const response = await api.get('/course?license_available=true');
+      return response.data;
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
 export const useCourseGroupEnrollmentData = () => {
   const { data: courseGroupEnrollmentData, isLoading } = useQuery({
     queryKey: ['course_group_enrollment_data'],
