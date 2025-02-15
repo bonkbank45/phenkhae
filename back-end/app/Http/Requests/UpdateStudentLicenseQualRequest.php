@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Carbon\Carbon;
 class UpdateStudentLicenseQualRequest extends FormRequest
 {
     /**
@@ -26,5 +26,12 @@ class UpdateStudentLicenseQualRequest extends FormRequest
             "course_id" => "required|exists:courses,id",
             "date_qualified" => "required|date",
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'date_qualified' => Carbon::createFromFormat('d/m/Y', $this->date_qualified)->format('Y-m-d'),
+        ]);
     }
 }

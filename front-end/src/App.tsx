@@ -39,7 +39,8 @@ import CoursePriceManagePage from './pages/Course/CoursePriceManagePage';
 import CourseBatchAttendencePage from './pages/CourseBatch/CourseBatchAttendence/CourseBatchAttendencePage';
 import CourseBatchAttendenceCheckPage from './pages/CourseBatch/CourseBatchAttendence/CourseBatchAttendenceCheckPage';
 import CourseBatchAttendenceBulkPage from './pages/CourseBatch/CourseBatchAttendence/CourseBatchAttendenceBulkPage';
-import AddStudentLicenseQualIndex from './pages/License/AddStudentLicenseQualIndex';
+import AddStudentLicenseQualIndex from './pages/License/AddStudentLicenseQualPage';
+import StudentLicenseQualManagePage from './pages/License/StudentLicenseQualManagePage';
 function App() {
   const { pathname } = useLocation();
   const { isAuthenticated, authLoading } = useAuth();
@@ -231,6 +232,10 @@ function App() {
             element={<CourseBatchBillPage />}
           />
           <Route path="/courses/add" element={<AddCourse />} />
+          <Route
+            path="/manage/license_student/list"
+            element={<StudentLicenseQualManagePage />}
+          />
           <Route
             path="/manage/license_student/add"
             element={<AddStudentLicenseQualIndex />}

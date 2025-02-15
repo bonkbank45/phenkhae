@@ -23,7 +23,7 @@ class StudentLicenseQualController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            $studentLicenseQual = StudentLicenseQual::findOrFail($id);
+            $studentLicenseQual = StudentLicenseQual::with('student', 'course')->findOrFail($id);
             return $this->successResponse($studentLicenseQual);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse($e->getMessage(), 404);
@@ -54,6 +54,30 @@ class StudentLicenseQualController extends Controller
             return $this->errorResponse($e->getMessage(), 404);
         }
     }
+
+    public function table(Request $request): JsonResponse
+    {
+        $studentLicenseQuals = StudentLicenseQual::withFullDetails()
+            ->when($request->has('course_id'), function ($query) use ($request) {
+                return $query->byCourse($request->course_id);
+            })
+            ->when($request->has('license_status'), function ($query) use ($request) {
+                return $query->byLicenseStatus($request->license_status);
+            })
+            ->when($request->has('search'), function ($query) use ($request) {
+                return $query->search($request->search);
+            })
+            ->when($request->has('date_search_start'), function ($query) use ($request) {
+                return $query->dateSearchStart($request->date_search_start);
+            })
+            ->when($request->has('date_search_end'), function ($query) use ($request) {
+                return $query->dateSearchEnd($request->date_search_end);
+            })
+            ->paginate(10);
+
+        return $this->successResponse($studentLicenseQuals, 'Student license quals fetched successfully', 200);
+    }
+
     public function bulkStore(Request $request): JsonResponse
     {
         $dateQualified = Carbon::createFromFormat('d/m/Y', $request->input('date_qualified'))

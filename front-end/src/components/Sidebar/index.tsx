@@ -464,18 +464,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Certificate Data --> */}
               <SidebarLinkGroup
                 activeCondition={
-                  pathname === '/manage/certificate' ||
-                  pathname.includes('manage/certificate')
+                  pathname === '/manage/license_student' ||
+                  pathname.includes('/manage/license_student')
                 }
               >
                 {(handleClick, open) => {
                   return (
                     <React.Fragment>
                       <NavLink
-                        to="#"
+                        to="/manage/license_student/list"
                         className={`font-notoLoopThaiRegular group relative flex items-center gap-2 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                          (pathname === '/manage/certificate' ||
-                            pathname.includes('manage/certificate')) &&
+                          (pathname === '/manage/license_student' ||
+                            pathname.includes('manage/license_student')) &&
                           'bg-graydark dark:bg-meta-4'
                         }`}
                         onClick={(e) => {

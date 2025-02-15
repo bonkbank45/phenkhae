@@ -123,6 +123,7 @@ Route::group(['middleware' => ['api']], function () {
     });
     Route::prefix('student_license_qual')->group(function () {
         Route::get('/', [StudentLicenseQualController::class, 'index']);
+        Route::get('/table', [StudentLicenseQualController::class, 'table']);
         Route::post('/', [StudentLicenseQualController::class, 'store']);
         Route::post('/bulk', [StudentLicenseQualController::class, 'bulkStore']);
         Route::get('/{studentLicenseQual}', [StudentLicenseQualController::class, 'show']);
