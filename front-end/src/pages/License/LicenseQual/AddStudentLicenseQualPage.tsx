@@ -34,10 +34,16 @@ const AddStudentLicenseQualIndex = () => {
     useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchTermFromStudentCompletion, setSearchTermFromStudentCompletion] =
+    useState('');
   const [studentFromCourseCompletionPage, setStudentFromCourseCompletionPage] =
     useState(1);
   const [allStudentsPage, setAllStudentsPage] = useState(1);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const debouncedSearchTermFromStudentCompletion = useDebounce(
+    searchTermFromStudentCompletion,
+    500,
+  );
   const [ageRange, setAgeRange] = useState<string>('all');
   const [experience, setExperience] = useState<string>('all');
   const [education, setEducation] = useState<string>('all');
@@ -69,6 +75,7 @@ const AddStudentLicenseQualIndex = () => {
     'true',
     courseFilter,
     batchFilter,
+    debouncedSearchTermFromStudentCompletion,
   );
 
   const { data: courseBatchNumber, isLoading: isLoadingCourseBatchNumber } =
@@ -115,6 +122,11 @@ const AddStudentLicenseQualIndex = () => {
   const handleSearch = (input: string) => {
     setSearchTerm(input);
     setAllStudentsPage(1);
+  };
+
+  const handleSearchFromStudentCompletion = (input: string) => {
+    setSearchTermFromStudentCompletion(input);
+    setStudentFromCourseCompletionPage(1);
   };
 
   const handleAgeRangeFilter = (input: string) => {
@@ -291,6 +303,13 @@ const AddStudentLicenseQualIndex = () => {
                   placeholder="รุ่นทั้งหมด"
                   showIcon={false}
                   isDisabled={!courseFilter || courseFilter === 'all'}
+                />
+              </div>
+              <div className="mb-4">
+                <Search
+                  value={searchTermFromStudentCompletion}
+                  onChange={handleSearchFromStudentCompletion}
+                  placeholder="ค้นหาด้วยรหัสนักเรียน, ชื่อหรือนามสกุลนักเรียน"
                 />
               </div>
             </div>

@@ -34,8 +34,13 @@ class CourseCompletion extends Model
         return $query;
     }
 
-    public function scopeGetUnqualifiedCompletions($query, $courseFilter = null, $batchFilter = null, $availableLicense = null)
-    {
+    public function scopeGetUnqualifiedCompletions(
+        $query,
+        $courseFilter = null,
+        $batchFilter = null,
+        $availableLicense = null,
+        $searchTerm = null
+    ) {
         $query->join('course_groups', 'course_completions.course_group_id', '=', 'course_groups.id')
             ->join('courses', 'course_groups.course_id', '=', 'courses.id')
             ->join('students', 'course_completions.student_id', '=', 'students.id')
@@ -54,6 +59,12 @@ class CourseCompletion extends Model
             if ($availableLicense == 'true') {
                 $query->whereIn('courses.id', [7, 8, 9, 10]);
             }
+        }
+
+        if ($searchTerm) {
+            $query->where('students.id', 'like', '%' . $searchTerm . '%')
+                ->orWhere('students.firstname_tha', 'like', '%' . $searchTerm . '%')
+                ->orWhere('students.lastname_tha', 'like', '%' . $searchTerm . '%');
         }
 
         return $query->select([

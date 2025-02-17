@@ -92,7 +92,7 @@ class StudentLicenseQual extends Model
         return $query->where('student_license_quals.date_qualified', '<=', $dateSearchEnd);
     }
 
-    public function scopeGetUnlicensedStudents($query, $courseId = null)
+    public function scopeGetUnlicensedStudents($query, $courseId = null, $searchTerm = null)
     {
         return $query->select([
             'student_license_quals.*',
@@ -116,6 +116,11 @@ class StudentLicenseQual extends Model
                 $join->on('student_license_quals.student_id', '=', 'student_license_completes.student_id')
                     ->on('student_license_quals.course_id', '=', 'student_license_completes.course_id');
             })
-            ->whereNull('student_license_completes.id');
+            ->whereNull('student_license_completes.id')
+            ->when($searchTerm, function ($query, $searchTerm) {
+                return $query->where('students.id', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('students.firstname_tha', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('students.lastname_tha', 'like', '%' . $searchTerm . '%');
+            });
     }
 }

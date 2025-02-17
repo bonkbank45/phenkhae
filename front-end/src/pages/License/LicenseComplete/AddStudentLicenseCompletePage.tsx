@@ -26,8 +26,14 @@ import { AddStudentsToCompleteForm } from './AddForm/AddStudentsToCompleteForm';
 const AddStudentLicenseCompletePage = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchTermFromStudentQual, setSearchTermFromStudentQual] =
+    useState('');
   const [allStudentsPage, setAllStudentsPage] = useState(1);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const debouncedSearchTermFromStudentQual = useDebounce(
+    searchTermFromStudentQual,
+    500,
+  );
   const [ageRange, setAgeRange] = useState<string>('all');
   const [experience, setExperience] = useState<string>('all');
   const [education, setEducation] = useState<string>('all');
@@ -66,6 +72,7 @@ const AddStudentLicenseCompletePage = () => {
   } = useGetUnlicensedStudents({
     page: studentFromCourseCompletionPage,
     courseId: courseFilter,
+    searchTerm: debouncedSearchTermFromStudentQual,
   });
 
   const {
@@ -98,6 +105,11 @@ const AddStudentLicenseCompletePage = () => {
   const handleSearch = (input: string) => {
     setSearchTerm(input);
     setAllStudentsPage(1);
+  };
+
+  const handleSearchFromStudentQual = (input: string) => {
+    setSearchTermFromStudentQual(input);
+    setStudentFromCourseCompletionPage(1);
   };
 
   const handleAgeRangeFilter = (input: string) => {
@@ -253,6 +265,13 @@ const AddStudentLicenseCompletePage = () => {
                   options={courseLicenseAvailableDropdownOptions}
                   placeholder="หลักสูตรทั้งหมด"
                   showIcon={true}
+                />
+              </div>
+              <div className="mb-4">
+                <Search
+                  value={searchTermFromStudentQual}
+                  onChange={handleSearchFromStudentQual}
+                  placeholder="ค้นหาด้วยรหัสนักเรียน, ชื่อหรือนามสกุลนักเรียน"
                 />
               </div>
             </div>

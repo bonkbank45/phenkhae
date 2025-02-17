@@ -121,7 +121,8 @@ class CourseCompletionController extends Controller
         $unqualifiedStudents = CourseCompletion::getUnqualifiedCompletions(
             $request->course_filter,
             $request->batch_filter,
-            $request->available_license
+            $request->available_license,
+            $request->search_term
         )
             ->paginate(10)
             ->through(function ($item) {

@@ -97,7 +97,7 @@ class StudentLicenseQualController extends Controller
 
     public function getUnlicensedStudents(Request $request): JsonResponse
     {
-        $unlicensedStudents = StudentLicenseQual::getUnlicensedStudents($request->course_id)
+        $unlicensedStudents = StudentLicenseQual::getUnlicensedStudents($request->course_id, $request->search_term)
             ->paginate(10)
             ->through(function ($item) {
                 return [

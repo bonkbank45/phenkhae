@@ -57,6 +57,7 @@ export const useUnqualifiedCompletions = (
   availableLicense: string,
   courseFilter: string,
   batchFilter: string,
+  searchTerm: string,
 ) => {
   return useQuery({
     queryKey: [
@@ -65,6 +66,7 @@ export const useUnqualifiedCompletions = (
       availableLicense,
       courseFilter,
       batchFilter,
+      searchTerm,
     ],
     queryFn: async () => {
       const params = new URLSearchParams({
@@ -72,6 +74,7 @@ export const useUnqualifiedCompletions = (
         ...(availableLicense && { available_license: availableLicense }),
         ...(courseFilter && { course_filter: courseFilter }),
         ...(batchFilter && { batch_filter: batchFilter }),
+        ...(searchTerm && { search_term: searchTerm }),
       });
       const response = await api.get(
         `/course_completion/unqualified/table?${params}`,

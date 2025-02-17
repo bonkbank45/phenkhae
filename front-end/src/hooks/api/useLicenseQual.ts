@@ -156,16 +156,19 @@ export const useAddBulkLicenseQual = () => {
 export const useGetUnlicensedStudents = ({
   page,
   courseId,
+  searchTerm,
 }: {
   page: number;
   courseId: string;
+  searchTerm: string;
 }) => {
   return useQuery({
-    queryKey: ['student_license_unlicensed_table', page, courseId],
+    queryKey: ['student_license_unlicensed_table', page, courseId, searchTerm],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: page.toString(),
         ...(courseId && { course_id: courseId.toString() }),
+        ...(searchTerm && { search_term: searchTerm }),
       });
       const response = await api.get(
         `/student_license_qual/unlicensed/table?${params}`,
