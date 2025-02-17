@@ -52,7 +52,7 @@ export const useCourseCompletionTable = (
   });
 };
 
-export const useUnlicensedCompletions = (
+export const useUnqualifiedCompletions = (
   page: number,
   availableLicense: string,
   courseFilter: string,
@@ -60,7 +60,7 @@ export const useUnlicensedCompletions = (
 ) => {
   return useQuery({
     queryKey: [
-      'unlicensed_completions',
+      'unqualified_completions',
       page,
       availableLicense,
       courseFilter,
@@ -74,7 +74,7 @@ export const useUnlicensedCompletions = (
         ...(batchFilter && { batch_filter: batchFilter }),
       });
       const response = await api.get(
-        `/course_completion/unlicensed-completions/table?${params}`,
+        `/course_completion/unqualified/table?${params}`,
       );
       return response.data;
     },

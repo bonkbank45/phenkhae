@@ -1,6 +1,6 @@
 import React from 'react';
-import { useDeleteLicenseQual } from '../../../hooks/api/useLicenseQual';
-import { ErrorResponse } from '../../../types/error_response';
+import { useDeleteLicenseQual } from '../../../../hooks/api/useLicenseQual';
+import { ErrorResponse } from '../../../../types/error_response';
 import { format } from 'date-fns';
 
 export interface DeleteLicenseQualStudentProps {

@@ -116,7 +116,9 @@ Route::group(['middleware' => ['api']], function () {
     });
     Route::prefix('student_license_complete')->group(function () {
         Route::get('/', [StudentLicenseCompleteController::class, 'index']);
+        Route::get('/table', [StudentLicenseCompleteController::class, 'table']);
         Route::post('/', [StudentLicenseCompleteController::class, 'store']);
+        Route::post('/bulk', [StudentLicenseCompleteController::class, 'bulkStore']);
         Route::get('/{studentLicenseComplete}', [StudentLicenseCompleteController::class, 'show']);
         Route::put('/{studentLicenseComplete}', [StudentLicenseCompleteController::class, 'update']);
         Route::delete('/{studentLicenseComplete}', [StudentLicenseCompleteController::class, 'destroy']);
@@ -129,6 +131,7 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/{studentLicenseQual}', [StudentLicenseQualController::class, 'show']);
         Route::put('/{studentLicenseQual}', [StudentLicenseQualController::class, 'update']);
         Route::delete('/{studentLicenseQual}', [StudentLicenseQualController::class, 'destroy']);
+        Route::get('/unlicensed/table', [StudentLicenseQualController::class, 'getUnlicensedStudents']);
     });
     Route::prefix('student')->group(function () {
         Route::get('/', [StudentController::class, 'index']);
@@ -196,6 +199,6 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/', [CourseCompletionController::class, 'index']);
         Route::post('/', [CourseCompletionController::class, 'store']);
         Route::get('/table', [CourseCompletionController::class, 'getCourseCompletionTable']);
-        Route::get('/unlicensed-completions/table', [CourseCompletionController::class, 'getUnlicensedCompletions']);
+        Route::get('/unqualified/table', [CourseCompletionController::class, 'getUnqualifiedCompletions']);
     });
 });

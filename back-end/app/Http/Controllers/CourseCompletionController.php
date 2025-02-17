@@ -116,42 +116,13 @@ class CourseCompletionController extends Controller
         return $this->successResponse($courseCompletion, 'Course completion retrieved successfully', 200);
     }
 
-    public function getUnlicensedCompletions(Request $request): JsonResponse
+    public function getUnqualifiedCompletions(Request $request): JsonResponse
     {
-        $query = DB::table('course_completions')
-            ->join('course_groups', 'course_completions.course_group_id', '=', 'course_groups.id')
-            ->join('courses', 'course_groups.course_id', '=', 'courses.id')
-            ->join('students', 'course_completions.student_id', '=', 'students.id')
-            ->leftJoin('student_license_quals', function ($join) {
-                $join->on('course_completions.student_id', '=', 'student_license_quals.student_id')
-                    ->on('course_groups.course_id', '=', 'student_license_quals.course_id');
-            })
-            ->whereNull('student_license_quals.id');
-
-        if ($request->course_filter && $request->course_filter !== 'all') {
-            $query->where('courses.id', $request->course_filter);
-            if ($request->batch_filter && $request->batch_filter !== 'all') {
-                $query->where('course_groups.batch', $request->batch_filter);
-            }
-        } else {
-            if ($request->available_license == 'true') {
-                $query->whereIn('courses.id', [7, 8, 9, 10]);
-            }
-        }
-
-        $unlicensedStudents = $query
-            ->select([
-                'course_completions.*',
-                'course_groups.*',
-                'courses.id as course_id',
-                'courses.course_category_id',
-                'courses.course_category_bill_id',
-                'courses.course_name',
-                'courses.course_description',
-                'courses.created_at as course_created_at',
-                'courses.updated_at as course_updated_at',
-                'students.*'
-            ])
+        $unqualifiedStudents = CourseCompletion::getUnqualifiedCompletions(
+            $request->course_filter,
+            $request->batch_filter,
+            $request->available_license
+        )
             ->paginate(10)
             ->through(function ($item) {
                 return [
@@ -224,6 +195,6 @@ class CourseCompletionController extends Controller
                 ];
             });
 
-        return $this->successResponse($unlicensedStudents, 'Unlicensed completions retrieved successfully', 200);
+        return $this->successResponse($unqualifiedStudents, 'Unlicensed completions retrieved successfully', 200);
     }
 }

@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import DatePickerWithController from '../../../components/Forms/DatePicker/DatePickerWithController';
+import DatePickerWithController from '../../../../components/Forms/DatePicker/DatePickerWithController';
 import { useForm } from 'react-hook-form';
 import { format } from 'date-fns';
 import { Button } from '@material-tailwind/react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useUpdateLicenseQual } from '../../../hooks/api/useLicenseQual';
-import { ErrorResponse } from '../../../types/error_response';
+import { useUpdateLicenseQual } from '../../../../hooks/api/useLicenseQual';
+import { ErrorResponse } from '../../../../types/error_response';
 
 export interface UpdateLicenseQualStudentProps {
   id: number;

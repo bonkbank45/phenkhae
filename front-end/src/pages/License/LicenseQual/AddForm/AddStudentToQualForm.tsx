@@ -1,14 +1,14 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import DropdownSearchWithController from '../../../components/Forms/DropdownSearchWithController';
-import DatePickerWithController from '../../../components/Forms/DatePicker/DatePickerWithController';
-import { useCourseLicenseAvailable } from '../../../hooks/api/useCourseData';
-import { Student } from '../../../types/student';
+import DropdownSearchWithController from '../../../../components/Forms/DropdownSearchWithController';
+import DatePickerWithController from '../../../../components/Forms/DatePicker/DatePickerWithController';
+import { useCourseLicenseAvailable } from '../../../../hooks/api/useCourseData';
+import { Student } from '../../../../types/student';
 import { Button } from '@material-tailwind/react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAddLicenseQual } from '../../../hooks/api/useLicenseQual';
-import { ErrorResponse } from '../../../types/error_response';
+import { useAddLicenseQual } from '../../../../hooks/api/useLicenseQual';
+import { ErrorResponse } from '../../../../types/error_response';
 
 export const AddStudentToQualForm = ({
   student,
@@ -22,6 +22,7 @@ export const AddStudentToQualForm = ({
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(
@@ -35,10 +36,12 @@ export const AddStudentToQualForm = ({
     useCourseLicenseAvailable();
   const { mutate: addLicenseQual, isPending: isLoadingAddLicenseQual } =
     useAddLicenseQual();
+  const [serverError, setServerError] = React.useState<string>('');
 
   if (isLoadingCourses) return <div>Loading...</div>;
 
   const onSubmit = (data: any) => {
+    setServerError('');
     addLicenseQual(
       { ...data, student_id: student.id },
       {
@@ -47,6 +50,12 @@ export const AddStudentToQualForm = ({
         },
         onError: (error) => {
           onError(error);
+          setError('course_id', {
+            type: 'server',
+            message:
+              error.response?.data?.message ||
+              'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง',
+          });
         },
       },
     );

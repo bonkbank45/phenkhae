@@ -39,8 +39,11 @@ import CoursePriceManagePage from './pages/Course/CoursePriceManagePage';
 import CourseBatchAttendencePage from './pages/CourseBatch/CourseBatchAttendence/CourseBatchAttendencePage';
 import CourseBatchAttendenceCheckPage from './pages/CourseBatch/CourseBatchAttendence/CourseBatchAttendenceCheckPage';
 import CourseBatchAttendenceBulkPage from './pages/CourseBatch/CourseBatchAttendence/CourseBatchAttendenceBulkPage';
-import AddStudentLicenseQualIndex from './pages/License/AddStudentLicenseQualPage';
-import StudentLicenseQualManagePage from './pages/License/StudentLicenseQualManagePage';
+import AddStudentLicenseQualIndex from './pages/License/LicenseQual/AddStudentLicenseQualPage';
+import StudentLicenseQualManagePage from './pages/License/LicenseQual/StudentLicenseQualManagePage';
+import StudentLicenseCompleteManagePage from './pages/License/LicenseComplete/StudentLicenseCompleteManagePage';
+import AddStudentLicenseCompletePage from './pages/License/LicenseComplete/AddStudentLicenseCompletePage';
+
 function App() {
   const { pathname } = useLocation();
   const { isAuthenticated, authLoading } = useAuth();
@@ -239,6 +242,14 @@ function App() {
           <Route
             path="/manage/license_student/add"
             element={<AddStudentLicenseQualIndex />}
+          />
+          <Route
+            path="/manage/license_student/completed/list"
+            element={<StudentLicenseCompleteManagePage />}
+          />
+          <Route
+            path="/manage/license_student/completed/add"
+            element={<AddStudentLicenseCompletePage />}
           />
           <Route path="*" element={<NotFound />} />
         </Route>

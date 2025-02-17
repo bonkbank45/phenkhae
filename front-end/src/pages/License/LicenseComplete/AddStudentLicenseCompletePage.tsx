@@ -1,50 +1,51 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useStudentData } from '../../hooks/api/useStudentData';
-import useDebounce from '../../hooks/useDebounce';
+import { useStudentData } from '../../../hooks/api/useStudentData';
+import useDebounce from '../../../hooks/useDebounce';
+import PaginatedTable from '../../../components/Tables/PaginatedTable';
+import Pagination from '../../../components/Pagination';
+import Search from '../../../components/Search/Search';
+import { ColumnType } from '../../../components/Tables/Table';
+import Filter from '../../../components/Filter/Filter';
+import Spinner from '../../../common/Spinner';
+import { Student } from '../../../types/student';
+import RoundRemoveRedEye from '../../../common/RoundRemoveRedEye';
+import { filterOptions } from '../../../constants/filterOptions';
+import UserAdd from '../../../common/UserAdd';
+import Modal from '../../../components/Modal';
+import { AddStudentToCompleteForm } from './AddForm/AddStudentToCompleteForm';
+import { ErrorResponse } from '../../../types/error_response';
 import { toast } from 'react-toastify';
-import PaginatedTable from '../../components/Tables/PaginatedTable';
-import Pagination from '../../components/Pagination';
-import Search from '../../components/Search/Search';
-import { ColumnType } from '../../components/Tables/Table';
-import Filter from '../../components/Filter/Filter';
-import Modal from '../../components/Modal';
-import Spinner from '../../common/Spinner';
-import { Student } from '../../types/student';
-import RoundRemoveRedEye from '../../common/RoundRemoveRedEye';
-import UserAdd from '../../common/UserAdd';
-import { filterOptions } from '../../constants/filterOptions';
-import { AddStudentToQualForm } from './AddForm/AddStudentToQualForm';
-import { CourseCompletion } from '../../types/course_completion';
-import {
-  useCourseCompletionTable,
-  useUnlicensedCompletions,
-} from '../../hooks/api/useCourseCompletion';
-import { useCourseLicenseAvailable } from '../../hooks/api/useCourseData';
-import { Course } from '../../types/course';
-import { useGetAllCourseBatchNumberByCourseId } from '../../hooks/api/useCourseBatchData';
-import { AddStudentsToQualForm } from './AddForm/AddStudentsToQualForm';
-const AddStudentLicenseQualIndex = () => {
+import { useGetUnlicensedStudents } from '../../../hooks/api/useLicenseQual';
+import { useCourseLicenseAvailable } from '../../../hooks/api/useCourseData';
+import { Course } from '../../../types/course';
+import { LicenseQualAddTableInterface } from '../../../types/license_qual';
+import { format } from 'date-fns';
+import { AddStudentsToCompleteForm } from './AddForm/AddStudentsToCompleteForm';
+
+const AddStudentLicenseCompletePage = () => {
   const navigate = useNavigate();
-  const [isAddStudentToQualModalOpen, setIsAddStudentToQualModalOpen] =
-    useState(false);
-  const [isAddStudentsToQualModalOpen, setIsAddStudentsToQualModalOpen] =
-    useState(false);
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [studentFromCourseCompletionPage, setStudentFromCourseCompletionPage] =
-    useState(1);
   const [allStudentsPage, setAllStudentsPage] = useState(1);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [ageRange, setAgeRange] = useState<string>('all');
   const [experience, setExperience] = useState<string>('all');
   const [education, setEducation] = useState<string>('all');
   const [recentlyAdded, setRecentlyAdded] = useState<string>('all');
+  const [isAddLicenseCompleteModalOpen, setIsAddLicenseCompleteModalOpen] =
+    useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [studentFromCourseCompletionPage, setStudentFromCourseCompletionPage] =
+    useState(1);
   const [courseFilter, setCourseFilter] = useState<string>('all');
-  const [batchFilter, setBatchFilter] = useState<string>('all');
-  const [selectedStudents, setSelectedStudents] = useState<CourseCompletion[]>(
-    [],
-  );
+  const [selectedStudents, setSelectedStudents] = useState<
+    LicenseQualAddTableInterface[]
+  >([]);
+  const [
+    isAddStudentsToCompleteModalOpen,
+    setIsAddStudentsToCompleteModalOpen,
+  ] = useState(false);
+
   const {
     data: apiResponse,
     isLoading: isLoadingStudents,
@@ -62,17 +63,10 @@ const AddStudentLicenseQualIndex = () => {
     data: unlicensedCompletions,
     isLoading: isLoadingUnlicensedCompletions,
     refetch: refetchUnlicensedCompletions,
-  } = useUnlicensedCompletions(
-    studentFromCourseCompletionPage,
-    'true',
-    courseFilter,
-    batchFilter,
-  );
-
-  const { data: courseBatchNumber, isLoading: isLoadingCourseBatchNumber } =
-    useGetAllCourseBatchNumberByCourseId(
-      courseFilter !== 'all' ? Number(courseFilter) : null,
-    );
+  } = useGetUnlicensedStudents({
+    page: studentFromCourseCompletionPage,
+    courseId: courseFilter,
+  });
 
   const {
     data: courseLicenseAvailable,
@@ -81,8 +75,8 @@ const AddStudentLicenseQualIndex = () => {
 
   if (
     isLoadingStudents ||
-    isLoadingUnlicensedCompletions ||
-    isLoadingCourseLicenseAvailable
+    isLoadingCourseLicenseAvailable ||
+    isLoadingUnlicensedCompletions
   ) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -90,10 +84,6 @@ const AddStudentLicenseQualIndex = () => {
       </div>
     );
   }
-
-  const studentsData = apiResponse?.data;
-  // const studentCourseCompletionTableData = courseCompletionTable?.data;
-  const unlicensedCompletionsData = unlicensedCompletions?.data;
 
   const courseLicenseAvailableDropdownOptions = [
     { label: 'ทั้งหมด', value: 'all' },
@@ -103,13 +93,7 @@ const AddStudentLicenseQualIndex = () => {
     })),
   ];
 
-  const courseBatchDropdownOptions = [
-    { label: 'ทั้งหมด', value: 'all' },
-    ...(courseBatchNumber?.data?.batch.map((batch: number) => ({
-      label: `รุ่นที่ ${batch}`,
-      value: batch.toString(),
-    })) || []),
-  ];
+  const studentsData = apiResponse?.data;
 
   const handleSearch = (input: string) => {
     setSearchTerm(input);
@@ -138,79 +122,21 @@ const AddStudentLicenseQualIndex = () => {
 
   const handleCourseFilter = (input: string) => {
     setCourseFilter(input);
-    setBatchFilter('all');
     setStudentFromCourseCompletionPage(1);
   };
 
-  const handleBatchFilter = (input: string) => {
-    setBatchFilter(input);
-    setStudentFromCourseCompletionPage(1);
-  };
-
-  const handleStudentSelect = (student: CourseCompletion) => {
+  const handleStudentSelect = (student: LicenseQualAddTableInterface) => {
     const isSelected = selectedStudents.some(
-      (s) => s.student.id === student.student.id,
+      (s) => s.student_id === student.student_id,
     );
     if (isSelected) {
       setSelectedStudents(
-        selectedStudents.filter((s) => s.student.id !== student.student.id),
+        selectedStudents.filter((s) => s.student_id !== student.student_id),
       );
     } else {
       setSelectedStudents([...selectedStudents, student]);
     }
   };
-
-  console.log(selectedStudents);
-
-  const columnsWithCompletion: ColumnType<CourseCompletion>[] = [
-    {
-      header: 'เลือก',
-      key: 'select',
-      render: (student: CourseCompletion) => (
-        <input
-          type="checkbox"
-          checked={selectedStudents.some(
-            (s) => s.student.id === student.student.id,
-          )}
-          onChange={() => handleStudentSelect(student)}
-          className="cursor-pointer w-4 h-4"
-        />
-      ),
-    },
-    {
-      header: 'รหัสนักเรียน',
-      key: 'id',
-      render: (student: CourseCompletion) => student.student.id || '-',
-    },
-    {
-      header: 'ชื่อ',
-      key: 'firstname_tha',
-      render: (student: CourseCompletion) =>
-        student.student.firstname_tha || '-',
-    },
-    {
-      header: 'นามสกุล',
-      key: 'lastname_tha',
-      render: (student: CourseCompletion) =>
-        student.student.lastname_tha || '-',
-    },
-    {
-      header: 'หลักสูตร',
-      key: 'course_name',
-      render: (student: CourseCompletion) =>
-        student.course_group.course.course_name || '-',
-    },
-    {
-      header: 'รุ่นที่',
-      key: 'batch',
-      render: (student: CourseCompletion) => student.course_group.batch || '-',
-    },
-    {
-      header: 'วันที่สำเร็จการศึกษา',
-      key: 'completion_date',
-      render: (student: CourseCompletion) => student.completion_date || '-',
-    },
-  ];
 
   const columnsWithBasicInfo: ColumnType<Student>[] = [
     {
@@ -249,7 +175,7 @@ const AddStudentLicenseQualIndex = () => {
           <button
             onClick={() => {
               setSelectedStudent(student);
-              setIsAddStudentToQualModalOpen(true);
+              setIsAddLicenseCompleteModalOpen(true);
             }}
           >
             <UserAdd />
@@ -259,17 +185,65 @@ const AddStudentLicenseQualIndex = () => {
     },
   ];
 
+  const columnsWithQualified: ColumnType<LicenseQualAddTableInterface>[] = [
+    {
+      header: 'เลือก',
+      key: 'actions',
+      render: (completion: LicenseQualAddTableInterface) => (
+        <input
+          type="checkbox"
+          checked={selectedStudents.some(
+            (s) => s.student.id === completion.student.id,
+          )}
+          onChange={() => handleStudentSelect(completion)}
+          className="cursor-pointer w-4 h-4"
+        />
+      ),
+    },
+    {
+      header: 'รหัสนักเรียน',
+      key: 'student.id',
+      render: (completion: LicenseQualAddTableInterface) =>
+        completion.student.id || '-',
+    },
+    {
+      header: 'ชื่อ',
+      key: 'student.firstname_tha',
+      render: (completion: LicenseQualAddTableInterface) =>
+        completion.student.firstname_tha || '-',
+    },
+    {
+      header: 'นามสกุล',
+      key: 'student.lastname_tha',
+      render: (completion: LicenseQualAddTableInterface) =>
+        completion.student.lastname_tha || '-',
+    },
+    {
+      header: 'หลักสูตร',
+      key: 'course.course_name',
+      render: (completion: LicenseQualAddTableInterface) =>
+        completion.course.course_name || '-',
+    },
+    {
+      header: 'วันที่มีสิทธิสอบใบประกอบวิชาชีพ',
+      key: 'date_qualified',
+      render: (completion: LicenseQualAddTableInterface) =>
+        completion.date_qualified
+          ? format(new Date(completion.date_qualified), 'dd/MM/yyyy')
+          : '-',
+    },
+  ];
+
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-4">
         <div className="w-full lg:w-[75%]">
           <div className="bg-white dark:bg-boxdark rounded-lg shadow-sm p-6 mb-6 border border-gray-100 dark:border-gray-700">
             <h2 className="text-2xl font-semibold mb-0 font-notoExtraBold">
-              เพิ่มจากข้อมูลผู้สำเร็จการศึกษาที่มีในระบบ
+              เพิ่มจากข้อมูลผู้มีสิทธิสอบใบประกอบวิชาชีพที่มีในระบบ
             </h2>
             <p className="text-gray-600 dark:text-white font-notoLoopThaiRegular">
-              ตารางรายชื่อนักเรียนจากข้อมูลผู้สำเร็จการศึกษา (หลักสูตรที่ 7
-              จนถึง หลักสูตรที่ 10)
+              ตารางรายชื่อนักเรียนจากข้อมูลผู้มีสิทธิสอบใบประกอบวิชาชีพ
             </p>
             <div className="mt-4">
               <div className="mb-4 hidden lg:flex lg:justify-start flex-wrap gap-2">
@@ -280,30 +254,22 @@ const AddStudentLicenseQualIndex = () => {
                   placeholder="หลักสูตรทั้งหมด"
                   showIcon={true}
                 />
-                <Filter
-                  value={batchFilter}
-                  onChange={handleBatchFilter}
-                  options={courseBatchDropdownOptions}
-                  placeholder="รุ่นทั้งหมด"
-                  showIcon={false}
-                  isDisabled={!courseFilter || courseFilter === 'all'}
-                />
               </div>
             </div>
             <PaginatedTable
-              data={unlicensedCompletionsData}
-              columns={columnsWithCompletion}
+              data={unlicensedCompletions?.data}
+              columns={columnsWithQualified}
               isLoading={isLoadingUnlicensedCompletions}
             />
             <Pagination
               currentPage={studentFromCourseCompletionPage}
-              totalPages={unlicensedCompletionsData?.last_page}
-              from={unlicensedCompletionsData?.from}
-              to={unlicensedCompletionsData?.to}
-              total={unlicensedCompletionsData?.total}
+              totalPages={unlicensedCompletions?.data.last_page}
+              from={unlicensedCompletions?.data.from}
+              to={unlicensedCompletions?.data.to}
+              total={unlicensedCompletions?.data.total}
               onPageChange={setStudentFromCourseCompletionPage}
-              hasNextPage={!!unlicensedCompletionsData?.next_page_url}
-              hasPrevPage={!!unlicensedCompletionsData?.prev_page_url}
+              hasNextPage={!!unlicensedCompletions?.data.next_page_url}
+              hasPrevPage={!!unlicensedCompletions?.data.prev_page_url}
               isFetching={isLoadingUnlicensedCompletions}
             />
           </div>
@@ -326,8 +292,7 @@ const AddStudentLicenseQualIndex = () => {
                       {student.student.lastname_tha}
                     </span>
                     <span className="text-sm text-gray-500 font-notoLoopThaiRegular dark:text-gray-400">
-                      {student.course_group.course.course_name} รุ่นที่{' '}
-                      {student.course_group.batch}
+                      {student.course.course_name}
                     </span>
                   </div>
                   <button
@@ -367,7 +332,7 @@ const AddStudentLicenseQualIndex = () => {
               </button>
               <button
                 onClick={() => {
-                  setIsAddStudentsToQualModalOpen(true);
+                  setIsAddStudentsToCompleteModalOpen(true);
                 }}
                 className="w-full py-2 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-notoLoopThaiRegular"
               >
@@ -442,40 +407,46 @@ const AddStudentLicenseQualIndex = () => {
       </div>
       {selectedStudent && (
         <Modal
-          title="เพิ่มข้อมูลผู้มีสิทธิสอบใบประกอบวิชาชีพ"
-          isOpen={isAddStudentToQualModalOpen}
-          onClose={() => setIsAddStudentToQualModalOpen(false)}
+          isOpen={isAddLicenseCompleteModalOpen}
+          onClose={() => setIsAddLicenseCompleteModalOpen(false)}
+          title="เพิ่มจากข้อมูลนักเรียนที่มีในระบบ"
         >
-          <AddStudentToQualForm
+          <AddStudentToCompleteForm
             student={selectedStudent}
             onSuccess={() => {
-              toast.success('เพิ่มข้อมูลผู้มีสิทธิสอบใบประกอบวิชาชีพเรียบร้อย');
-              setIsAddStudentToQualModalOpen(false);
+              setIsAddLicenseCompleteModalOpen(false);
+              setSelectedStudent(null);
+              toast.success(
+                'เพิ่มข้อมูลนักเรียนที่ได้รับใบประกอบวิชาชีพสำเร็จ',
+              );
             }}
-            onError={(error) => {
-              toast.error(error.message);
-              console.log(error);
+            onError={(error: ErrorResponse) => {
+              toast.error(
+                'เพิ่มข้อมูลนักเรียนที่ได้รับใบประกอบวิชาชีพไม่สำเร็จ',
+              );
             }}
           />
         </Modal>
       )}
-      {selectedStudents.length > 0 && (
+      {selectedStudents && (
         <Modal
-          title="เพิ่มข้อมูลผู้มีสิทธิสอบใบประกอบวิชาชีพ"
-          isOpen={isAddStudentsToQualModalOpen}
-          onClose={() => setIsAddStudentsToQualModalOpen(false)}
+          isOpen={isAddStudentsToCompleteModalOpen}
+          onClose={() => setIsAddStudentsToCompleteModalOpen(false)}
+          title="เพิ่มจากข้อมูลนักเรียนที่มีในระบบ"
         >
-          <AddStudentsToQualForm
+          <AddStudentsToCompleteForm
             students={selectedStudents}
             onSuccess={() => {
-              toast.success('เพิ่มข้อมูลผู้มีสิทธิสอบใบประกอบวิชาชีพเรียบร้อย');
-              refetchUnlicensedCompletions();
-              setIsAddStudentsToQualModalOpen(false);
+              setIsAddStudentsToCompleteModalOpen(false);
               setSelectedStudents([]);
+              toast.success(
+                'เพิ่มข้อมูลนักเรียนที่ได้รับใบประกอบวิชาชีพสำเร็จ',
+              );
             }}
-            onError={(error) => {
-              toast.error(error.message);
-              console.log(error);
+            onError={(error: ErrorResponse) => {
+              toast.error(
+                'เพิ่มข้อมูลนักเรียนที่ได้รับใบประกอบวิชาชีพไม่สำเร็จ',
+              );
             }}
           />
         </Modal>
@@ -484,4 +455,4 @@ const AddStudentLicenseQualIndex = () => {
   );
 };
 
-export default AddStudentLicenseQualIndex;
+export default AddStudentLicenseCompletePage;

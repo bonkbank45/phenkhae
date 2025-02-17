@@ -1,12 +1,12 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import DatePickerWithController from '../../../components/Forms/DatePicker/DatePickerWithController';
+import DatePickerWithController from '../../../../components/Forms/DatePicker/DatePickerWithController';
 import { Button } from '@material-tailwind/react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAddBulkLicenseQual } from '../../../hooks/api/useLicenseQual';
-import { ErrorResponse } from '../../../types/error_response';
-import { CourseCompletion } from '../../../types/course_completion';
+import { useAddBulkLicenseQual } from '../../../../hooks/api/useLicenseQual';
+import { ErrorResponse } from '../../../../types/error_response';
+import { CourseCompletion } from '../../../../types/course_completion';
 
 export const AddStudentsToQualForm = ({
   students,

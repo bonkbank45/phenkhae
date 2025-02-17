@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import PaginatedTable from '../../components/Tables/PaginatedTable';
-import Pagination from '../../components/Pagination';
-import Filter from '../../components/Filter/Filter';
-import Search from '../../components/Search/Search';
-import Spinner from '../../common/Spinner';
-import { useGetLicenseQualTable } from '../../hooks/api/useLicenseQual';
+import PaginatedTable from '../../../components/Tables/PaginatedTable';
+import Pagination from '../../../components/Pagination';
+import Filter from '../../../components/Filter/Filter';
+import Search from '../../../components/Search/Search';
+import Spinner from '../../../common/Spinner';
+import { useGetLicenseQualTable } from '../../../hooks/api/useLicenseQual';
 import { format } from 'date-fns';
-import IconEdit from '../../common/EditPen';
-import IconCrossCircled from '../../common/CrossCircle';
-import { LicenseQualTable } from '../../types/license_qual';
-import { useCourseLicenseAvailable } from '../../hooks/api/useCourseData';
-import useDebounce from '../../hooks/useDebounce';
+import IconEdit from '../../../common/EditPen';
+import IconCrossCircled from '../../../common/CrossCircle';
+import { LicenseQualTable } from '../../../types/license_qual';
+import { useCourseLicenseAvailable } from '../../../hooks/api/useCourseData';
+import useDebounce from '../../../hooks/useDebounce';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import 'flatpickr/dist/themes/material_green.css';
 import { Thai } from 'flatpickr/dist/l10n/th';
-import Modal from '../../components/Modal';
+import Modal from '../../../components/Modal';
 import EditLicenseQual from './LicenseQualManageForm/EditLicenseQual';
 import DeleteLicenseQual from './LicenseQualManageForm/DeleteLicenseQual';
-import { ErrorResponse } from '../../types/error_response';
+import { ErrorResponse } from '../../../types/error_response';
+import DateRangePicker from '../../../components/DateRange/DateRangePicker';
 
 const StudentLicenseQualManagePage = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -180,35 +181,13 @@ const StudentLicenseQualManagePage = () => {
           showIcon={false}
           placeholder="สถานะการสอบใบประกอบวิชาชีพ"
         />
-        <div className="flex items-center gap-2 font-notoLoopThaiRegular">
-          <span>วันที่ค้นหา</span>
-          <Flatpickr
-            value={dateSearchStart}
-            onChange={handleDateSearchStart}
-            placeholder="วันที่ค้นหาเริ่มต้น"
-            options={{
-              locale: Thai,
-              dateFormat: 'd/m/Y',
-              allowInput: true,
-              enableTime: false,
-            }}
-          />
-          <span>ถึง</span>
-          <Flatpickr
-            value={dateSearchEnd}
-            onChange={handleDateSearchEnd}
-            placeholder="วันที่ค้นหาสิ้นสุด"
-            options={{
-              locale: Thai,
-              dateFormat: 'd/m/Y',
-              allowInput: true,
-              enableTime: false,
-            }}
-          />
-          <button className="text-red-500" onClick={handleClearDateSearch}>
-            ล้างค่า
-          </button>
-        </div>
+        <DateRangePicker
+          startDate={dateSearchStart}
+          endDate={dateSearchEnd}
+          onStartDateChange={handleDateSearchStart}
+          onEndDateChange={handleDateSearchEnd}
+          onClear={handleClearDateSearch}
+        />
       </div>
       <div className="mb-4">
         <Search

@@ -94,4 +94,68 @@ class StudentLicenseQualController extends Controller
 
         return $this->successResponse($createdRecords);
     }
+
+    public function getUnlicensedStudents(Request $request): JsonResponse
+    {
+        $unlicensedStudents = StudentLicenseQual::getUnlicensedStudents($request->course_id)
+            ->paginate(10)
+            ->through(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'student_id' => $item->student_id,
+                    'course_id' => $item->course_id,
+                    'date_qualified' => $item->date_qualified,
+                    'created_at' => $item->created_at,
+                    'updated_at' => $item->updated_at,
+                    'student' => [
+                        'id' => $item->student_id,
+                        'prename_id' => $item->prename_id,
+                        'firstname_tha' => $item->firstname_tha,
+                        'lastname_tha' => $item->lastname_tha,
+                        'firstname_eng' => $item->firstname_eng,
+                        'lastname_eng' => $item->lastname_eng,
+                        'citizenid_card' => $item->citizenid_card,
+                        'birthdate' => $item->birthdate,
+                        'birth_province_id' => $item->birth_province_id,
+                        'father_fname' => $item->father_fname,
+                        'father_lname' => $item->father_lname,
+                        'mother_fname' => $item->mother_fname,
+                        'mother_lname' => $item->mother_lname,
+                        'marital_id' => $item->marital_id,
+                        'address_num' => $item->address_num,
+                        'address_moo' => $item->address_moo,
+                        'address_soi' => $item->address_soi,
+                        'address_road' => $item->address_road,
+                        'address_subdistrict_id' => $item->address_subdistrict_id,
+                        'address_zip_code' => $item->address_zip_code,
+                        'phonenumber' => $item->phonenumber,
+                        'email' => $item->email,
+                        'occupation_id' => $item->occupation_id,
+                        'medical_condition_id' => $item->medical_condition_id,
+                        'surgery_history' => $item->surgery_history,
+                        'edu_qual_id' => $item->edu_qual_id,
+                        'edu_ins' => $item->edu_ins,
+                        'learn_massage' => $item->learn_massage,
+                        'learn_massage_description' => $item->learn_massage_description,
+                        'work_massage' => $item->work_massage,
+                        'work_massage_description' => $item->work_massage_description,
+                        'profile_image' => $item->profile_image,
+                        'date_register_from_form' => $item->date_register_from_form,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at
+                    ],
+                    'course' => [
+                        'id' => $item->course_id,
+                        'course_category_id' => $item->course_category_id,
+                        'course_category_bill_id' => $item->course_category_bill_id,
+                        'course_name' => $item->course_name,
+                        'course_description' => $item->course_description,
+                        'created_at' => $item->course_created_at,
+                        'updated_at' => $item->course_updated_at
+                    ]
+                ];
+            });
+
+        return $this->successResponse($unlicensedStudents, 'Unqualified students retrieved successfully', 200);
+    }
 }

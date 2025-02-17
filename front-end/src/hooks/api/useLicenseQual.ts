@@ -47,8 +47,18 @@ export const useAddLicenseQual = () => {
   return useMutation({
     mutationFn: (data: any) => api.post('/student_license_qual', data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['student_license_qual'] });
-      console.log('success');
+      queryClient.invalidateQueries({
+        queryKey: ['student_license_qual_table'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['student_license_qual'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['student_license_unlicensed_table'],
+        exact: false,
+      });
     },
     onError: (error: ErrorResponse) => {
       console.log(error);
@@ -61,9 +71,17 @@ export const useDeleteLicenseQual = () => {
   return useMutation({
     mutationFn: (id: number) => api.delete(`/student_license_qual/${id}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['student_license_qual'] });
+      queryClient.invalidateQueries({
+        queryKey: ['student_license_qual'],
+        exact: false,
+      });
       queryClient.invalidateQueries({
         queryKey: ['student_license_qual_table'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['student_license_unlicensed_table'],
+        exact: false,
       });
       console.log('success');
     },
@@ -90,9 +108,17 @@ export const useUpdateLicenseQual = () => {
     mutationFn: (data: any) =>
       api.put(`/student_license_qual/${data.id}`, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['student_license_qual'] });
+      queryClient.invalidateQueries({
+        queryKey: ['student_license_qual'],
+        exact: false,
+      });
       queryClient.invalidateQueries({
         queryKey: ['student_license_qual_table'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['student_license_unlicensed_table'],
+        exact: false,
       });
       console.log('success');
     },
@@ -107,11 +133,46 @@ export const useAddBulkLicenseQual = () => {
   return useMutation({
     mutationFn: (data: any) => api.post('/student_license_qual/bulk', data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['student_license_qual'] });
+      queryClient.invalidateQueries({
+        queryKey: ['student_license_qual'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['student_license_qual_table'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['student_license_unlicensed_table'],
+        exact: false,
+      });
       console.log('success');
     },
     onError: (error: ErrorResponse) => {
       console.log(error);
     },
+  });
+};
+
+export const useGetUnlicensedStudents = ({
+  page,
+  courseId,
+}: {
+  page: number;
+  courseId: string;
+}) => {
+  return useQuery({
+    queryKey: ['student_license_unlicensed_table', page, courseId],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        ...(courseId && { course_id: courseId.toString() }),
+      });
+      const response = await api.get(
+        `/student_license_qual/unlicensed/table?${params}`,
+      );
+      return response.data;
+    },
+    staleTime: 1000 * 60 * 5,
+    placeholderData: (prevData) => prevData,
   });
 };
