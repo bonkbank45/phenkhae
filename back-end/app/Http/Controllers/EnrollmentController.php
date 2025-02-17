@@ -123,6 +123,7 @@ class EnrollmentController extends Controller
         $studentIds = $request->input('student_ids');
         DB::beginTransaction();
         try {
+            \Log::info('Hello from controller !');
             $enrollments = $this->enrollmentService->removeEnrollment($courseGroupId, $studentIds);
             $enrollments->delete();
             DB::commit();

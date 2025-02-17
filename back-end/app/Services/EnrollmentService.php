@@ -19,6 +19,7 @@ class enrollmentService
 
     public function removeEnrollment(int $courseGroupId, array $studentIds)
     {
+        \Log::info('Hello from removeEnrollment');
         $courseGroup = $this->getCourseGroupWithValidation($courseGroupId);
         $this->validateRemoveEnrollments($courseGroup, $studentIds);
 
@@ -56,6 +57,7 @@ class enrollmentService
 
     private function validateRemoveEnrollments(CourseGroup $courseGroup, array $studentIds)
     {
+        \Log::info('Hello from validateRemoveEnrollments');
         $existingEnrollments = Enrollment::where('course_group_id', $courseGroup->id)
             ->whereIn('student_id', $studentIds)
             ->exists();

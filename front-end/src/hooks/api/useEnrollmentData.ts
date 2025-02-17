@@ -185,13 +185,22 @@ export const useEnrollmentStatusGraduateByBatchId = (
 export const useRemoveEnrollment = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: { courseGroupId: number; studentIds: number[] }) =>
-      api.delete(`/enrollment/${data.courseGroupId}`, {
+    mutationFn: async (data: {
+      courseGroupId: number;
+      studentIds: number[];
+    }) => {
+      const response = await api.delete(`/enrollment/${data.courseGroupId}`, {
         data: { student_ids: data.studentIds },
-      }),
+      });
+      return response.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['enrollments'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['students'],
         exact: false,
       });
     },

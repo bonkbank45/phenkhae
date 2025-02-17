@@ -46,7 +46,9 @@ export const Modal = ({ isOpen, onClose, children, title }: ModalProps) => {
             </div>
 
             {/* Content */}
-            <div className="mt-2 max-h-[80vh] overflow-y-auto">{children}</div>
+            <div className="mt-2" style={{ position: 'static' }}>
+              {children}
+            </div>
           </div>
         </div>
       </div>

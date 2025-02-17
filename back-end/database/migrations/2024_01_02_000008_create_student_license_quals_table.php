@@ -12,10 +12,12 @@ return new class extends Migration {
     {
         Schema::create('student_license_quals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained('students', 'id');
-            $table->foreignId('course_id')->constrained('courses', 'id');
+            $table->foreignId('student_id')->constrained('students', 'id')->onDelete('cascade');
+            $table->foreignId('course_id')->constrained('courses', 'id')->onDelete('cascade');
             $table->dateTime('date_qualified');
             $table->timestamps();
+
+            $table->unique(['student_id', 'course_id']);
         });
     }
 

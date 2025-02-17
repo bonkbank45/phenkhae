@@ -24,6 +24,15 @@ import Modal from '../../components/Modal';
 import { toast } from 'react-toastify';
 import { SelectedStudentBillInfo } from '../../types/bill_info';
 import { StudentCourseDataTable } from '../../types/enrollment';
+import EditLicenseQual, {
+  UpdateLicenseQualStudentProps,
+} from '../License/LicenseQual/LicenseQualManageForm/EditLicenseQual';
+import EditLicenseComplete, {
+  UpdateLicenseCompleteStudentProps,
+} from '../License/LicenseComplete/LicenseCompleteManageForm/EditLicenseComplete';
+import { ErrorResponse } from '../../types/error_response';
+import DeleteLicenseQual from '../License/LicenseQual/LicenseQualManageForm/DeleteLicenseQual';
+import DeleteLicenseComplete from '../License/LicenseComplete/LicenseCompleteManageForm/DeleteLicenseComplete';
 
 const StudentViewPage = () => {
   const navigate = useNavigate();
@@ -48,6 +57,17 @@ const StudentViewPage = () => {
   const [isModalAddBill, setIsModalAddBill] = useState(false);
   const [isModalEditBill, setIsModalEditBill] = useState(false);
   const [isModalDeleteBill, setIsModalDeleteBill] = useState(false);
+  const [isModalEditLicenseQual, setIsModalEditLicenseQual] = useState(false);
+  const [isModalEditLicenseComplete, setIsModalEditLicenseComplete] =
+    useState(false);
+  const [isModalDeleteLicenseQual, setIsModalDeleteLicenseQual] =
+    useState(false);
+  const [isModalDeleteLicenseComplete, setIsModalDeleteLicenseComplete] =
+    useState(false);
+  const [selectedLicenseQualStudent, setSelectedLicenseQualStudent] =
+    useState<UpdateLicenseQualStudentProps | null>(null);
+  const [selectedLicenseCompleteStudent, setSelectedLicenseCompleteStudent] =
+    useState<UpdateLicenseCompleteStudentProps | null>(null);
   const {
     data: studentData,
     isLoading: isStudentLoading,
@@ -183,16 +203,61 @@ const StudentViewPage = () => {
     },
   ];
 
-  const licenseCourseDataTable = studentData?.data.enrollments?.map(
-    (enrollment) => ({
-      course_id: enrollment.course_group.course.id,
-      course_name: enrollment.course_group.course.course_name,
-      course_batch: enrollment.course_group.batch,
-      license_qual: isCourseCanGetLicense(enrollment)
-        ? 'ยังไม่พร้อมสอบใบประกอบวิชาชีพ'
-        : 'หลักสูตรไม่สามารถสอบใบประกอบวิชาชีพได้',
-    }),
-  );
+  const licenseCourseDataTable = () => {
+    // รวมข้อมูลจากทั้ง quals และ completes
+    const allCourses = new Map();
+
+    // เพิ่มข้อมูลจาก student_license_quals
+    for (const qual of studentData?.data.student_license_quals ?? []) {
+      allCourses.set(qual.course_id, {
+        course_id: qual.course.id,
+        course_name: qual.course.course_name,
+        license_qual: `มีสิทธิ์สอบใบประกอบวิชาชีพ ตั้งแต่วันที่ ${format(
+          new Date(qual.date_qualified),
+          'dd/MM/yyyy',
+        )}`,
+        has_license: false,
+        date_qualified: qual.date_qualified,
+        license_qual_student_data: {
+          id: qual.id,
+          student_id: qual.student_id,
+          course_id: qual.course.id,
+          date_qualified: qual.date_qualified,
+          firstname_tha: studentData?.data.firstname_tha,
+          lastname_tha: studentData?.data.lastname_tha,
+          course_name: qual.course.course_name,
+        },
+      });
+    }
+
+    // เพิ่มหรืออัพเดทข้อมูลจาก student_license_completes
+    for (const complete of studentData?.data.student_license_completes ?? []) {
+      allCourses.set(complete.course_id, {
+        course_id: complete.course.id,
+        course_name: complete.course.course_name,
+        license_qual: `ได้รับใบประกอบวิชาชีพแล้ว เมื่อวันที่ ${format(
+          new Date(complete.date_complete),
+          'dd/MM/yyyy',
+        )}`,
+        has_license: true,
+        date_complete: complete.date_complete,
+        license_complete_student_data: {
+          id: complete.id,
+          student_id: complete.student_id,
+          course_id: complete.course.id,
+          date_complete: complete.date_complete,
+          firstname_tha: studentData?.data.firstname_tha,
+          lastname_tha: studentData?.data.lastname_tha,
+          course_name: complete.course.course_name,
+        },
+      });
+    }
+
+    // แปลง Map เป็น Array และเรียงตามชื่อหลักสูตร
+    return Array.from(allCourses.values()).sort((a, b) =>
+      a.course_name.localeCompare(b.course_name),
+    );
+  };
 
   const columnsCertificateAfterEnd = [
     {
@@ -206,20 +271,13 @@ const StudentViewPage = () => {
       render: (certificateAfterEnd) => certificateAfterEnd.course_name || '-',
     },
     {
-      header: 'รุ่นที่ลงทะเบียน',
-      key: 'course_batch',
-      render: (certificateAfterEnd) => certificateAfterEnd.course_batch || '-',
-    },
-    {
-      header: 'สถานะความพร้อมสอบใบประกอบวิชาชีพ',
+      header: 'สถานะใบประกอบวิชาชีพ',
       key: 'license_qual',
       render: (certificateAfterEnd) =>
-        certificateAfterEnd.license_qual === 'ยังไม่พร้อมสอบใบประกอบวิชาชีพ' ? (
-          <p className="text-red-500">ยังไม่พร้อมสอบใบประกอบวิชาชีพ</p>
+        certificateAfterEnd.has_license ? (
+          <p className="text-green-500">{certificateAfterEnd.license_qual}</p>
         ) : (
-          <p className="text-yellow-500">
-            หลักสูตรไม่สามารถสอบใบประกอบวิชาชีพได้
-          </p>
+          <p className="text-yellow-500">{certificateAfterEnd.license_qual}</p>
         ),
     },
     {
@@ -227,18 +285,52 @@ const StudentViewPage = () => {
       key: 'action',
       render: (certificateAfterEnd) => (
         <div>
-          {certificateAfterEnd.license_qual ===
-          'ยังไม่พร้อมสอบใบประกอบวิชาชีพ' ? (
+          {!certificateAfterEnd.has_license ? (
             <div className="flex items-center gap-2">
-              <button>
-                <RoundRemoveRedEye className="cursor-pointer w-5 h-5" />
-              </button>
-              <button>
+              <button
+                onClick={() => {
+                  setSelectedLicenseQualStudent(
+                    certificateAfterEnd.license_qual_student_data,
+                  );
+                  setIsModalEditLicenseQual(true);
+                }}
+              >
                 <IconEdit className="cursor-pointer w-5 h-5" />
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedLicenseQualStudent(
+                    certificateAfterEnd.license_qual_student_data,
+                  );
+                  setIsModalDeleteLicenseQual(true);
+                }}
+              >
+                <IconCrossCircled className="cursor-pointer w-5 h-5" />
               </button>
             </div>
           ) : (
-            '-'
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setSelectedLicenseCompleteStudent(
+                    certificateAfterEnd.license_complete_student_data,
+                  );
+                  setIsModalEditLicenseComplete(true);
+                }}
+              >
+                <IconEdit className="cursor-pointer w-5 h-5" />
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedLicenseCompleteStudent(
+                    certificateAfterEnd.license_complete_student_data,
+                  );
+                  setIsModalDeleteLicenseComplete(true);
+                }}
+              >
+                <IconCrossCircled className="cursor-pointer w-5 h-5" />
+              </button>
+            </div>
           )}
         </div>
       ),
@@ -449,7 +541,7 @@ const StudentViewPage = () => {
                   {studentData?.data.birth_province.name_in_thai}
                 </p>
               </div>
-              {/* ข้อมูลในมือถือกว้าง 4/4 คอลัมน์ ในคอมจะกว้าง 2/4 คอลัมน์ */}
+              {/* ข้อมูลในมือถือกว้าง 4/4 คอลัมน์ ในคอมจะกว้าง 4/4 คอลัมน์ */}
               <div className="grid grid-cols-4 col-span-4 gap-2">
                 <p className="col-span-2 xl:col-span-1">โรคประจำตัว</p>
                 <p className="col-span-2 xl:col-span-3 break-words font-bold">
@@ -576,7 +668,7 @@ const StudentViewPage = () => {
                   selectedMenu === 'course'
                     ? studentCourseDataTable
                     : selectedMenu === 'certificate_after_end'
-                    ? licenseCourseDataTable
+                    ? licenseCourseDataTable()
                     : selectedMenu === 'payment'
                     ? paymentDataTable
                     : []
@@ -639,6 +731,90 @@ const StudentViewPage = () => {
             onClose={() => setIsModalEnrollmentDelete(false)}
           />
         </Modal>
+        {selectedLicenseQualStudent && (
+          <>
+            <Modal
+              isOpen={isModalEditLicenseQual}
+              onClose={() => setIsModalEditLicenseQual(false)}
+              title="แก้ไขวันที่มีสิทธิสอบใบประกอบวิชาชีพ"
+            >
+              <EditLicenseQual
+                selectedLicenseQualStudent={selectedLicenseQualStudent}
+                onSuccess={() => {
+                  toast.success(
+                    'แก้ไขวันที่มีสิทธิสอบใบประกอบวิชาชีพเรียบร้อย',
+                  );
+                  setIsModalEditLicenseQual(false);
+                  refetchStudentData();
+                }}
+                onError={(error: ErrorResponse) => {
+                  toast.error(error.message);
+                  setIsModalEditLicenseQual(false);
+                }}
+              />
+            </Modal>
+            <Modal
+              isOpen={isModalDeleteLicenseQual}
+              onClose={() => setIsModalDeleteLicenseQual(false)}
+              title="ลบวันที่มีสิทธิสอบใบประกอบวิชาชีพ"
+            >
+              <DeleteLicenseQual
+                selectedLicenseQualStudent={selectedLicenseQualStudent}
+                onSuccess={() => {
+                  setIsModalDeleteLicenseQual(false);
+                  refetchStudentData();
+                  toast.success('ลบวันที่มีสิทธิสอบใบประกอบวิชาชีพเรียบร้อย');
+                }}
+                onError={(error: ErrorResponse) => {
+                  toast.error(error.message);
+                  setIsModalDeleteLicenseQual(false);
+                }}
+                onClose={() => setIsModalDeleteLicenseQual(false)}
+              />
+            </Modal>
+          </>
+        )}
+        {selectedLicenseCompleteStudent && (
+          <>
+            <Modal
+              isOpen={isModalEditLicenseComplete}
+              onClose={() => setIsModalEditLicenseComplete(false)}
+              title="แก้ไขวันที่ได้รับใบประกอบวิชาชีพ"
+            >
+              <EditLicenseComplete
+                selectedLicenseCompleteStudent={selectedLicenseCompleteStudent}
+                onSuccess={() => {
+                  toast.success('แก้ไขวันที่ได้รับใบประกอบวิชาชีพเรียบร้อย');
+                  setIsModalEditLicenseComplete(false);
+                  refetchStudentData();
+                }}
+                onError={(error: ErrorResponse) => {
+                  toast.error(error.message);
+                  setIsModalEditLicenseComplete(false);
+                }}
+              />
+            </Modal>
+            <Modal
+              isOpen={isModalDeleteLicenseComplete}
+              onClose={() => setIsModalDeleteLicenseComplete(false)}
+              title="ลบวันที่ได้รับใบประกอบวิชาชีพ"
+            >
+              <DeleteLicenseComplete
+                selectedLicenseCompleteStudent={selectedLicenseCompleteStudent}
+                onSuccess={() => {
+                  setIsModalDeleteLicenseComplete(false);
+                  refetchStudentData();
+                  toast.success('ลบวันที่ได้รับใบประกอบวิชาชีพเรียบร้อย');
+                }}
+                onError={(error: ErrorResponse) => {
+                  toast.error(error.message);
+                  setIsModalDeleteLicenseComplete(false);
+                }}
+                onClose={() => setIsModalDeleteLicenseComplete(false)}
+              />
+            </Modal>
+          </>
+        )}
         <Modal
           isOpen={isModalAddBill}
           onClose={() => setIsModalAddBill(false)}

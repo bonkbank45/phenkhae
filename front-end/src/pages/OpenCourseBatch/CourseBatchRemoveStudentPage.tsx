@@ -154,28 +154,6 @@ const CourseBatchRemoveStudentPage = () => {
     setPage(1);
   };
 
-  const handleRemove = () => {
-    removeEnrollment(
-      {
-        courseGroupId: courseBatch?.data.id,
-        studentIds: selectedStudents.map((student) => student.id),
-      },
-      {
-        onSuccess: () => {
-          toast.success('ลบนักเรียนออกจากรุ่นสำเร็จ');
-          refetchCourseBatch();
-          setSelectedStudents([]);
-          setPage(1);
-          setIsConfirmModalOpen(false);
-        },
-        onError: (error: ErrorResponse) => {
-          console.error('Error', error);
-          toast.error('เกิดข้อผิดพลาดในการลบนักเรียน กรุณาลองใหม่อีกครั้ง');
-        },
-      },
-    );
-  };
-
   const handleCancel = () => {
     setSelectedStudents([]);
     setPage(1);
@@ -359,7 +337,13 @@ const CourseBatchRemoveStudentPage = () => {
             <RemoveCourseBatchStudentForm
               courseBatch={courseBatch.data}
               selectedStudents={selectedStudents}
-              onSuccess={handleRemove}
+              onSuccess={() => {
+                toast.success('ลบนักเรียนออกจากรุ่นสำเร็จ');
+                refetchCourseBatch();
+                setSelectedStudents([]);
+                setPage(1);
+                setIsConfirmModalOpen(false);
+              }}
               onError={() => {
                 toast.error(
                   'เกิดข้อผิดพลาดในการลบนักเรียน กรุณาลองใหม่อีกครั้ง',

@@ -153,4 +153,8 @@ class Student extends Model
     {
         return $this->hasMany(BillInfo::class);
     }
+    public function course_completions(): HasMany
+    {
+        return $this->hasMany(CourseCompletion::class);
+    }
 }

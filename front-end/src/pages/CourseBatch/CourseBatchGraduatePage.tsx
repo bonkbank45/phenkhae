@@ -48,13 +48,25 @@ const CourseBatchGraduatePage = () => {
     isPending: isLoadingCourseCompletion,
   } = useCourseCompletion();
 
-  if (
-    isLoadingEnrollmentStatusGraduate ||
-    !enrollmentStatusGraduate?.data?.data?.[0]
-  ) {
+  if (isLoadingEnrollmentStatusGraduate) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Spinner />
+      </div>
+    );
+  }
+
+  if (!enrollmentStatusGraduate?.data?.data?.[0]) {
+    return (
+      <div className="flex flex-col justify-center font-notoLoopThaiRegular items-center h-screen">
+        <p>ไม่พบข้อมูลนักเรียน</p>
+        <Button
+          variant="text"
+          className="mb-4 flex items-center gap-2 underline"
+          onClick={() => navigate(-1)}
+        >
+          <span className="text-gray-500">ย้อนกลับ</span>
+        </Button>
       </div>
     );
   }

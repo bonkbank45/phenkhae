@@ -14,6 +14,7 @@ interface FilterProps {
   classNameIcon?: string;
   showIcon?: boolean;
   disablePlaceholder?: boolean;
+  isDisabled?: boolean;
 }
 
 const Filter = ({
@@ -25,6 +26,7 @@ const Filter = ({
   classNameIcon = '',
   showIcon = true,
   disablePlaceholder = false,
+  isDisabled = false,
 }: FilterProps) => {
   return (
     <div className="flex items-center gap-0">
@@ -36,6 +38,7 @@ const Filter = ({
         />
       )}
       <select
+        disabled={isDisabled}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={`${
