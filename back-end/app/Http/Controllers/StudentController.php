@@ -168,7 +168,10 @@ class StudentController extends Controller
                 'enrollments.course_group.course.course_category_bill',
                 'bill_infos',
                 'student_license_quals',
+                'student_license_quals.course',
                 'student_license_completes',
+                'student_license_completes.course',
+                'course_completions',
             ])->findOrFail($id);
             return $this->successResponse($student, 'Student fetched successfully', 200);
         } catch (ModelNotFoundException $e) {
