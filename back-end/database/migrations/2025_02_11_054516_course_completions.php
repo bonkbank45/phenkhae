@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->date('date_start');
             $table->date('date_end');
             $table->date('completion_date');
+            $table->tinyInteger('certificate_status')->default(0);
+            $table->date('certificate_date')->nullable();
             $table->timestamps();
 
             $table->unique(['student_id', 'course_group_id']);

@@ -13,11 +13,13 @@ return new class extends Migration {
         Schema::create('student_license_completes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained('students', 'id')->onDelete('cascade');
-            $table->foreignId('course_id')->constrained('courses', 'id')->onDelete('cascade');
+            // $table->foreignId('course_id')->constrained('courses', 'id')->onDelete('cascade');
+            $table->foreignId('course_group_id')->constrained('course_groups', 'id')->onDelete('cascade');
             $table->dateTime('date_complete');
             $table->timestamps();
 
-            $table->unique(['student_id', 'course_id']);
+            // $table->unique(['student_id', 'course_id']);
+            $table->unique(['student_id', 'course_group_id']);
         });
     }
 

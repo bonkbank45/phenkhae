@@ -137,14 +137,16 @@ export const useAddCourseBatchData = () => {
       const response = await api.post('/course_group', data);
       return response.data;
     },
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['course_batch_data'],
       });
       queryClient.invalidateQueries({
         queryKey: ['available_course_batch_data'],
       });
-      console.log('Success', response.data);
+      queryClient.invalidateQueries({
+        queryKey: ['course_batch_data_by_course_id'],
+      });
     },
     onError: (error: Error) => {
       console.error('Failed to add course batch:', error.message);

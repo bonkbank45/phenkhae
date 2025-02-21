@@ -23,9 +23,9 @@ class UpdateStudentLicenseCompleteRequest extends FormRequest
     {
         return [
             "student_id" => "required|exists:students,id",
-            "course_id" => [
+            "course_group_id" => [
                 "required",
-                "exists:courses,id",
+                "exists:course_groups,id",
                 // "unique:student_license_completes,course_id,student_id",
             ],
             "date_complete" => "required|date",

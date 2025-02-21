@@ -1,0 +1,205 @@
+import { useMemo, useState } from 'react';
+import ReactApexChart from 'react-apexcharts';
+import { useGetCourseLicenseCompletedPerYear } from '../../hooks/api/useLicenseComplete';
+
+interface BatchData {
+  course_name: string;
+  batch: number;
+  male: number;
+  female: number;
+}
+
+const CourseLicenseCompletePerYear = () => {
+  const { data, isLoading } = useGetCourseLicenseCompletedPerYear();
+  const [selectedYear, setSelectedYear] = useState<number>();
+
+  const years = useMemo(() => {
+    if (!data?.data) return [];
+    const availableYears = data.data.map((item) => item.year);
+    if (availableYears.length > 0 && !selectedYear) {
+      setSelectedYear(availableYears[0]);
+    }
+    return availableYears;
+  }, [data, selectedYear]);
+
+  const chartData = useMemo(() => {
+    if (!data?.data || !selectedYear) return null;
+
+    const yearData = data.data.find((item) => item.year === selectedYear);
+    if (!yearData) return null;
+
+    const categories: string[] = [];
+    const maleData: number[] = [];
+    const femaleData: number[] = [];
+
+    Object.entries(yearData.courses).forEach(
+      ([courseName, batches]: [string, BatchData[]]) => {
+        batches.forEach((batch) => {
+          categories.push(`${courseName}\n(รุ่น ${batch.batch})`);
+          maleData.push(batch.male);
+          femaleData.push(batch.female);
+        });
+      },
+    );
+
+    return {
+      options: {
+        chart: {
+          type: 'bar' as const,
+          height: 350,
+          stacked: true,
+        },
+        colors: ['#2E93fA', '#FF69B4'],
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            borderRadius: 4,
+            borderRadiusApplication: 'end' as const,
+          },
+        },
+        dataLabels: {
+          enabled: true,
+        },
+        xaxis: {
+          categories: categories,
+          labels: {
+            rotate: -45,
+            style: {
+              fontSize: '12px',
+            },
+          },
+        },
+        yaxis: {
+          title: {
+            text: 'จำนวนผู้ได้รับใบอนุญาต',
+          },
+        },
+        legend: {
+          position: 'right' as const,
+        },
+        responsive: [
+          {
+            breakpoint: 1000,
+            options: {
+              legend: {
+                position: 'bottom' as const,
+              },
+            },
+          },
+        ],
+      },
+      series: [
+        {
+          name: 'ชาย',
+          data: maleData,
+        },
+        {
+          name: 'หญิง',
+          data: femaleData,
+        },
+      ],
+    };
+  }, [data, selectedYear]);
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-lg p-6 shadow-lg dark:bg-slate-800">
+        <div className="text-center p-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-3/4 mx-auto mb-4"></div>
+            <div className="h-[400px] bg-gray-100 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data?.data || data.data.length === 0) {
+    return (
+      <div className="bg-white rounded-lg p-6 shadow-lg dark:bg-slate-800">
+        <div className="text-center p-8">
+          <svg
+            className="w-12 h-12 mx-auto text-gray-400 mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 20h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p className="text-lg text-gray-600 font-notoLoopThaiRegular">
+            ไม่มีข้อมูลสถิติผู้ได้รับใบอนุญาตในระบบ
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-lg p-6 shadow-lg dark:bg-slate-800">
+      <div className="flex flex-col space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <h2 className="text-2xl font-bold font-notoExtraBold dark:text-white">
+            สถิติจำนวนนักเรียนที่สอบได้ใบประกอบวิชาชีพของหลักสูตรที่ 7
+            จนถึงหลักสูตร ที่ 10 (รุ่นต่อปีแยกชาย-หญิง)
+          </h2>
+
+          <div className="mt-4 md:mt-0">
+            <select
+              className="w-48 p-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg 
+                         shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 
+                         transition-all duration-200 hover:border-gray-400 font-notoLoopThaiRegular dark:text-white dark:bg-slate-700 dark:border-slate-600"
+              value={selectedYear || ''}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+            >
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  ปีการศึกษา {year + 543}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="bg-gray-50 rounded-xl p-4 min-h-[400px] flex items-center justify-center dark:bg-slate-800">
+          {chartData ? (
+            <ReactApexChart
+              options={chartData.options}
+              series={chartData.series}
+              type="bar"
+              height={350}
+              className="w-full"
+            />
+          ) : (
+            <div className="text-center p-8 bg-white rounded-lg shadow-sm dark:bg-slate-800">
+              <div className="font-notoLoopThaiRegular text-lg text-gray-600">
+                <div className="space-y-2">
+                  <svg
+                    className="w-12 h-12 mx-auto text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 20h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <p>ไม่พบข้อมูลในปีการศึกษาที่เลือก</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CourseLicenseCompletePerYear;

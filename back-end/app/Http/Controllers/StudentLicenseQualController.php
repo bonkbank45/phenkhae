@@ -11,6 +11,8 @@ use App\Http\Requests\StoreStudentLicenseQualRequest;
 use App\Http\Requests\UpdateStudentLicenseQualRequest;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Mpdf\Mpdf;
+use Exception;
 
 class StudentLicenseQualController extends Controller
 {
@@ -87,7 +89,7 @@ class StudentLicenseQualController extends Controller
         $createdRecords = collect($students)->map(function ($student) use ($dateQualified) {
             return StudentLicenseQual::create([
                 'student_id' => $student['student_id'],
-                'course_id' => $student['course_id'],
+                'course_group_id' => $student['course_group_id'],
                 'date_qualified' => $dateQualified
             ]);
         });
@@ -103,6 +105,7 @@ class StudentLicenseQualController extends Controller
                 return [
                     'id' => $item->id,
                     'student_id' => $item->student_id,
+                    'course_group_id' => $item->course_group_id,
                     'course_id' => $item->course_id,
                     'date_qualified' => $item->date_qualified,
                     'created_at' => $item->created_at,
@@ -158,4 +161,60 @@ class StudentLicenseQualController extends Controller
 
         return $this->successResponse($unlicensedStudents, 'Unqualified students retrieved successfully', 200);
     }
+
+    public function generatePdfStudentQual(Request $request)
+    {
+        try {
+            $studentLicenseQuals = StudentLicenseQual::select(
+                'student_license_quals.date_qualified',
+                'enrollments.no_reg',
+                'course_groups.date_start',
+                'prenames.prename_tha',
+                'students.firstname_tha',
+                'students.lastname_tha',
+                'students.citizenid_card',
+                'course_groups.course_id'
+            )
+            ->join('enrollments', function ($join) {
+                $join->on('student_license_quals.student_id', '=', 'enrollments.student_id')
+                     ->on('student_license_quals.course_group_id', '=', 'enrollments.course_group_id');
+            })
+            ->join('course_groups', 'enrollments.course_group_id', '=', 'course_groups.id')
+            ->join('courses', 'course_groups.course_id', '=', 'courses.id')
+            ->join('students', 'enrollments.student_id', '=', 'students.id')
+            ->join('prenames', 'students.prename_id', '=', 'prenames.id')
+            ->whereIn('student_license_quals.id', $request->student_qual_ids)
+            ->get()->values();
+        
+
+            $mpdf = new Mpdf(config('pdf'));
+            $mpdf->AddPage('L');
+
+            $studentLicenseQualData = $studentLicenseQuals->map(function ($item, $index) {
+                return [
+                    'q' => $index + 1,
+                    'idstd' => $item->no_reg . '/' . Carbon::parse($item->date_start)->format('Y') + 543,
+                    'id' => $item->citizenid_card,
+                    'prename' => $item->prename_tha,
+                    'fname' => $item->firstname_tha,
+                    'lname' => $item->lastname_tha,
+                    'congrat' => Carbon::parse($item->date_qualified)->format('d/m/') . (Carbon::parse($item->date_qualified)->format('Y') + 543),
+                    'course_id' => $item->course_id,
+                ];
+            })->values()->all();
+
+            $html = view('pdfs.name_congrat', [
+                'students' => $studentLicenseQualData,
+            ])->render();
+
+            $mpdf->WriteHTML($html);
+            return response($mpdf->Output('student_qual.pdf', 'S'), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="student_qual.pdf"',
+            ]);
+        } catch (Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
+    }
 }
+

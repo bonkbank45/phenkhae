@@ -198,4 +198,115 @@ class CourseCompletionController extends Controller
 
         return $this->successResponse($unqualifiedStudents, 'Unlicensed completions retrieved successfully', 200);
     }
+
+    public function getCertificateStatistic(): JsonResponse
+    {
+        $allCourse = DB::table('courses')
+            ->pluck('course_name')
+            ->mapWithKeys(function ($courseName) {
+                return [$courseName => 0];
+            })
+            ->toArray();
+
+        $certificateStatistic = CourseCompletion::select(
+            DB::raw('YEAR(completion_date) as year'),
+            'course_group_id',
+            DB::raw('COUNT(*) as count')
+        )
+            ->groupBy('year', 'course_group_id')
+            ->get()
+            ->reduce(function ($result, $item) use ($allCourse) {
+                if (!isset($result[$item->year])) {
+                    $result[$item->year] = [
+                        'year' => $item->year,
+                        'courses' => $allCourse
+                    ];
+                }
+
+                $result[$item->year]['courses'][$item->course_group->course->course_name] = $item->count;
+
+                return $result;
+            }, []);
+
+        $certificateStatistic = array_values($certificateStatistic);
+
+        return $this->successResponse($certificateStatistic, 'Certificate statistic retrieved successfully', 200);
+    }
+
+    public function getCourseCompletedStatistic(): JsonResponse
+    {
+        $rawData = DB::table('course_completions')
+            ->join('course_groups', 'course_completions.course_group_id', '=', 'course_groups.id')
+            ->join('courses', 'course_groups.course_id', '=', 'courses.id')
+            ->join('students', 'course_completions.student_id', '=', 'students.id')
+            ->select(
+                DB::raw('YEAR(course_groups.date_start) as year'),
+                'courses.course_name',
+                'course_groups.batch',
+                DB::raw('COUNT(CASE WHEN students.gender = 1 THEN 1 END) as male'),
+                DB::raw('COUNT(CASE WHEN students.gender = 2 THEN 1 END) as female')
+            )
+            ->groupBy('year', 'course_groups.id', 'courses.course_name', 'course_groups.batch')
+            ->orderBy('year')
+            ->get();
+
+        $formattedData = $rawData->groupBy('year')
+            ->map(function ($yearGroup) {
+                return [
+                    'year' => $yearGroup->first()->year,
+                    'courses' => $yearGroup->groupBy('course_name')
+                        ->map(function ($courseGroup) {
+                            return $courseGroup->map(function ($item) {
+                                return [
+                                    'batch' => $item->batch,
+                                    'male' => $item->male,
+                                    'female' => $item->female
+                                ];
+                            });
+                        })
+                ];
+            })->values()->all();
+
+        return $this->successResponse($formattedData, 'Course completion statistics retrieved successfully', 200);
+    }
+
+    public function getCourseCompletedAndTakeCertificateStatistic(): JsonResponse
+    {
+        $rawData = DB::table('course_completions')
+            ->join('course_groups', 'course_completions.course_group_id', '=', 'course_groups.id')
+            ->join('courses', 'course_groups.course_id', '=', 'courses.id')
+            ->join('students', 'course_completions.student_id', '=', 'students.id')
+            ->select(
+                DB::raw('YEAR(course_groups.date_start) as year'),
+                'courses.course_name',
+                'course_groups.batch',
+                DB::raw('COUNT(CASE WHEN students.gender = 1 THEN 1 END) as male'),
+                DB::raw('COUNT(CASE WHEN students.gender = 2 THEN 1 END) as female'),
+                'course_completions.certificate_date'
+            )
+            ->where('course_completions.certificate_status', 1)
+            ->groupBy('year', 'course_groups.id', 'certificate_date')
+            ->orderBy('year')
+            ->get();
+
+        $formattedData = $rawData->groupBy('year')
+            ->map(function ($yearGroup) {
+                return [
+                    'year' => $yearGroup->first()->year,
+                    'courses' => $yearGroup->groupBy('course_name')
+                        ->map(function ($courseGroup) {
+                            return $courseGroup->map(function ($item) {
+                                return [
+                                    'batch' => $item->batch,
+                                    'male' => $item->male,
+                                    'female' => $item->female,
+                                    'certificate_date' => $item->certificate_date
+                                ];
+                            });
+                        })
+                ];
+            })->values()->all();
+
+        return $this->successResponse($formattedData, 'Course completion and certificate statistics retrieved successfully', 200);
+    }
 }

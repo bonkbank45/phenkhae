@@ -36,7 +36,7 @@ export const AddStudentsToQualForm = ({
       date_qualified: data.date_qualified,
       students: students.map((completion) => ({
         student_id: completion.student.id,
-        course_id: completion.course_group.course_id,
+        course_group_id: completion.course_group_id,
       })),
     };
 

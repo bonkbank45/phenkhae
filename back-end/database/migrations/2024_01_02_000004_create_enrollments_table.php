@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('enrollments', function (Blueprint $table) {
             $table->unsignedBigInteger("course_group_id");
             $table->unsignedBigInteger("student_id");
+            $table->tinyInteger("no_reg")->nullable();
             $table->tinyInteger("activity_case_status");
             $table->dateTime("enrollment_date");
             $table->integer("theoretical_score")->nullable();

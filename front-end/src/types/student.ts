@@ -1,6 +1,7 @@
 export interface Student {
   id: number;
   prename_id: number;
+  gender: 0 | 1;
   firstname_tha: string;
   lastname_tha: string;
   firstname_eng: string;

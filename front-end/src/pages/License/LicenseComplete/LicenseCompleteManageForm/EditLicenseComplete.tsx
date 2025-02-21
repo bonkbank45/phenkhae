@@ -11,7 +11,7 @@ import { ErrorResponse } from '../../../../types/error_response';
 export interface UpdateLicenseCompleteStudentProps {
   id: number;
   student_id: number;
-  course_id: number;
+  course_group_id: number;
   date_complete: string;
   firstname_tha: string;
   lastname_tha: string;
@@ -63,7 +63,7 @@ const EditLicenseComplete = ({
     const licenseComplete = {
       id: selectedLicenseCompleteStudent.id,
       student_id: selectedLicenseCompleteStudent.student_id,
-      course_id: selectedLicenseCompleteStudent.course_id,
+      course_group_id: selectedLicenseCompleteStudent.course_group_id,
       date_complete: data.date,
     };
 

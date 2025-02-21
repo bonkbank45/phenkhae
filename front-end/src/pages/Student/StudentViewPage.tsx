@@ -209,9 +209,9 @@ const StudentViewPage = () => {
 
     // เพิ่มข้อมูลจาก student_license_quals
     for (const qual of studentData?.data.student_license_quals ?? []) {
-      allCourses.set(qual.course_id, {
-        course_id: qual.course.id,
-        course_name: qual.course.course_name,
+      allCourses.set(qual.course_group.course.id, {
+        course_id: qual.course_group.course.id,
+        course_name: qual.course_group.course.course_name,
         license_qual: `มีสิทธิ์สอบใบประกอบวิชาชีพ ตั้งแต่วันที่ ${format(
           new Date(qual.date_qualified),
           'dd/MM/yyyy',
@@ -221,20 +221,20 @@ const StudentViewPage = () => {
         license_qual_student_data: {
           id: qual.id,
           student_id: qual.student_id,
-          course_id: qual.course.id,
+          course_group_id: qual.course_group.id,
           date_qualified: qual.date_qualified,
           firstname_tha: studentData?.data.firstname_tha,
           lastname_tha: studentData?.data.lastname_tha,
-          course_name: qual.course.course_name,
+          course_name: qual.course_group.course.course_name,
         },
       });
     }
 
     // เพิ่มหรืออัพเดทข้อมูลจาก student_license_completes
     for (const complete of studentData?.data.student_license_completes ?? []) {
-      allCourses.set(complete.course_id, {
-        course_id: complete.course.id,
-        course_name: complete.course.course_name,
+      allCourses.set(complete.course_group.course.id, {
+        course_id: complete.course_group.course.id,
+        course_name: complete.course_group.course.course_name,
         license_qual: `ได้รับใบประกอบวิชาชีพแล้ว เมื่อวันที่ ${format(
           new Date(complete.date_complete),
           'dd/MM/yyyy',
@@ -244,11 +244,11 @@ const StudentViewPage = () => {
         license_complete_student_data: {
           id: complete.id,
           student_id: complete.student_id,
-          course_id: complete.course.id,
+          course_group_id: complete.course_group.id,
           date_complete: complete.date_complete,
           firstname_tha: studentData?.data.firstname_tha,
           lastname_tha: studentData?.data.lastname_tha,
-          course_name: complete.course.course_name,
+          course_name: complete.course_group.course.course_name,
         },
       });
     }

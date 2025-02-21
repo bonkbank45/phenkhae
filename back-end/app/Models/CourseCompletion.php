@@ -46,7 +46,7 @@ class CourseCompletion extends Model
             ->join('students', 'course_completions.student_id', '=', 'students.id')
             ->leftJoin('student_license_quals', function ($join) {
                 $join->on('course_completions.student_id', '=', 'student_license_quals.student_id')
-                    ->on('course_groups.course_id', '=', 'student_license_quals.course_id');
+                    ->on('course_completions.course_group_id', '=', 'student_license_quals.course_group_id');
             })
             ->whereNull('student_license_quals.id');
 

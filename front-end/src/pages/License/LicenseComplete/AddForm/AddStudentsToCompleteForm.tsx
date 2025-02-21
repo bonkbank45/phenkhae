@@ -39,9 +39,11 @@ export const AddStudentsToCompleteForm = ({
       date_completed: data.date_completed,
       students: students.map((qual) => ({
         student_id: qual.student.id,
-        course_id: qual.course_id,
+        course_group_id: qual.course_group_id,
       })),
     };
+
+    console.log('students', students);
 
     addBulkLicenseComplete(formattedData, {
       onSuccess: () => {

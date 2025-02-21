@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 class StudentLicenseQual extends Model
 {
     protected $table = 'student_license_quals';
-    protected $fillable = ['student_id', 'course_id', 'date_qualified', 'created_at', 'updated_at'];
+    protected $fillable = ['student_id', 'course_group_id', 'date_qualified', 'created_at', 'updated_at'];
 
     public function student_license_qual(): HasOne
     {
@@ -22,36 +22,45 @@ class StudentLicenseQual extends Model
         return $this->belongsTo(Student::class, 'student_id');
     }
 
-    public function course(): BelongsTo
+    public function course_group(): BelongsTo
     {
-        return $this->belongsTo(Course::class, 'course_id');
+        return $this->belongsTo(CourseGroup::class, 'course_group_id');
     }
+
+    // public function course(): BelongsTo
+    // {
+    //     return $this->belongsTo(Course::class, 'course_id');
+    // }
 
     public function scopeWithFullDetails($query)
     {
-        return $query->leftJoin('student_license_completes', function ($join) {
-            $join->on('student_license_completes.student_id', '=', 'student_license_quals.student_id')
-                ->on('student_license_completes.course_id', '=', 'student_license_quals.course_id');
-        })
+        return $query
+            ->join('course_groups', 'student_license_quals.course_group_id', '=', 'course_groups.id')
+            ->join('courses', 'course_groups.course_id', '=', 'courses.id')
+            ->leftJoin('student_license_completes', function ($join) {
+                $join->on('student_license_completes.student_id', '=', 'student_license_quals.student_id')
+                    ->on('student_license_completes.course_group_id', '=', 'student_license_quals.course_group_id');
+            })
             ->join('students', 'student_license_quals.student_id', '=', 'students.id')
-            ->join('courses', 'student_license_quals.course_id', '=', 'courses.id')
             ->select([
                 'student_license_quals.id',
                 'student_license_quals.student_id',
-                'student_license_quals.course_id',
+                'course_groups.id as course_group_id',
+                'course_groups.course_id',
                 'student_license_quals.date_qualified',
                 'student_license_quals.created_at',
                 'student_license_quals.updated_at',
                 DB::raw('CASE 
-                    WHEN student_license_completes.id IS NULL THEN 0 
-                    ELSE 1 
-                 END AS is_completed'),
+            WHEN student_license_completes.id IS NULL THEN 0 
+            ELSE 1 
+         END AS is_completed'),
                 'students.id AS student_id',
                 'students.firstname_tha AS student_firstname_tha',
                 'students.lastname_tha AS student_lastname_tha',
                 'courses.id AS course_id',
                 'courses.course_name AS course_name'
             ]);
+
     }
 
     public function scopeByCourse($query, $courseId)
@@ -59,7 +68,7 @@ class StudentLicenseQual extends Model
         if ($courseId === 'all') {
             return $query;
         }
-        return $query->where('student_license_quals.course_id', $courseId);
+        return $query->where('course_groups.course_id', $courseId);
     }
 
     public function scopeByLicenseStatus($query, $licenseStatus)
@@ -105,16 +114,17 @@ class StudentLicenseQual extends Model
             'courses.created_at as course_created_at',
             'courses.updated_at as course_updated_at'
         ])
+            ->join('course_groups', 'student_license_quals.course_group_id', '=', 'course_groups.id')
             ->join('students', 'student_license_quals.student_id', '=', 'students.id')
             ->join('courses', function ($join) use ($courseId) {
-                $join->on('student_license_quals.course_id', '=', 'courses.id');
+                $join->on('course_groups.course_id', '=', 'courses.id');
                 if ($courseId && $courseId !== 'all') {
                     $join->where('courses.id', '=', $courseId);
                 }
             })
             ->leftJoin('student_license_completes', function ($join) {
                 $join->on('student_license_quals.student_id', '=', 'student_license_completes.student_id')
-                    ->on('student_license_quals.course_id', '=', 'student_license_completes.course_id');
+                    ->on('student_license_quals.course_group_id', '=', 'student_license_completes.course_group_id');
             })
             ->whereNull('student_license_completes.id')
             ->when($searchTerm, function ($query, $searchTerm) {

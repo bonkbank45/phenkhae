@@ -27,6 +27,7 @@ import { AxiosResponse } from 'axios';
 interface StudentFormValues {
   date_register_from_form: string;
   prename_tha: number;
+  gender: number;
   firstname_tha: string;
   lastname_tha: string;
   firstname_eng: string;
@@ -189,10 +190,12 @@ const EditStudentPage = () => {
   });
 
   const resetFormWithStudentData = (data: any) => {
+    console.log(data);
     methods.reset({
       date_register_from_form:
         format(data?.date_register_from_form, 'dd/MM/yyyy') || '',
       prename_tha: data?.prename.id || '',
+      gender: data?.gender || '',
       firstname_tha: data?.firstname_tha || '',
       lastname_tha: data?.lastname_tha || '',
       firstname_eng: data?.firstname_eng || '',

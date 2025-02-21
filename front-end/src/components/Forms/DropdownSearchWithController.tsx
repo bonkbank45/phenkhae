@@ -70,7 +70,9 @@ const DropdownSearchWithController = <Type,>({
               field.onChange(option?.value);
             }}
             value={
-              options.find((option) => option.value === field.value) || null
+              options.find(
+                (option) => Number(option.value) === Number(field.value),
+              ) || null
             }
             options={options}
             placeholder={placeholder}
