@@ -7,15 +7,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class StudentLicenseComplete extends Model
 {
     protected $table = 'student_license_completes';
-    protected $fillable = ['student_id', 'course_id', 'date_complete'];
+    protected $fillable = ['student_id', 'course_group_id', 'date_complete'];
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class, 'student_id');
     }
-    public function course(): BelongsTo
+    public function course_group(): BelongsTo
     {
-        return $this->belongsTo(Course::class, 'course_id');
+        return $this->belongsTo(CourseGroup::class, 'course_group_id');
     }
+    // public function course(): BelongsTo
+    // {
+    //     return $this->belongsTo(Course::class, 'course_id');
+    // }
 
     public function scopeSearch($query, $searchTerm)
     {
@@ -31,7 +35,9 @@ class StudentLicenseComplete extends Model
         if ($courseId === 'all') {
             return $query;
         }
-        return $query->where('student_license_completes.course_id', $courseId);
+        return $query->whereHas('course_group', function ($q) use ($courseId) {
+            $q->where('course_id', $courseId);
+        });
     }
 
     public function scopeDateSearchStart($query, $dateSearchStart)

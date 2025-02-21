@@ -27,6 +27,7 @@ class StudentFactory extends Factory
         $thai_faker = \Faker\Factory::create('th_TH');
         return [
             'prename_id' => Prename::inRandomOrder()->first()->id,
+            'gender' => $this->faker->numberBetween(1, 2),
             'firstname_tha' => $thai_faker->firstName,
             'lastname_tha' => $thai_faker->lastName,
             'firstname_eng' => $this->faker->firstName,

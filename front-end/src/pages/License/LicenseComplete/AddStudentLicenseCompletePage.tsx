@@ -1,3 +1,7 @@
+/*
+* That code is commented because it is technical not possible add student_license_complete with course_id 
+*/
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStudentData } from '../../../hooks/api/useStudentData';
@@ -34,13 +38,13 @@ const AddStudentLicenseCompletePage = () => {
     searchTermFromStudentQual,
     500,
   );
-  const [ageRange, setAgeRange] = useState<string>('all');
-  const [experience, setExperience] = useState<string>('all');
-  const [education, setEducation] = useState<string>('all');
-  const [recentlyAdded, setRecentlyAdded] = useState<string>('all');
-  const [isAddLicenseCompleteModalOpen, setIsAddLicenseCompleteModalOpen] =
-    useState(false);
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  // const [ageRange, setAgeRange] = useState<string>('all');
+  // const [experience, setExperience] = useState<string>('all');
+  // const [education, setEducation] = useState<string>('all');
+  // const [recentlyAdded, setRecentlyAdded] = useState<string>('all');
+  // const [isAddLicenseCompleteModalOpen, setIsAddLicenseCompleteModalOpen] =
+  //   useState(false);
+  // const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [studentFromCourseCompletionPage, setStudentFromCourseCompletionPage] =
     useState(1);
   const [courseFilter, setCourseFilter] = useState<string>('all');
@@ -52,18 +56,18 @@ const AddStudentLicenseCompletePage = () => {
     setIsAddStudentsToCompleteModalOpen,
   ] = useState(false);
 
-  const {
-    data: apiResponse,
-    isLoading: isLoadingStudents,
-    error: errorStudents,
-  } = useStudentData({
-    searchTerm: debouncedSearchTerm,
-    page: allStudentsPage,
-    recentlyAdded: recentlyAdded,
-    ageRange: ageRange,
-    experience: experience,
-    education: education,
-  });
+  // const {
+  //   data: apiResponse,
+  //   isLoading: isLoadingStudents,
+  //   error: errorStudents,
+  // } = useStudentData({
+  //   searchTerm: debouncedSearchTerm,
+  //   page: allStudentsPage,
+  //   recentlyAdded: recentlyAdded,
+  //   ageRange: ageRange,
+  //   experience: experience,
+  //   education: education,
+  // });
 
   const {
     data: unlicensedCompletions,
@@ -81,7 +85,7 @@ const AddStudentLicenseCompletePage = () => {
   } = useCourseLicenseAvailable();
 
   if (
-    isLoadingStudents ||
+    // isLoadingStudents ||
     isLoadingCourseLicenseAvailable ||
     isLoadingUnlicensedCompletions
   ) {
@@ -100,37 +104,37 @@ const AddStudentLicenseCompletePage = () => {
     })),
   ];
 
-  const studentsData = apiResponse?.data;
+  // const studentsData = apiResponse?.data;
 
-  const handleSearch = (input: string) => {
-    setSearchTerm(input);
-    setAllStudentsPage(1);
-  };
+  // const handleSearch = (input: string) => {
+  //   setSearchTerm(input);
+  //   setAllStudentsPage(1);
+  // };
 
   const handleSearchFromStudentQual = (input: string) => {
     setSearchTermFromStudentQual(input);
     setStudentFromCourseCompletionPage(1);
   };
 
-  const handleAgeRangeFilter = (input: string) => {
-    setAgeRange(input);
-    setAllStudentsPage(1);
-  };
+  // const handleAgeRangeFilter = (input: string) => {
+  //   setAgeRange(input);
+  //   setAllStudentsPage(1);
+  // };
 
-  const handleExperienceFilter = (input: string) => {
-    setExperience(input);
-    setAllStudentsPage(1);
-  };
+  // const handleExperienceFilter = (input: string) => {
+  //   setExperience(input);
+  //   setAllStudentsPage(1);
+  // };
 
-  const handleEducationFilter = (input: string) => {
-    setEducation(input);
-    setAllStudentsPage(1);
-  };
+  // const handleEducationFilter = (input: string) => {
+  //   setEducation(input);
+  //   setAllStudentsPage(1);
+  // };
 
-  const handleRecentlyAddedFilter = (input: string) => {
-    setRecentlyAdded(input);
-    setAllStudentsPage(1);
-  };
+  // const handleRecentlyAddedFilter = (input: string) => {
+  //   setRecentlyAdded(input);
+  //   setAllStudentsPage(1);
+  // };
 
   const handleCourseFilter = (input: string) => {
     setCourseFilter(input);
@@ -150,52 +154,52 @@ const AddStudentLicenseCompletePage = () => {
     }
   };
 
-  const columnsWithBasicInfo: ColumnType<Student>[] = [
-    {
-      header: 'รหัสนักเรียน',
-      key: 'id',
-      render: (student: Student) => student.id || '-',
-    },
-    {
-      header: 'ชื่อ',
-      key: 'firstname_tha',
-      render: (student: Student) => student.firstname_tha || '-',
-    },
-    {
-      header: 'นามสกุล',
-      key: 'lastname_tha',
-      render: (student: Student) => student.lastname_tha || '-',
-    },
-    {
-      header: 'รหัสประจำตัวประชาชน',
-      key: 'citizenid_card',
-      render: (student: Student) => student.citizenid_card || '-',
-    },
-    {
-      header: 'อีเมล',
-      key: 'email',
-      render: (student: Student) => student.email || '-',
-    },
-    {
-      header: 'จัดการ',
-      key: 'actions',
-      render: (student: Student) => (
-        <div className="flex items-center gap-2">
-          <button onClick={() => navigate(`/students/${student.id}`)}>
-            <RoundRemoveRedEye className="cursor-pointer w-5 h-5" />
-          </button>
-          <button
-            onClick={() => {
-              setSelectedStudent(student);
-              setIsAddLicenseCompleteModalOpen(true);
-            }}
-          >
-            <UserAdd />
-          </button>
-        </div>
-      ),
-    },
-  ];
+  // const columnsWithBasicInfo: ColumnType<Student>[] = [
+  //   {
+  //     header: 'รหัสนักเรียน',
+  //     key: 'id',
+  //     render: (student: Student) => student.id || '-',
+  //   },
+  //   {
+  //     header: 'ชื่อ',
+  //     key: 'firstname_tha',
+  //     render: (student: Student) => student.firstname_tha || '-',
+  //   },
+  //   {
+  //     header: 'นามสกุล',
+  //     key: 'lastname_tha',
+  //     render: (student: Student) => student.lastname_tha || '-',
+  //   },
+  //   {
+  //     header: 'รหัสประจำตัวประชาชน',
+  //     key: 'citizenid_card',
+  //     render: (student: Student) => student.citizenid_card || '-',
+  //   },
+  //   {
+  //     header: 'อีเมล',
+  //     key: 'email',
+  //     render: (student: Student) => student.email || '-',
+  //   },
+  //   {
+  //     header: 'จัดการ',
+  //     key: 'actions',
+  //     render: (student: Student) => (
+  //       <div className="flex items-center gap-2">
+  //         <button onClick={() => navigate(`/students/${student.id}`)}>
+  //           <RoundRemoveRedEye className="cursor-pointer w-5 h-5" />
+  //         </button>
+  //         <button
+  //           onClick={() => {
+  //             setSelectedStudent(student);
+  //             setIsAddLicenseCompleteModalOpen(true);
+  //           }}
+  //         >
+  //           <UserAdd />
+  //         </button>
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
   const columnsWithQualified: ColumnType<LicenseQualAddTableInterface>[] = [
     {
@@ -207,7 +211,10 @@ const AddStudentLicenseCompletePage = () => {
           checked={selectedStudents.some(
             (s) => s.student.id === completion.student.id,
           )}
-          onChange={() => handleStudentSelect(completion)}
+          onChange={() => {
+            console.log('completion', completion);
+            handleStudentSelect(completion);
+          }}
           className="cursor-pointer w-4 h-4"
         />
       ),
@@ -362,7 +369,7 @@ const AddStudentLicenseCompletePage = () => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-boxdark rounded-lg shadow-sm p-6 mb-6 border border-gray-100 dark:border-gray-700 font-notoLoopThaiRegular">
+      {/* <div className="bg-white dark:bg-boxdark rounded-lg shadow-sm p-6 mb-6 border border-gray-100 dark:border-gray-700 font-notoLoopThaiRegular">
         <h2 className="text-2xl font-semibold mb-0 font-notoExtraBold">
           เพิ่มจากข้อมูลนักเรียนที่มีในระบบ
         </h2>
@@ -423,8 +430,8 @@ const AddStudentLicenseCompletePage = () => {
           hasPrevPage={!!studentsData?.prev_page_url}
           isFetching={isLoadingStudents}
         />
-      </div>
-      {selectedStudent && (
+      </div> */}
+      {/* {selectedStudent && (
         <Modal
           isOpen={isAddLicenseCompleteModalOpen}
           onClose={() => setIsAddLicenseCompleteModalOpen(false)}
@@ -446,7 +453,7 @@ const AddStudentLicenseCompletePage = () => {
             }}
           />
         </Modal>
-      )}
+      )} */}
       {selectedStudents && (
         <Modal
           isOpen={isAddStudentsToCompleteModalOpen}

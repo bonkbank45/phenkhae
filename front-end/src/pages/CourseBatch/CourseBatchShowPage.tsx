@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@material-tailwind/react';
 import IconArrowLeft from '../../common/ArrowLeft';
@@ -17,6 +17,7 @@ import EditEnrollmentForm from '../Enrollment/EditEnrollmentForm';
 import DeleteEnrollmentForm from '../Enrollment/DeleteEnrollmentForm';
 import IconEdit from '../../common/EditPen';
 import IconCrossCircled from '../../common/CrossCircle';
+import { usePdfStudentCard } from '../../hooks/api/usePdfData';
 import { transformToStudentCourseDataTable } from '../../utils/enrollment';
 
 const CourseBatchShowPage = () => {
@@ -26,6 +27,7 @@ const CourseBatchShowPage = () => {
   const [selectedEnrollment, setSelectedEnrollment] = useState(null);
   const [isModalEnrollmentEdit, setIsModalEnrollmentEdit] = useState(false);
   const [isModalEnrollmentDelete, setIsModalEnrollmentDelete] = useState(false);
+  const [isClickDownload, setIsClickDownload] = useState(false);
   const {
     data: courseBatchData,
     isLoading: isCourseBatchDataLoading,
@@ -37,15 +39,16 @@ const CourseBatchShowPage = () => {
     refetch: refetchEnrollmentStudentStatus,
   } = useEnrollmentStudentStatusByCourseGroupId(Number(id), currentPage);
 
+  const {} = usePdfStudentCard(id, isClickDownload);
+
   const [isCriteriaScoreModalOpen, setIsCriteriaScoreModalOpen] =
     useState(false);
 
-  console.log(
-    'isEnrollmentStudentStatusLoading',
-    isEnrollmentStudentStatusLoading,
-  );
-
-  console.log('isCourseBatchDataLoading', isCourseBatchDataLoading);
+  useEffect(() => {
+    if (isClickDownload) {
+      handleDownloadStudentCard();
+    }
+  }, [isClickDownload]);
 
   if (isCourseBatchDataLoading || isEnrollmentStudentStatusLoading) {
     return (
@@ -54,6 +57,10 @@ const CourseBatchShowPage = () => {
       </div>
     );
   }
+
+  const handleDownloadStudentCard = () => {
+    setIsClickDownload(true);
+  };
 
   const handleAddStudent = () => {
     navigate(`/courses/batchs/${id}/add-students`);
@@ -104,6 +111,11 @@ const CourseBatchShowPage = () => {
       header: 'ไอดีนักเรียน',
       key: 'student_id',
       render: (row) => row.student.id,
+    },
+    {
+      header: 'ลำดับ',
+      key: 'no_reg',
+      render: (row) => row.no_reg ? String(row.no_reg).padStart(3, '0') : '-',
     },
     {
       header: 'ชื่อ',
@@ -312,7 +324,23 @@ const CourseBatchShowPage = () => {
             </Button>
           </div>
         </div>
+        <div className="flex gap-2">
+          <h3 className="text-lg font-medium mb-2 font-notoLoopThaiRegular">
+            ไฟล์ PDF
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              color="blue"
+              size="sm"
+              onClick={handleDownloadStudentCard}
+              className="font-notoLoopThaiRegular flex items-center gap-1"
+            >
+              ดาวน์โหลดบัตรนักเรียนที่อยู่ในรุ่นหลักสูตรนี้ทั้งหมด
+            </Button>
+          </div>
+        </div>
       </div>
+
       <PaginatedTable
         columns={columns}
         data={enrollmentStudentStatus?.data}

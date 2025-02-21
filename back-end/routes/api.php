@@ -62,6 +62,7 @@ Route::group(['middleware' => ['api']], function () {
     });
     Route::prefix('course_group')->group(function () {
         Route::get('/', [CourseGroupController::class, 'index']);
+        Route::get('/course_group_statistic', [CourseGroupController::class, 'getCourseGroupStatistics']);
         Route::get('/table', [CourseGroupController::class, 'table']);
         Route::get('/course/{courseId}', [CourseGroupController::class, 'getCourseGroupByCourseId']);
         Route::get('/courses', [CourseGroupController::class, 'getCourseGroupByCourseIds']);
@@ -73,6 +74,9 @@ Route::group(['middleware' => ['api']], function () {
         Route::put('/{courseGroup}', [CourseGroupController::class, 'update']);
         Route::delete('/{courseGroup}', [CourseGroupController::class, 'destroy']);
         Route::get('/course/{courseId}/batch', [CourseGroupController::class, 'getAllCourseBatchNumberByCourseId']);
+        Route::get('/{courseGroup}/pdf-student-list/{attendenceId}', [CourseGroupController::class, 'generateStudentListPdf']);
+        Route::get('/{courseGroup}/pdf-empty-student-list/{attendenceId}', [CourseGroupController::class, 'generateEmptyStudentListPdf']);
+        Route::get('/{courseGroup}/pdf-student-card', [CourseGroupController::class, 'generateStudentCardPdf']);
     });
     Route::prefix('course_price')->group(function () {
         Route::get('/', [CoursePriceController::class, 'index']);
@@ -122,6 +126,7 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/{studentLicenseComplete}', [StudentLicenseCompleteController::class, 'show']);
         Route::put('/{studentLicenseComplete}', [StudentLicenseCompleteController::class, 'update']);
         Route::delete('/{studentLicenseComplete}', [StudentLicenseCompleteController::class, 'destroy']);
+        Route::get('/course_license_completed_per_year/statistic', [StudentLicenseCompleteController::class, 'getCourseLicenseCompletedPerYear']);
     });
     Route::prefix('student_license_qual')->group(function () {
         Route::get('/', [StudentLicenseQualController::class, 'index']);
@@ -132,6 +137,7 @@ Route::group(['middleware' => ['api']], function () {
         Route::put('/{studentLicenseQual}', [StudentLicenseQualController::class, 'update']);
         Route::delete('/{studentLicenseQual}', [StudentLicenseQualController::class, 'destroy']);
         Route::get('/unlicensed/table', [StudentLicenseQualController::class, 'getUnlicensedStudents']);
+        Route::post('/pdf-student-qual', [StudentLicenseQualController::class, 'generatePdfStudentQual']);
     });
     Route::prefix('student')->group(function () {
         Route::get('/', [StudentController::class, 'index']);
@@ -200,5 +206,8 @@ Route::group(['middleware' => ['api']], function () {
         Route::post('/', [CourseCompletionController::class, 'store']);
         Route::get('/table', [CourseCompletionController::class, 'getCourseCompletionTable']);
         Route::get('/unqualified/table', [CourseCompletionController::class, 'getUnqualifiedCompletions']);
+        Route::get('/certificate/statistic', [CourseCompletionController::class, 'getCertificateStatistic']);
+        Route::get('/completed/statistic/', [CourseCompletionController::class, 'getCourseCompletedStatistic']);
+        Route::get('/completed_and_take_certificate/statistic', [CourseCompletionController::class, 'getCourseCompletedAndTakeCertificateStatistic']);
     });
 });

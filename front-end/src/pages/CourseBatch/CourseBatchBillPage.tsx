@@ -198,7 +198,7 @@ const CourseBatchBillPage = () => {
         <div className="text-sm text-gray-500 font-notoLoopThaiRegular mt-4">
           <span className="font-bold text-red-500">* </span>
           หากต้องการจัดการให้นักเรียนจ่ายเงินมากกว่า 1 คอร์ส ในใบเสร็จเดียว
-          กรุณาจัดการใบเสร็จที่หน้าหลักของนักเรียนคนๆนั้น
+          สามารถกรอก No. และ Vol. เดียวกันได้
         </div>
         <PaginatedTable
           columns={columns}

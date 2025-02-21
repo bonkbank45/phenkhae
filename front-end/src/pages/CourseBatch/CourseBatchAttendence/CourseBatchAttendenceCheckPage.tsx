@@ -16,6 +16,7 @@ import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 import Modal from '../../../components/Modal';
 import CourseBatchAttendenceCheckDelete from './CourseBatchAttendenceCheckDelete';
+import { usePdfStudentEmptyList, usePdfStudentList } from '../../../hooks/api/usePdfData';
 
 const CourseBatchAttendenceCheckPage = () => {
   const { id, attendenceId } = useParams();
@@ -41,6 +42,20 @@ const CourseBatchAttendenceCheckPage = () => {
   } = useEnrollmentStudentStatusByCourseGroupId(Number(id), currentPage);
 
   const [attendanceData, setAttendanceData] = useState({});
+  const [isClickDownload, setIsClickDownload] = useState(false);
+  const {} = usePdfStudentList(id, attendenceId, isClickDownload);
+
+  const [isClickDownloadEmptyList, setIsClickDownloadEmptyList] = useState(false);
+  const {} = usePdfStudentEmptyList(id, attendenceId, isClickDownloadEmptyList);
+
+  useEffect(() => {
+    if (isClickDownload) {
+      setIsClickDownload(false);
+    }
+    if (isClickDownloadEmptyList) {
+      setIsClickDownloadEmptyList(false);
+    }
+  }, [isClickDownload, isClickDownloadEmptyList]);
 
   useEffect(() => {
     if (studentAttendences?.data) {
@@ -241,6 +256,26 @@ const CourseBatchAttendenceCheckPage = () => {
               'dd/MM/yyyy',
             )}
           </p>
+          <div className="flex justify-start mt-2 gap-2">
+            <Button
+              color="blue"
+              className="font-notoLoopThaiRegular"
+              onClick={() => {
+                setIsClickDownload(true);
+              }}
+            >
+              ดาวน์โหลดใบเซ็นชื่อพร้อมรายชื่อนักเรียน
+            </Button>
+            <Button
+              color="blue"
+              className="font-notoLoopThaiRegular"
+              onClick={() => {
+                setIsClickDownloadEmptyList(true);
+              }}
+            >
+              ดาวน์โหลดใบเซ็นชื่อว่าง
+            </Button>
+          </div>
         </div>
       </div>
       <div className="bg-white dark:bg-boxdark rounded-lg shadow-sm p-6 mb-6 border border-gray-100 dark:border-gray-700 font-notoLoopThaiRegular">

@@ -7,6 +7,7 @@ use App\Models\Enrollment;
 use App\Exceptions\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Exception;
 
 class GraduateService
 {

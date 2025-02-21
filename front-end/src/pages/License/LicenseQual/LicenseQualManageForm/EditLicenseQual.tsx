@@ -11,7 +11,7 @@ import { ErrorResponse } from '../../../../types/error_response';
 export interface UpdateLicenseQualStudentProps {
   id: number;
   student_id: number;
-  course_id: number;
+  course_group_id: number;
   date_qualified: string;
   firstname_tha: string;
   lastname_tha: string;
@@ -63,9 +63,11 @@ const EditLicenseQual = ({
     const licenseQual = {
       id: selectedLicenseQualStudent.id,
       student_id: selectedLicenseQualStudent.student_id,
-      course_id: selectedLicenseQualStudent.course_id,
+      course_group_id: selectedLicenseQualStudent.course_group_id,
       date_qualified: data.date,
     };
+
+    console.log(licenseQual);
 
     updateLicenseQual(licenseQual, {
       onSuccess: () => {

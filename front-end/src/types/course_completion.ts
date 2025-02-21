@@ -3,7 +3,7 @@ import { Student } from './student';
 
 interface CourseGroup {
   id: number;
-  course_id: number;
+  course_group_id: number;
   max_students: number;
   batch: number;
   theoretical_score_criteria: number;

@@ -4,7 +4,7 @@ import { Course } from './course';
 export interface LicenseQualTable {
   id: number;
   student_id: number;
-  course_id: number;
+  course_group_id: number;
   date_qualified: string;
   created_at: string;
   updated_at: string;
@@ -17,7 +17,7 @@ export interface LicenseQualTable {
 export interface LicenseQualAddTableInterface {
   id: number;
   student_id: number;
-  course_id: number;
+  course_group_id: number;
   date_qualified: string;
   created_at: string;
   updated_at: string;

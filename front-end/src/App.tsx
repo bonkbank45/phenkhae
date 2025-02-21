@@ -43,6 +43,8 @@ import AddStudentLicenseQualIndex from './pages/License/LicenseQual/AddStudentLi
 import StudentLicenseQualManagePage from './pages/License/LicenseQual/StudentLicenseQualManagePage';
 import StudentLicenseCompleteManagePage from './pages/License/LicenseComplete/StudentLicenseCompleteManagePage';
 import AddStudentLicenseCompletePage from './pages/License/LicenseComplete/AddStudentLicenseCompletePage';
+import StudentLicensePdfPage from './pages/License/LicenseQual/StudentQualPdfPage';
+import IndexStatistic from './pages/Statistic/IndexStatistic';
 
 function App() {
   const { pathname } = useLocation();
@@ -186,72 +188,240 @@ function App() {
               </>
             }
           />
-          <Route path="/students/list" element={<StudentIndexPage />} />
-          <Route path="/students/:id/edit" element={<EditStudentPage />} />
-          <Route path="/students/:id" element={<StudentViewPage />} />
-          <Route path="/students/add" element={<AddStudent />} />
-          <Route path="/courses/list" element={<CourseManagePage />} />
+          <Route
+            path="/students/list"
+            element={
+              <>
+                <PageTitle title="รายชื่อนักเรียน | การจัดการนักเรียน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <StudentIndexPage />
+              </>
+            }
+          />
+          <Route
+            path="/students/:id/edit"
+            element={
+              <>
+                <PageTitle title="แก้ไขนักเรียน | การจัดการนักเรียน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <EditStudentPage />
+              </>
+            }
+          />
+          <Route
+            path="/students/:id"
+            element={
+              <>
+                <PageTitle title="รายละเอียดนักเรียน | การจัดการนักเรียน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <StudentViewPage />
+              </>
+            }
+          />
+          <Route
+            path="/students/add"
+            element={
+              <>
+                <PageTitle title="เพิ่มนักเรียน | การจัดการนักเรียน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <AddStudent />
+              </>
+            }
+          />
+          <Route
+            path="/courses/list"
+            element={
+              <>
+                <PageTitle title="หลักสูตรทั้งหมด | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseManagePage />
+              </>
+            }
+          />
           <Route
             path="/courses/prices/list"
-            element={<CoursePriceManagePage />}
+            element={
+              <>
+                <PageTitle title="กำหนดราคาขายหลักสูตร | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CoursePriceManagePage />
+              </>
+            }
           />
-          <Route path="/settings/datas/prenames" element={<Prename />} />
-          <Route path="/settings/datas/prenames/add" element={<AddPrename />} />
+          <Route
+            path="/settings/datas/prenames"
+            element={
+              <>
+                <PageTitle title="คำนำหน้านาม | การจัดการข้อมูลพื้นฐาน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <Prename />
+              </>
+            }
+          />
+          <Route
+            path="/settings/datas/prenames/add"
+            element={
+              <>
+                <PageTitle title="เพิ่มคำนำหน้านาม | การจัดการข้อมูลพื้นฐาน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <AddPrename />
+              </>
+            }
+          />
           <Route
             path="/courses/batchs/list"
-            element={<CourseBatchListPage />}
+            element={
+              <>
+                <PageTitle title="หลักสูตรตามรุ่น | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseBatchListPage />
+              </>
+            }
           />
-          <Route path="/courses/batchs/:id" element={<CourseBatchShowPage />} />
+          <Route
+            path="/courses/batchs/:id"
+            element={
+              <>
+                <PageTitle title="รายละเอียดรุ่นหลักสูตร | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseBatchShowPage />
+              </>
+            }
+          />
           <Route
             path="/courses/batchs/add"
-            element={<AddCourseBatchIndexPage />}
+            element={
+              <>
+                <PageTitle title="เปิดรุ่นหลักสูตรใหม่ | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <AddCourseBatchIndexPage />
+              </>
+            }
           />
           <Route
             path="/courses/batchs/:id/add-students"
-            element={<CourseBatchAddStudent />}
+            element={
+              <>
+                <PageTitle title="เพิ่มนักเรียนเข้ารุ่น | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseBatchAddStudent />
+              </>
+            }
           />
           <Route
             path="/courses/batchs/:id/graduate"
-            element={<CourseBatchGraduatePage />}
+            element={
+              <>
+                <PageTitle title="สถานะการจบหลักสูตร | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseBatchGraduatePage />
+              </>
+            }
           />
           <Route
             path="/courses/batchs/:id/attendence"
-            element={<CourseBatchAttendencePage />}
+            element={
+              <>
+                <PageTitle title="วันที่เรียนของรุ่น | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseBatchAttendencePage />
+              </>
+            }
           />
           <Route
             path="/courses/batchs/:id/attendence/:attendenceId"
-            element={<CourseBatchAttendenceCheckPage />}
+            element={
+              <>
+                <PageTitle title="เช็คชื่อเข้าเรียนรายวัน | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseBatchAttendenceCheckPage />
+              </>
+            }
           />
           <Route
             path="/courses/batchs/:id/attendence/bulk"
-            element={<CourseBatchAttendenceBulkPage />}
+            element={
+              <>
+                <PageTitle title="เช็คชื่อเข้าเรียนแบบภาพรวม | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseBatchAttendenceBulkPage />
+              </>
+            }
           />
           <Route
             path="/courses/batchs/:id/remove-students"
-            element={<CourseBatchRemoveStudentPage />}
+            element={
+              <>
+                <PageTitle title="ลบนักเรียนออกจากรุ่น | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseBatchRemoveStudentPage />
+              </>
+            }
           />
           <Route
             path="/courses/batchs/:id/bills"
-            element={<CourseBatchBillPage />}
+            element={
+              <>
+                <PageTitle title="การจ่ายเงิน | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseBatchBillPage />
+              </>
+            }
           />
-          <Route path="/courses/add" element={<AddCourse />} />
+          <Route
+            path="/courses/add"
+            element={
+              <>
+                <PageTitle title="เพิ่มหลักสูตรใหม่ | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <AddCourse />
+              </>
+            }
+          />
           <Route
             path="/manage/license_student/list"
-            element={<StudentLicenseQualManagePage />}
+            element={
+              <>
+                <PageTitle title="ผู้มีสิทธิสอบ | ใบประกอบวิชาชีพ - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <StudentLicenseQualManagePage />
+              </>
+            }
+          />
+          <Route
+            path="/manage/license_student/list/pdf"
+            element={
+              <>
+                <PageTitle title="พิมพ์รายชื่อผู้มีสิทธิสอบใบประกอบวิชาชีพ | ใบประกอบวิชาชีพ - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <StudentLicensePdfPage />
+              </>
+            }
           />
           <Route
             path="/manage/license_student/add"
-            element={<AddStudentLicenseQualIndex />}
+            element={
+              <>
+                <PageTitle title="เพิ่มข้อมูลผู้มีสิทธิสอบ | ใบประกอบวิชาชีพ - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <AddStudentLicenseQualIndex />
+              </>
+            }
           />
           <Route
             path="/manage/license_student/completed/list"
-            element={<StudentLicenseCompleteManagePage />}
+            element={
+              <>
+                <PageTitle title="ผู้ได้รับใบประกอบวิชาชีพ | ใบประกอบวิชาชีพ - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <StudentLicenseCompleteManagePage />
+              </>
+            }
           />
           <Route
             path="/manage/license_student/completed/add"
-            element={<AddStudentLicenseCompletePage />}
+            element={
+              <>
+                <PageTitle title="เพิ่มข้อมูลผู้ได้รับใบประกอบวิชาชีพ | ใบประกอบวิชาชีพ - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <AddStudentLicenseCompletePage />
+              </>
+            }
           />
-          <Route path="*" element={<NotFound />} />
+          <Route
+            path="/statistic"
+            element={
+              <>
+                <PageTitle title="สถิติ | แดชบอร์ด - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <IndexStatistic />
+              </>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <>
+                <PageTitle title="404 | ไม่พบหน้าเว็บ - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <NotFound />
+              </>
+            }
+          />
         </Route>
       </Routes>
     </>

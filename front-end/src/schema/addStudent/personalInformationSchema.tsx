@@ -14,6 +14,7 @@ export const personalInformationSchema = yup.object().shape({
     .string()
     .required('กรุณากรอกวันที่สมัครจากใบสมัครนักเรียน'),
   prename_tha: yup.number().required('กรุณาเลือกคำนำหน้า'),
+  gender: yup.number().typeError('กรุณาเลือกเพศ').required('กรุณาเลือกเพศ'),
   firstname_tha: yup
     .string()
     .matches(thaiCharacterPattern, 'ชื่อต้องเป็นภาษาไทย')

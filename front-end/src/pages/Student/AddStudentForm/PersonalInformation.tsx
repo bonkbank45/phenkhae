@@ -156,7 +156,7 @@ const PersonalInformation = ({
       </h1>
       <div className="mt-4 md:grid grid-cols-2 gap-4">
         <DropdownSearchWithController<SelectOption['value']>
-          className="col-span-2 lg:w-[49.3%]"
+          // className="col-span-2 lg:w-[49.3%]"
           label="คำนำหน้า"
           name="prename_tha"
           placeholder="คำนำหน้า"
@@ -166,6 +166,22 @@ const PersonalInformation = ({
           error={
             typeof errors.prename_tha?.message === 'string'
               ? errors.prename_tha.message
+              : ''
+          }
+        />
+        <DropdownSearchWithController
+          label="เพศ"
+          name="gender"
+          placeholder="เพศ"
+          required={true}
+          options={[
+            { value: 1, label: 'ชาย' },
+            { value: 2, label: 'หญิง' },
+          ]}
+          control={control}
+          error={
+            typeof errors.gender?.message === 'string'
+              ? errors.gender.message
               : ''
           }
         />

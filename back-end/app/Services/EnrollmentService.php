@@ -19,7 +19,6 @@ class enrollmentService
 
     public function removeEnrollment(int $courseGroupId, array $studentIds)
     {
-        \Log::info('Hello from removeEnrollment');
         $courseGroup = $this->getCourseGroupWithValidation($courseGroupId);
         $this->validateRemoveEnrollments($courseGroup, $studentIds);
 
@@ -57,7 +56,6 @@ class enrollmentService
 
     private function validateRemoveEnrollments(CourseGroup $courseGroup, array $studentIds)
     {
-        \Log::info('Hello from validateRemoveEnrollments');
         $existingEnrollments = Enrollment::where('course_group_id', $courseGroup->id)
             ->whereIn('student_id', $studentIds)
             ->exists();
@@ -70,11 +68,24 @@ class enrollmentService
     {
         $now = now();
         $enrollments = [];
+        $courseIdsWithNoReg = [7, 8, 9, 10];
+        $currentNoReg = null;
 
-        foreach ($studentIds as $studentId) {
+        if (in_array($courseGroup->course_id, $courseIdsWithNoReg)) {
+            $dateStart = CourseGroup::where('id', $courseGroup->id)
+                ->value('date_start');
+
+            $currentNoReg = Enrollment::whereYear('date_start', Carbon::parse($dateStart)->year)
+                ->count();
+
+            \Log::info('Current No Reg: ' . $currentNoReg);
+        }
+
+        foreach ($studentIds as $index => $studentId) {
             $enrollments[] = [
                 'course_group_id' => $courseGroup->id,
                 'student_id' => $studentId,
+                'no_reg' => $currentNoReg !== null ? ($currentNoReg + $index + 1) : null,
                 'activity_case_status' => 0,
                 'enrollment_date' => $now,
                 'date_start' => $courseGroup->date_start,

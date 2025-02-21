@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 export interface DeleteLicenseQualStudentProps {
   id: number;
   student_id: number;
-  course_id: number;
+  course_group_id: number;
   firstname_tha: string;
   lastname_tha: string;
   date_qualified: string;

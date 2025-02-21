@@ -74,7 +74,8 @@ const StudentLicenseCompleteManagePage = () => {
     {
       header: 'หลักสูตร',
       key: 'course_name',
-      render: (row: LicenseCompleteTable) => row.course.course_name,
+      render: (row: LicenseCompleteTable) =>
+        row.course_group.course.course_name,
     },
     {
       header: 'วันที่สำเร็จการสอบใบประกอบวิชาชีพ',
@@ -199,13 +200,14 @@ const StudentLicenseCompleteManagePage = () => {
             selectedLicenseCompleteStudent={{
               id: selectedLicenseCompleteStudent?.id,
               student_id: selectedLicenseCompleteStudent?.student_id,
-              course_id: selectedLicenseCompleteStudent?.course_id,
+              course_group_id: selectedLicenseCompleteStudent?.course_group_id,
               date_complete: selectedLicenseCompleteStudent?.date_complete,
               firstname_tha:
                 selectedLicenseCompleteStudent?.student.firstname_tha,
               lastname_tha:
                 selectedLicenseCompleteStudent?.student.lastname_tha,
-              course_name: selectedLicenseCompleteStudent?.course.course_name,
+              course_name:
+                selectedLicenseCompleteStudent?.course_group.course.course_name,
             }}
             onSuccess={() => {
               setIsEditLicenseCompleteModalOpen(false);
@@ -228,7 +230,7 @@ const StudentLicenseCompleteManagePage = () => {
             selectedLicenseCompleteStudent={{
               id: selectedLicenseCompleteStudent?.id,
               student_id: selectedLicenseCompleteStudent?.student_id,
-              course_id: selectedLicenseCompleteStudent?.course_id,
+              course_group_id: selectedLicenseCompleteStudent?.course_group_id,
               firstname_tha:
                 selectedLicenseCompleteStudent?.student.firstname_tha,
               lastname_tha:

@@ -1,3 +1,7 @@
+/*
+* That code is commented because it is technical not possible add student_qual with course_id 
+*/
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStudentData } from '../../../hooks/api/useStudentData';
@@ -27,44 +31,44 @@ import { AddStudentsToQualForm } from './AddForm/AddStudentsToQualForm';
 import { format } from 'date-fns';
 
 const AddStudentLicenseQualIndex = () => {
-  const navigate = useNavigate();
-  const [isAddStudentToQualModalOpen, setIsAddStudentToQualModalOpen] =
-    useState(false);
+  // const navigate = useNavigate();
+  // const [isAddStudentToQualModalOpen, setIsAddStudentToQualModalOpen] =
+  //   useState(false);
   const [isAddStudentsToQualModalOpen, setIsAddStudentsToQualModalOpen] =
     useState(false);
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  // const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  // const [searchTerm, setSearchTerm] = useState('');
   const [searchTermFromStudentCompletion, setSearchTermFromStudentCompletion] =
     useState('');
   const [studentFromCourseCompletionPage, setStudentFromCourseCompletionPage] =
     useState(1);
   const [allStudentsPage, setAllStudentsPage] = useState(1);
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  // const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const debouncedSearchTermFromStudentCompletion = useDebounce(
     searchTermFromStudentCompletion,
     500,
   );
-  const [ageRange, setAgeRange] = useState<string>('all');
-  const [experience, setExperience] = useState<string>('all');
-  const [education, setEducation] = useState<string>('all');
-  const [recentlyAdded, setRecentlyAdded] = useState<string>('all');
+  // const [ageRange, setAgeRange] = useState<string>('all');
+  // const [experience, setExperience] = useState<string>('all');
+  // const [education, setEducation] = useState<string>('all');
+  // const [recentlyAdded, setRecentlyAdded] = useState<string>('all');
   const [courseFilter, setCourseFilter] = useState<string>('all');
   const [batchFilter, setBatchFilter] = useState<string>('all');
   const [selectedStudents, setSelectedStudents] = useState<CourseCompletion[]>(
     [],
   );
-  const {
-    data: apiResponse,
-    isLoading: isLoadingStudents,
-    error: errorStudents,
-  } = useStudentData({
-    searchTerm: debouncedSearchTerm,
-    page: allStudentsPage,
-    recentlyAdded: recentlyAdded,
-    ageRange: ageRange,
-    experience: experience,
-    education: education,
-  });
+  // const {
+  //   data: apiResponse,
+  //   isLoading: isLoadingStudents,
+  //   error: errorStudents,
+  // } = useStudentData({
+  //   searchTerm: debouncedSearchTerm,
+  //   page: allStudentsPage,
+  //   recentlyAdded: recentlyAdded,
+  //   ageRange: ageRange,
+  //   experience: experience,
+  //   education: education,
+  // });
 
   const {
     data: unqualifiedCompletions,
@@ -89,7 +93,7 @@ const AddStudentLicenseQualIndex = () => {
   } = useCourseLicenseAvailable();
 
   if (
-    isLoadingStudents ||
+    // isLoadingStudents ||
     isLoadingUnqualifiedCompletions ||
     isLoadingCourseLicenseAvailable
   ) {
@@ -100,7 +104,7 @@ const AddStudentLicenseQualIndex = () => {
     );
   }
 
-  const studentsData = apiResponse?.data;
+  // const studentsData = apiResponse?.data;
   const unqualifiedCompletionsData = unqualifiedCompletions?.data;
 
   const courseLicenseAvailableDropdownOptions = [
@@ -119,35 +123,35 @@ const AddStudentLicenseQualIndex = () => {
     })) || []),
   ];
 
-  const handleSearch = (input: string) => {
-    setSearchTerm(input);
-    setAllStudentsPage(1);
-  };
+  // const handleSearch = (input: string) => {
+  //   setSearchTerm(input);
+  //   setAllStudentsPage(1);
+  // };
 
   const handleSearchFromStudentCompletion = (input: string) => {
     setSearchTermFromStudentCompletion(input);
     setStudentFromCourseCompletionPage(1);
   };
 
-  const handleAgeRangeFilter = (input: string) => {
-    setAgeRange(input);
-    setAllStudentsPage(1);
-  };
+  // const handleAgeRangeFilter = (input: string) => {
+  //   setAgeRange(input);
+  //   setAllStudentsPage(1);
+  // };
 
-  const handleExperienceFilter = (input: string) => {
-    setExperience(input);
-    setAllStudentsPage(1);
-  };
+  // const handleExperienceFilter = (input: string) => {
+  //   setExperience(input);
+  //   setAllStudentsPage(1);
+  // };
 
-  const handleEducationFilter = (input: string) => {
-    setEducation(input);
-    setAllStudentsPage(1);
-  };
+  // const handleEducationFilter = (input: string) => {
+  //   setEducation(input);
+  //   setAllStudentsPage(1);
+  // };
 
-  const handleRecentlyAddedFilter = (input: string) => {
-    setRecentlyAdded(input);
-    setAllStudentsPage(1);
-  };
+  // const handleRecentlyAddedFilter = (input: string) => {
+  //   setRecentlyAdded(input);
+  //   setAllStudentsPage(1);
+  // };
 
   const handleCourseFilter = (input: string) => {
     setCourseFilter(input);
@@ -228,52 +232,52 @@ const AddStudentLicenseQualIndex = () => {
     },
   ];
 
-  const columnsWithBasicInfo: ColumnType<Student>[] = [
-    {
-      header: 'รหัสนักเรียน',
-      key: 'id',
-      render: (student: Student) => student.id || '-',
-    },
-    {
-      header: 'ชื่อ',
-      key: 'firstname_tha',
-      render: (student: Student) => student.firstname_tha || '-',
-    },
-    {
-      header: 'นามสกุล',
-      key: 'lastname_tha',
-      render: (student: Student) => student.lastname_tha || '-',
-    },
-    {
-      header: 'รหัสประจำตัวประชาชน',
-      key: 'citizenid_card',
-      render: (student: Student) => student.citizenid_card || '-',
-    },
-    {
-      header: 'อีเมล',
-      key: 'email',
-      render: (student: Student) => student.email || '-',
-    },
-    {
-      header: 'จัดการ',
-      key: 'actions',
-      render: (student: Student) => (
-        <div className="flex items-center gap-2">
-          <button onClick={() => navigate(`/students/${student.id}`)}>
-            <RoundRemoveRedEye className="cursor-pointer w-5 h-5" />
-          </button>
-          <button
-            onClick={() => {
-              setSelectedStudent(student);
-              setIsAddStudentToQualModalOpen(true);
-            }}
-          >
-            <UserAdd />
-          </button>
-        </div>
-      ),
-    },
-  ];
+  // const columnsWithBasicInfo: ColumnType<Student>[] = [
+  //   {
+  //     header: 'รหัสนักเรียน',
+  //     key: 'id',
+  //     render: (student: Student) => student.id || '-',
+  //   },
+  //   {
+  //     header: 'ชื่อ',
+  //     key: 'firstname_tha',
+  //     render: (student: Student) => student.firstname_tha || '-',
+  //   },
+  //   {
+  //     header: 'นามสกุล',
+  //     key: 'lastname_tha',
+  //     render: (student: Student) => student.lastname_tha || '-',
+  //   },
+  //   {
+  //     header: 'รหัสประจำตัวประชาชน',
+  //     key: 'citizenid_card',
+  //     render: (student: Student) => student.citizenid_card || '-',
+  //   },
+  //   {
+  //     header: 'อีเมล',
+  //     key: 'email',
+  //     render: (student: Student) => student.email || '-',
+  //   },
+  //   {
+  //     header: 'จัดการ',
+  //     key: 'actions',
+  //     render: (student: Student) => (
+  //       <div className="flex items-center gap-2">
+  //         <button onClick={() => navigate(`/students/${student.id}`)}>
+  //           <RoundRemoveRedEye className="cursor-pointer w-5 h-5" />
+  //         </button>
+  //         <button
+  //           onClick={() => {
+  //             setSelectedStudent(student);
+  //             setIsAddStudentToQualModalOpen(true);
+  //           }}
+  //         >
+  //           <UserAdd />
+  //         </button>
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
   return (
     <>
@@ -401,7 +405,7 @@ const AddStudentLicenseQualIndex = () => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-boxdark rounded-lg shadow-sm p-6 mb-6 border border-gray-100 dark:border-gray-700 font-notoLoopThaiRegular">
+      {/* <div className="bg-white dark:bg-boxdark rounded-lg shadow-sm p-6 mb-6 border border-gray-100 dark:border-gray-700 font-notoLoopThaiRegular">
         <h2 className="text-2xl font-semibold mb-0 font-notoExtraBold">
           เพิ่มจากข้อมูลนักเรียนที่มีในระบบ
         </h2>
@@ -462,8 +466,8 @@ const AddStudentLicenseQualIndex = () => {
           hasPrevPage={!!studentsData?.prev_page_url}
           isFetching={isLoadingStudents}
         />
-      </div>
-      {selectedStudent && (
+      </div> */}
+      {/* {selectedStudent && (
         <Modal
           title="เพิ่มข้อมูลผู้มีสิทธิสอบใบประกอบวิชาชีพ"
           isOpen={isAddStudentToQualModalOpen}
@@ -481,7 +485,7 @@ const AddStudentLicenseQualIndex = () => {
             }}
           />
         </Modal>
-      )}
+      )} */}
       {selectedStudents.length > 0 && (
         <Modal
           title="เพิ่มข้อมูลผู้มีสิทธิสอบใบประกอบวิชาชีพ"

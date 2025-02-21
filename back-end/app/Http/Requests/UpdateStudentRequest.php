@@ -23,6 +23,7 @@ class UpdateStudentRequest extends FormRequest
     {
         return [
             "prename_id" => "required|exists:prenames,id",
+            "gender" => "required|integer|min:1|max:2",
             "firstname_tha" => "required|string|max:255",
             "lastname_tha" => "required|string|max:255",
             "firstname_eng" => "required|string|max:255",

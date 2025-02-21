@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 export interface UpdateLicenseCompleteStudentProps {
   id: number;
   student_id: number;
-  course_id: number;
+  course_group_id: number;
   date_complete: string;
 }
 
@@ -137,6 +137,18 @@ export const useAddBulkLicenseComplete = () => {
         queryKey: ['student_license_unlicensed_table'],
         exact: false,
       });
+    },
+  });
+};
+
+export const useGetCourseLicenseCompletedPerYear = () => {
+  return useQuery({
+    queryKey: ['course_license_completed_per_year'],
+    queryFn: async () => {
+      const response = await api.get(
+        '/student_license_complete/course_license_completed_per_year/statistic',
+      );
+      return response.data;
     },
   });
 };

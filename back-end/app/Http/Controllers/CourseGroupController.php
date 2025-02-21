@@ -12,6 +12,10 @@ use App\Http\Requests\StoreCourseGroupRequest;
 use App\Http\Requests\UpdateCourseGroupRequest;
 use App\Services\EnrollmentService;
 use Illuminate\Http\Request;
+use Mpdf\Mpdf;
+use App\Models\CourseAttendence;
+use Carbon\Carbon;
+
 class CourseGroupController extends Controller
 {
     use JsonResponseTrait;
@@ -155,6 +159,7 @@ class CourseGroupController extends Controller
                 'course.latest_course_price',
                 'enrollments',
                 'enrollments.student',
+                'enrollments.student.prename',
                 'enrollments.student.bill_infos'
             ])->findOrFail($id);
             $course_group->students_enrolled = $course_group->enrollments->count();
@@ -266,6 +271,142 @@ class CourseGroupController extends Controller
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course group not found', 404);
+        }
+    }
+
+    public function generateStudentCardPdf(int $id)
+    {
+        try {
+            $course_group = CourseGroup::findOrFail($id);
+            $mpdf = new Mpdf(config('pdf'));
+            $mpdf->AddPage('L');
+
+            $students = $course_group->enrollments->map(function ($enrollment) use ($course_group) {
+                return (object) [
+                    'name' => $enrollment->student->firstname_tha . ' ' . $enrollment->student->lastname_tha,
+                    'course' => $course_group->course->course_name,
+                    'batch' => $course_group->batch,
+                    'student_id' => $enrollment->student->id,
+                ];
+            })->values()->all();
+
+            $html = view('pdfs.std_card', [
+                'students' => $students,
+            ])->render();
+
+            $mpdf->WriteHTML($html);
+            return response($mpdf->Output('student-card.pdf', 'S'), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="student-card-' . $course_group->batch . '.pdf"',
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse($e->getMessage(), 404);
+        }
+    }
+
+    public function generateEmptyStudentListPdf(int $id, int $attendence_id)
+    {
+        try {
+            $course_group = CourseGroup::findOrFail($id);
+            $attendence = CourseAttendence::findOrFail($attendence_id);
+            $mpdf = new Mpdf(config('pdf'));
+
+            $html = view('pdfs.check_name_v2', [
+                'course_group' => $course_group,
+                'attendence' => $attendence
+            ])->render();
+
+            $mpdf->WriteHTML($html);
+
+            $pdfContent = $mpdf->Output('student-list.pdf', 'S');
+
+            return response($pdfContent, 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="student-empty-list-'
+                    . $course_group->batch . '-' . $attendence->attendence_date . '.pdf"',
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse($e->getMessage(), 404);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Failed to generate PDF: ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function generateStudentListPdf(int $id, int $attendence_id)
+    {
+        try {
+            $course_group = CourseGroup::with(
+                'course',
+                'enrollments.student'
+            )->findOrFail($id);
+
+            $attendence = CourseAttendence::findOrFail($attendence_id);
+
+            $attendence_date = Carbon::createFromFormat('Y-m-d', $attendence->attendence_date)->format('d/m/Y');
+
+            $mpdf = new Mpdf(config('pdf'));
+
+            $html = view('pdfs.check_name', [
+                'course_group' => $course_group,
+                'enrollments' => $course_group->enrollments,
+                'attendence_date' => $attendence_date
+            ])->render();
+
+            $mpdf->WriteHTML($html);
+
+            $pdfContent = $mpdf->Output('student-list.pdf', 'S');
+
+            return response($pdfContent, 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="student-list-'
+                    . $course_group->batch . '-' . $attendence_date . '.pdf"',
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse($e->getMessage(), 404);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Failed to generate PDF: ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function getCourseGroupStatistics(): JsonResponse
+    {
+        try {
+            $statistics = CourseGroup::select([
+                'course_groups.id',
+                'course_groups.date_start',
+                'course_groups.batch',
+                'courses.course_name',
+                DB::raw('COUNT(CASE WHEN students.gender = 1 THEN 1 END) as male'),
+                DB::raw('COUNT(CASE WHEN students.gender = 2 THEN 1 END) as female')
+            ])
+                ->join('courses', 'course_groups.course_id', '=', 'courses.id')
+                ->join('enrollments', 'course_groups.id', '=', 'enrollments.course_group_id')
+                ->join('students', 'enrollments.student_id', '=', 'students.id')
+                ->groupBy('course_groups.id')
+                ->get()
+                ->groupBy(function ($item) {
+                    return Carbon::parse($item->date_start)->year;
+                })
+                ->map(function ($yearGroups) {
+                    return [
+                        'year' => (int) Carbon::parse($yearGroups->first()->date_start)->year,
+                        'courses' => $yearGroups->groupBy('course_name')
+                            ->map(function ($courseGroups) {
+                                return $courseGroups->map(function ($group) {
+                                    return [
+                                        'batch' => $group->batch,
+                                        'male' => (int) $group->male,
+                                        'female' => (int) $group->female
+                                    ];
+                                });
+                            })
+                    ];
+                })
+                ->values();
+
+            return $this->successResponse($statistics, 'Course group statistics fetched successfully', 200);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Failed to fetch statistics: ' . $e->getMessage(), 500);
         }
     }
 }

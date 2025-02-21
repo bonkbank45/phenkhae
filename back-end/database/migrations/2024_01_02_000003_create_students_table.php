@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->foreignId('prename_id')->constrained('prenames', 'id');
+            $table->tinyInteger('gender');
             $table->string('firstname_tha');
             $table->string('lastname_tha');
             $table->string('firstname_eng');

@@ -10,6 +10,7 @@ export const useGetLicenseQualTable = (
   searchTerm: string,
   dateSearchStart: Date | null,
   dateSearchEnd: Date | null,
+  shouldFetch: boolean,
 ) => {
   return useQuery({
     queryKey: [
@@ -38,6 +39,7 @@ export const useGetLicenseQualTable = (
       return response.data;
     },
     staleTime: 1000 * 60 * 5,
+    enabled: shouldFetch,
     placeholderData: (prevData) => prevData,
   });
 };

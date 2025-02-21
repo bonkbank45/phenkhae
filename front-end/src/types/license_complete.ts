@@ -1,13 +1,13 @@
 import { Student } from './student';
-import { Course } from './course';
+import { CourseGroup } from './course_group';
 
 export interface LicenseCompleteTable {
   id: number;
   student_id: number;
-  course_id: number;
+  course_group_id: number;
   date_complete: string;
   created_at: string;
   updated_at: string;
   student: Student;
-  course: Course;
+  course_group: CourseGroup;
 }
