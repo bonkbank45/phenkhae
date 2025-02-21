@@ -113,26 +113,6 @@ const StudentLicenseQualManagePage = () => {
 
   const columns = [
     {
-      header: 'เลือก',
-      key: 'select',
-      render: (row: LicenseQualTable) => (
-        <input
-          type="checkbox"
-          checked={selectedStudents.includes(row.id.toString())}
-          onChange={(e) => {
-            if (e.target.checked) {
-              setSelectedStudents([...selectedStudents, row.id.toString()]);
-            } else {
-              setSelectedStudents(
-                selectedStudents.filter((id) => id !== row.id.toString()),
-              );
-            }
-          }}
-          className="h-4 w-4 cursor-pointer"
-        />
-      ),
-    },
-    {
       header: 'ไอดีนักเรียน',
       key: 'student_id',
       render: (row: LicenseQualTable) => row.student_id,
