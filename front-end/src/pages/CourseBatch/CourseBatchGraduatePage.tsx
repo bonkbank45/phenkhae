@@ -137,7 +137,10 @@ const CourseBatchGraduatePage = () => {
       render: (row: GraduateStudent) => {
         const attendance = row.student_attendance;
         const percentage =
-          (Number(attendance.present_count) / attendance.total_classes) * 100;
+          attendance.total_classes === 0
+            ? 0
+            : (Number(attendance.present_count) / attendance.total_classes) *
+              100;
         const isPass = percentage >= 80;
 
         return (
