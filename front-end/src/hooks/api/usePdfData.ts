@@ -111,6 +111,30 @@ export const useGeneratePdfStudentQual = () => {
   });
 };
 
+export const useGeneratePdfStudentCertificate = (
+  courseCompletionId: string,
+  isClickDownload: boolean,
+) => {
+  return useQuery({
+    queryKey: ['pdfStudentCertificate', courseCompletionId],
+    queryFn: async () => {
+      const response = await api.get(
+        `/course_completion/pdf-student-certificate/${courseCompletionId}`,
+        { responseType: 'blob' },
+      );
+      console.log(response);
+      const filename = decodeURIComponent(
+        response.headers['content-disposition']
+          .split('filename=')[1]
+          .replace(/"/g, ''),
+      );
+      await downloadPdf(response.data, filename);
+      return response;
+    },
+    enabled: !!isClickDownload,
+  });
+};
+
 const downloadPdf = async (data: Blob, filename: string) => {
   const blob = new Blob([data], { type: 'application/pdf' });
   const url = window.URL.createObjectURL(blob);

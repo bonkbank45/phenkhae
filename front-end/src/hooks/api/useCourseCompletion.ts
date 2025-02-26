@@ -28,6 +28,9 @@ export const useCourseCompletionTable = (
   availableLicense: string,
   courseFilter: string,
   batchFilter: string,
+  searchTerm: string,
+  dateSearchStart: string,
+  dateSearchEnd: string,
 ) => {
   return useQuery({
     queryKey: [
@@ -36,6 +39,9 @@ export const useCourseCompletionTable = (
       availableLicense,
       courseFilter,
       batchFilter,
+      searchTerm,
+      dateSearchStart,
+      dateSearchEnd,
     ],
     queryFn: async () => {
       const params = new URLSearchParams({
@@ -43,6 +49,9 @@ export const useCourseCompletionTable = (
         ...(availableLicense && { available_license: availableLicense }),
         ...(courseFilter && { course_filter: courseFilter }),
         ...(batchFilter && { batch_filter: batchFilter }),
+        ...(searchTerm && { search_term: searchTerm }),
+        ...(dateSearchStart && { date_search_start: dateSearchStart }),
+        ...(dateSearchEnd && { date_search_end: dateSearchEnd }),
       });
       const response = await api.get(`/course_completion/table?${params}`);
       return response.data;

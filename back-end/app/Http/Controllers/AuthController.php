@@ -20,7 +20,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'Email or password is incorrect'], 401);
+            return response()->json(['error' => 'อีเมล์หรือรหัสผ่านไม่ถูกต้อง'], 401);
         }
 
         if (Auth::attempt($credentials)) {

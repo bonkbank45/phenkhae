@@ -45,6 +45,10 @@ import StudentLicenseCompleteManagePage from './pages/License/LicenseComplete/St
 import AddStudentLicenseCompletePage from './pages/License/LicenseComplete/AddStudentLicenseCompletePage';
 import StudentLicensePdfPage from './pages/License/LicenseQual/StudentQualPdfPage';
 import IndexStatistic from './pages/Statistic/IndexStatistic';
+import CourseGraduateManagePage from './pages/Course/CourseGraduateManagePage';
+import ManageAccount from './pages/Admin/ManageAccount';
+import CreateAccount from './pages/Admin/CreateAccount';
+import SetPassword from './pages/Authentication/SetPassword';
 
 function App() {
   const { pathname } = useLocation();
@@ -66,6 +70,15 @@ function App() {
         toastClassName="font-notoLoopThaiRegular"
       />
       <Routes>
+        <Route
+          path="/set-password"
+          element={
+            <>
+              <PageTitle title="ตั้งรหัสผ่านผู้ใช้งาน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+              <SetPassword />
+            </>
+          }
+        />
         <Route path="/auth/signin" element={<SignIn />} />
         <Route path="/auth/signup" element={<SignUp />} />
         {/* { Protect all dashboard routes} */}
@@ -261,6 +274,15 @@ function App() {
             }
           />
           <Route
+            path="/courses/graduate/list"
+            element={
+              <>
+                <PageTitle title="ผู้สำเร็จหลักสูตร | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseGraduateManagePage />
+              </>
+            }
+          />
+          <Route
             path="/courses/batchs/list"
             element={
               <>
@@ -410,6 +432,24 @@ function App() {
               <>
                 <PageTitle title="สถิติ | แดชบอร์ด - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
                 <IndexStatistic />
+              </>
+            }
+          />
+          <Route
+            path="/admin/manage-accounts"
+            element={
+              <>
+                <PageTitle title="จัดการผู้ใช้งาน | แดชบอร์ด - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <ManageAccount />
+              </>
+            }
+          />
+          <Route
+            path="/admin/create-account"
+            element={
+              <>
+                <PageTitle title="สร้างผู้ใช้งาน | แดชบอร์ด - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CreateAccount />
               </>
             }
           />

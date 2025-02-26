@@ -22,6 +22,8 @@ interface CourseCompletion {
   date_start: string;
   date_end: string;
   completion_date: string;
+  certificate_status: 0 | 1;
+  certificate_date: string;
   created_at: string;
   updated_at: string;
   course_group: CourseGroup;

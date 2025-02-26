@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import logo from '../../images/logo/logo-phenkhae.png';
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ const SignIn: React.FC = () => {
 
   const getInputClasses = () => {
     const baseClasses =
-      'w-full rounded-lg border bg-transparent py-4 pl-6 pr-10 text-black outline-none focus-visible:shadow-none dark:bg-form-input dark:text-white';
+      'w-full rounded-lg border bg-transparent py-4 pl-6 pr-10 text-black outline-none focus-visible:shadow-none dark:bg-form-input dark:text-white font-notoLoopThaiRegular';
     return error
       ? `${baseClasses} border-red-500 focus:border-red-500 dark:border-red-500 dark:focus:border-red-500`
       : `${baseClasses} border-stroke focus:border-primary dark:border-form-strokedark dark:focus:border-primary`;
@@ -32,15 +33,22 @@ const SignIn: React.FC = () => {
     <>
       <div className="min-h-screen w-full overflow-hidden rounded-sm bg-gradient-to-r from-teal-400 to-yellow-200">
         <div className="flex h-screen flex-wrap justify-center items-center">
-          <div className="w-full bg-white bg-opacity-75 rounded-[42px] xl:w-1/2">
-            <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-              <h2 className="mb-9 text-2xl text-center font-bold text-black dark:text-white sm:text-title-xl2">
+          <div className="w-full m-4 bg-white bg-opacity-75 rounded-[42px] md:w-1/2 xl:w-1/3">
+            <div className="w-full p-4 sm:p-12.5">
+              <div className="flex justify-center items-center">
+                <img
+                  src={logo}
+                  alt="logo"
+                  className="w-[150px] h-[150px] mb-4"
+                />
+              </div>
+              <h2 className="mb-9 text-2xl text-center font-bold text-black dark:text-white sm:text-title-xl2 font-notoExtraBold">
                 เข้าสู่ระบบ
               </h2>
 
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                  <label className="mb-2.5 block font-medium text-black dark:text-white">
+                  <label className="mb-2.5 block font-medium text-black dark:text-white font-notoLoopThaiRegular">
                     อีเมล์
                   </label>
                   <div className="relative">
@@ -48,8 +56,9 @@ const SignIn: React.FC = () => {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email"
+                      placeholder="กรุณากรอกอีเมล์"
                       className={getInputClasses()}
+                      autoComplete="current-email"
                     />
 
                     <span className="absolute right-4 top-4">
@@ -73,7 +82,7 @@ const SignIn: React.FC = () => {
                 </div>
 
                 <div className="mb-6">
-                  <label className="mb-2.5 block font-medium text-black dark:text-white">
+                  <label className="mb-2.5 block font-medium text-black dark:text-white font-notoLoopThaiRegular">
                     รหัสผ่าน
                   </label>
                   <div className="relative">
@@ -81,8 +90,9 @@ const SignIn: React.FC = () => {
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="6+ Characters, 1 Capital letter"
+                      placeholder="กรุณากรอกรหัสผ่าน"
                       className={getInputClasses()}
+                      autoComplete="current-password"
                     />
 
                     <span className="absolute right-4 top-4">
@@ -108,22 +118,26 @@ const SignIn: React.FC = () => {
                     </span>
                   </div>
                 </div>
-                {error && <div className="mb-4 text-red-500">{error}</div>}
+                {error && (
+                  <div className="mb-4 text-red-500 font-notoLoopThaiRegular">
+                    {error}
+                  </div>
+                )}
                 <div className="mb-5">
                   <input
                     type="submit"
-                    value="Sign In"
-                    className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+                    value="เข้าสู่ระบบ"
+                    className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 font-notoLoopThaiRegular"
                   />
                 </div>
-                <div className="mt-6 text-center">
+                {/* <div className="mt-6 text-center">
                   <p>
                     Don’t have any account?{' '}
                     <Link to="/auth/signup" className="text-primary">
                       Sign Up
                     </Link>
                   </p>
-                </div>
+                </div> */}
               </form>
             </div>
           </div>

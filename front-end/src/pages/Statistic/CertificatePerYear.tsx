@@ -71,20 +71,41 @@ const CertificatePerYear = () => {
   return (
     <div>
       <div className="bg-white rounded-lg p-4 dark:bg-slate-800">
-        <h2 className="text-2xl font-bold font-notoExtraBold dark:text-white">
-          สถิติจำนวนใบประกาศนียบัตรที่ได้ออกให้ในแต่ละปี
-        </h2>
-        <div className="bg-gray-50 rounded-xl p-4 dark:bg-slate-800">
+        <div className="rounded-xl p-4 dark:bg-slate-800">
           {chartDataCertificate ? (
-            <ReactApexChart
-              options={chartDataCertificate.options}
-              series={chartDataCertificate.series}
-              type="bar"
-              height={350}
-            />
+            <div>
+              <h2 className="text-2xl font-bold font-notoExtraBold dark:text-white">
+                สถิติจำนวนใบประกาศนียบัตรที่ได้ออกให้ในแต่ละปี
+              </h2>
+              <ReactApexChart
+                options={chartDataCertificate.options}
+                series={chartDataCertificate.series}
+                type="bar"
+                height={350}
+              />
+            </div>
           ) : (
-            <div className="font-notoLoopThaiRegular">
-              ไม่มีข้อมูลเพียงพอให้แสดงผล (ข้อมูลการจบหลักสูตร)
+            <div className="text-center p-8 bg-white rounded-lg shadow-sm dark:bg-slate-800">
+              <div className="font-notoLoopThaiRegular text-lg text-gray-600">
+                <div className="space-y-2">
+                  <svg
+                    className="w-12 h-12 mx-auto text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 20h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <p>
+                    ไม่พบข้อมูลสถิติจำนวนใบประกาศนียบัตรที่ได้ออกให้ในแต่ละปี
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>

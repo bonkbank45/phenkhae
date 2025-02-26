@@ -1,6 +1,6 @@
 /*
-* That code is commented because it is technical not possible add student_qual with course_id 
-*/
+ * That code is commented because it is technical not possible add student_qual with course_id
+ */
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -307,6 +307,7 @@ const AddStudentLicenseQualIndex = () => {
                   placeholder="รุ่นทั้งหมด"
                   showIcon={false}
                   isDisabled={!courseFilter || courseFilter === 'all'}
+                  isLoading={isLoadingCourseBatchNumber}
                 />
               </div>
               <div className="mb-4">

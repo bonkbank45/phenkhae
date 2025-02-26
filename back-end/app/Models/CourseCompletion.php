@@ -10,6 +10,25 @@ class CourseCompletion extends Model
     protected $table = 'course_completions';
     protected $fillable = ['course_group_id', 'student_id', 'date_start', 'date_end', 'completion_date'];
 
+
+    public function scopeSearchTerm($query, $searchTerm): Builder
+    {
+        return $query->whereHas('student', function ($q) use ($searchTerm) {
+            $q->where('firstname_tha', 'LIKE', '%' . $searchTerm . '%')
+                ->orWhere('lastname_tha', 'LIKE', '%' . $searchTerm . '%');
+        });
+    }
+
+    public function scopeDateSearchStart($query, $dateSearchStart): Builder
+    {
+        return $query->where('completion_date', '>=', $dateSearchStart);
+    }
+
+    public function scopeDateSearchEnd($query, $dateSearchEnd): Builder
+    {
+        return $query->where('completion_date', '<=', $dateSearchEnd);
+    }
+
     public function scopeCourseFilter($query, $courseFilter): Builder
     {
         return $query->whereHas('course_group.course', function ($query) use ($courseFilter) {

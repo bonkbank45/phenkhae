@@ -27,6 +27,8 @@ use App\Http\Controllers\EducationQualController;
 use App\Http\Controllers\BillInfoController;
 use App\Http\Controllers\StudentAttendenceController;
 use App\Http\Controllers\CourseCompletionController;
+use App\Http\Controllers\Auth\EmployeeController;
+use App\Http\Controllers\Auth\SetPasswordController;
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -209,5 +211,9 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/certificate/statistic', [CourseCompletionController::class, 'getCertificateStatistic']);
         Route::get('/completed/statistic/', [CourseCompletionController::class, 'getCourseCompletedStatistic']);
         Route::get('/completed_and_take_certificate/statistic', [CourseCompletionController::class, 'getCourseCompletedAndTakeCertificateStatistic']);
+        Route::get('/pdf-student-certificate/{courseCompletionId}', [CourseCompletionController::class, 'generatePdfStudentCertificate']);
     });
+
+    Route::post('/employees', [EmployeeController::class, 'store']);
+    Route::post('/set-password', [SetPasswordController::class, 'setPassword']);
 });
