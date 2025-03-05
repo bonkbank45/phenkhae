@@ -139,7 +139,8 @@ class EnrollmentController extends Controller
         $query = Enrollment::where('course_group_id', $courseBatchId)
             ->join('students', 'enrollments.student_id', '=', 'students.id')
             ->select('students.*', 'enrollments.enrollment_date', 'enrollments.activity_case_status')
-            ->orderBy('enrollments.created_at', 'desc');
+            // ->orderBy('enrollments.created_at', 'desc')
+            ->orderBy('enrollments.student_id', 'asc');
 
         if ($request->has('search')) {
             $searchTerm = $request->search;
@@ -183,6 +184,7 @@ class EnrollmentController extends Controller
             ->join('courses', 'courses.id', '=', 'course_groups.course_id')
             ->join('enrollments', 'course_groups.id', '=', 'enrollments.course_group_id')
             ->join('students', 'enrollments.student_id', '=', 'students.id');
+
 
         if ($request->has('fetch_all')) {
 
@@ -295,6 +297,7 @@ class EnrollmentController extends Controller
                 'course_completions.date_end',
                 'course_completions.completion_date'
             )
+            ->orderBy('en.student_id', 'asc')
             ->paginate(10)
             ->through(function ($item) {
                 return [

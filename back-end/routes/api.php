@@ -29,6 +29,7 @@ use App\Http\Controllers\StudentAttendenceController;
 use App\Http\Controllers\CourseCompletionController;
 use App\Http\Controllers\Auth\EmployeeController;
 use App\Http\Controllers\Auth\SetPasswordController;
+use App\Http\Controllers\ExamInvidualController;
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -168,7 +169,25 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/{exam}', [ExamController::class, 'show']);
         Route::put('/{exam}', [ExamController::class, 'update']);
         Route::delete('/{exam}', [ExamController::class, 'destroy']);
+        Route::get('/course_batch/{courseBatchId}/table', [ExamController::class, 'getExamByCourseBatchId']);
+        Route::post('/course_batch/{courseBatchId}', [ExamController::class, 'addExamToCourseBatch']);
+        Route::get('/{exam_id}/pdf-score', [ExamController::class, 'generatePdfScore']);
     });
+
+    Route::prefix('exam_invidual')->group(function () {
+        Route::post('/', [ExamInvidualController::class, 'addBulk']);
+        Route::put('/{examInvidual}', [ExamInvidualController::class, 'update']);
+        Route::delete('/{examInvidual}', [ExamInvidualController::class, 'destroy']);
+    });
+
+    Route::prefix('exam_type')->group(function () {
+        Route::get('/', [ExamTypeController::class, 'index']);
+        Route::post('/', [ExamTypeController::class, 'store']);
+        Route::get('/{examType}', [ExamTypeController::class, 'show']);
+        Route::put('/{examType}', [ExamTypeController::class, 'update']);
+        Route::delete('/{examType}', [ExamTypeController::class, 'destroy']);
+    });
+
     Route::prefix('marital_status')->group(function () {
         Route::get('/', [MaritalStatusController::class, 'index']);
     });
@@ -201,17 +220,23 @@ Route::group(['middleware' => ['api']], function () {
         Route::delete('/{billInfoId}-{billInfoNo}', [BillInfoController::class, 'delete']);
         Route::get('/get-bill-info/{courseBatchId}', [BillInfoController::class, 'getBillInfo']);
         Route::get('/get-latest-bill-vol', [BillInfoController::class, 'getLatestBillVol']);
+        Route::get('/get_bill_info_paid/course_group/{courseBatchId}', [BillInfoController::class, 'getBillInfoPaid']);
+        Route::post('/pdf-bill', [BillInfoController::class, 'generatePdfBill']);
     });
 
     Route::prefix('course_completion')->group(function () {
         Route::get('/', [CourseCompletionController::class, 'index']);
         Route::post('/', [CourseCompletionController::class, 'store']);
+        Route::put('/{courseCompletionId}', [CourseCompletionController::class, 'update']);
+        Route::delete('/{courseCompletionId}', [CourseCompletionController::class, 'destroy']);
         Route::get('/table', [CourseCompletionController::class, 'getCourseCompletionTable']);
         Route::get('/unqualified/table', [CourseCompletionController::class, 'getUnqualifiedCompletions']);
         Route::get('/certificate/statistic', [CourseCompletionController::class, 'getCertificateStatistic']);
         Route::get('/completed/statistic/', [CourseCompletionController::class, 'getCourseCompletedStatistic']);
         Route::get('/completed_and_take_certificate/statistic', [CourseCompletionController::class, 'getCourseCompletedAndTakeCertificateStatistic']);
         Route::get('/pdf-student-certificate/{courseCompletionId}', [CourseCompletionController::class, 'generatePdfStudentCertificate']);
+        Route::post('/pdf-student-completion', [CourseCompletionController::class, 'generatePdfStudentCompletion']);
+
     });
 
     Route::post('/employees', [EmployeeController::class, 'store']);

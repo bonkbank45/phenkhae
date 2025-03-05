@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 class CourseCompletion extends Model
 {
     protected $table = 'course_completions';
-    protected $fillable = ['course_group_id', 'student_id', 'date_start', 'date_end', 'completion_date'];
+    protected $fillable = ['course_group_id', 'student_id', 'date_start', 'date_end', 'completion_date', 'certificate_status', 'certificate_date'];
 
 
     public function scopeSearchTerm($query, $searchTerm): Builder

@@ -28,12 +28,11 @@ return new class extends Migration {
             //     ->onDelete('cascade');
             $table->id();
             $table->foreignId('course_group_id')->constrained('course_groups', 'id');
-            $table->year('year');
+            $table->integer('year');
             $table->tinyInteger('term');
             $table->integer('exam_type_id');
             $table->integer('exam_period');
-            $table->integer('score_full');
-            $table->integer('score_real');
+            $table->integer('score_pass');
             $table->dateTime('date_start_exam');
         });
     }

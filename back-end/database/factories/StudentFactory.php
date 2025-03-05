@@ -46,7 +46,7 @@ class StudentFactory extends Factory
             'address_road' => $this->faker->streetName,
             'address_subdistrict_id' => Subdistrict::inRandomOrder()->first()->id,
             'address_zip_code' => $this->faker->numerify,
-            'phonenumber' => $this->faker->phoneNumber,
+            'phonenumber' => $this->faker->numerify('0#########'),
             'email' => $this->faker->email,
             'occupation_id' => Occupation::inRandomOrder()->first()->id,
             'medical_condition_id' => MedicalCondition::inRandomOrder()->first()->id,
