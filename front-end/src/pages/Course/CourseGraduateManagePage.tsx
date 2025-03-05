@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useCourseCompletionTable } from '../../hooks/api/useCourseCompletion';
 import { useCourseData } from '../../hooks/api/useCourseData';
@@ -20,6 +21,9 @@ import DateRangePicker from '../../components/DateRange/DateRangePicker';
 import { Button } from '@material-tailwind/react';
 import Modal from '../../components/Modal';
 import { useGeneratePdfStudentCertificate } from '../../hooks/api/usePdfData';
+import DeleteCourseGraduateForm from './CourseGraduateManageForm/DeleteCourseGraduateForm';
+import EditCourseGraduateForm from './CourseGraduateManageForm/EditCourseGraduateForm';
+import { ErrorResponse } from '../../types/error_response';
 
 const CourseGraduateManagePage = () => {
   const navigate = useNavigate();
@@ -35,7 +39,7 @@ const CourseGraduateManagePage = () => {
   const [dateSearchEnd, setDateSearchEnd] = useState<Date | null>(null);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [isClickDownload, setIsClickDownload] = useState(false);
-  const {} = useGeneratePdfStudentCertificate(
+  const { isFetching: isFetchingDownload } = useGeneratePdfStudentCertificate(
     String(selectedCompletion?.id),
     isClickDownload,
   );
@@ -54,6 +58,7 @@ const CourseGraduateManagePage = () => {
       debouncedSearchTerm,
       dateSearchStart ? format(dateSearchStart, 'yyyy-MM-dd') : null,
       dateSearchEnd ? format(dateSearchEnd, 'yyyy-MM-dd') : null,
+      true,
     );
 
   const { data: courseData, isLoading: isLoadingCourseData } = useCourseData();
@@ -83,6 +88,18 @@ const CourseGraduateManagePage = () => {
     setDateSearchStart(null);
     setDateSearchEnd(null);
     setCurrentPage(1);
+  };
+
+  const handleEditCompletion = (completion: CourseCompletion) => {
+    console.log(completion);
+    setSelectedCompletion(completion);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDeleteCompletion = (completion: CourseCompletion) => {
+    console.log(completion);
+    setSelectedCompletion(completion);
+    setIsDeleteModalOpen(true);
   };
 
   const courseDropdownOptions = [
@@ -176,14 +193,18 @@ const CourseGraduateManagePage = () => {
               setIsClickDownload(true);
               setSelectedCompletion(completion);
             }}
+            disabled={isFetchingDownload}
           >
-            <Certificate />
+            {isFetchingDownload ? (
+              <Spinner className="!w-4 !h-4" />
+            ) : (
+              <Certificate />
+            )}
           </button>
           <button
             title="แก้ไขข้อมูล"
             onClick={() => {
-              setSelectedCompletion(completion);
-              setIsEditModalOpen(true);
+              handleEditCompletion(completion);
             }}
           >
             <IconEdit />
@@ -191,8 +212,7 @@ const CourseGraduateManagePage = () => {
           <button
             title="ลบข้อมูล"
             onClick={() => {
-              setSelectedCompletion(completion);
-              setIsDeleteModalOpen(true);
+              handleDeleteCompletion(completion);
             }}
           >
             <IconCrossCircled />
@@ -280,20 +300,34 @@ const CourseGraduateManagePage = () => {
           <Modal
             isOpen={isEditModalOpen}
             onClose={() => setIsEditModalOpen(false)}
-            title="แก้ไขข้อมูล"
+            title="แก้ไขข้อมูลผู้จบหลักสูตร"
           >
-            {selectedCompletion.student.firstname_tha}{' '}
-            {selectedCompletion.student.lastname_tha}{' '}
-            {selectedCompletion.course_group.course.course_name} 😎
+            <EditCourseGraduateForm
+              initialData={selectedCompletion}
+              onSuccess={() => {
+                toast.success('แก้ไขข้อมูลสำเร็จ');
+                setIsEditModalOpen(false);
+                setSelectedCompletion(null);
+              }}
+            />
           </Modal>
           <Modal
             isOpen={isDeleteModalOpen}
             onClose={() => setIsDeleteModalOpen(false)}
             title="ลบข้อมูล"
           >
-            ลบ {selectedCompletion.student.firstname_tha}{' '}
-            {selectedCompletion.student.lastname_tha}{' '}
-            {selectedCompletion.course_group.course.course_name} 😎 ?
+            <DeleteCourseGraduateForm
+              courseCompletion={selectedCompletion}
+              onSuccess={() => {
+                toast.success('ลบข้อมูลผู้สำเร็จการศึกษาสำเร็จ');
+                setIsDeleteModalOpen(false);
+                setSelectedCompletion(null);
+              }}
+              onError={(error: ErrorResponse) => {
+                toast.error(error.message || 'เกิดข้อผิดพลาดในการลบ');
+              }}
+              onClose={() => setIsDeleteModalOpen(false)}
+            />
           </Modal>
         </>
       )}

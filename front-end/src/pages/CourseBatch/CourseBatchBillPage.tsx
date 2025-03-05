@@ -36,9 +36,7 @@ const CourseBatchBillPage = () => {
     navigate(`/courses/batchs/${courseBatchId}`);
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  console.log(billData);
 
   const handleFormSubmitSuccess = () => {
     setIsAddBillModalOpen(false);
@@ -187,7 +185,13 @@ const CourseBatchBillPage = () => {
           <IconArrowLeft className="w-4 h-4 text-black dark:text-white" />{' '}
           <span className="text-black dark:text-white">ย้อนกลับ</span>
         </Button>
-        <Button color="green" className="font-notoLoopThaiRegular">
+        <Button
+          color="green"
+          onClick={() => {
+            navigate(`/courses/batchs/${courseBatchId}/bills/paid`);
+          }}
+          className="font-notoLoopThaiRegular"
+        >
           เอกสารใบเสร็จ นักเรียนที่จ่ายเงินแล้ว
         </Button>
       </div>
@@ -206,15 +210,15 @@ const CourseBatchBillPage = () => {
           isLoading={billLoading}
         />
         <Pagination
+          isFetching={billLoading}
           currentPage={currentPage}
           totalPages={billData.data.last_page}
-          onPageChange={handlePageChange}
           from={billData.data.from}
           to={billData.data.to}
           total={billData.data.total}
+          onPageChange={setCurrentPage}
           hasNextPage={billData.data.next_page_url !== null}
           hasPrevPage={billData.data.prev_page_url !== null}
-          isFetching={billLoading}
         />
       </div>
 

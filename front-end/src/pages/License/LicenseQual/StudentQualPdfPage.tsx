@@ -132,6 +132,8 @@ const StudentLicensePdfPage = () => {
       student_qual_ids: selectedStudents,
     };
 
+    console.log(payload);
+
     generatePdfStudentQual(payload, {
       onSuccess: (response) => {
         console.log(response);

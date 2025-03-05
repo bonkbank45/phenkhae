@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '../../services/api';
 import { ErrorResponse } from '../../types/error_response';
+import { CourseCompletion } from '../../types/course_completion';
 
 export const useCourseCompletion = () => {
   const queryClient = useQueryClient();
@@ -31,6 +32,7 @@ export const useCourseCompletionTable = (
   searchTerm: string,
   dateSearchStart: string,
   dateSearchEnd: string,
+  shouldFetch: boolean,
 ) => {
   return useQuery({
     queryKey: [
@@ -42,6 +44,7 @@ export const useCourseCompletionTable = (
       searchTerm,
       dateSearchStart,
       dateSearchEnd,
+      shouldFetch,
     ],
     queryFn: async () => {
       const params = new URLSearchParams({
@@ -57,6 +60,7 @@ export const useCourseCompletionTable = (
       return response.data;
     },
     staleTime: 1000 * 60 * 5,
+    enabled: shouldFetch,
     placeholderData: (prevData) => prevData,
   });
 };
@@ -91,5 +95,43 @@ export const useUnqualifiedCompletions = (
       return response.data;
     },
     placeholderData: (prevData) => prevData,
+  });
+};
+
+export const useUpdateCourseCompletion = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CourseCompletion) => {
+      console.log(data);
+      return api.put(`/course_completion/${data.id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['course_completion_table'],
+        exact: false,
+      });
+      console.log('Update course completion completed');
+    },
+    onError: (error: ErrorResponse) => {
+      console.error(error || 'Failed to update course completion');
+    },
+  });
+};
+
+export const useDeleteCourseCompletion = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (courseCompletionId: string) =>
+      api.delete(`/course_completion/${courseCompletionId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['course_completion_table'],
+        exact: false,
+      });
+      console.log('ลบข้อมูลการจบหลักสูตรสำเร็จ');
+    },
+    onError: (error: ErrorResponse) => {
+      console.error(error.message || 'เกิดข้อผิดพลาดในการลบ');
+    },
   });
 };

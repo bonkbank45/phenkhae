@@ -115,7 +115,7 @@ const CourseBatchShowPage = () => {
     {
       header: 'ลำดับ',
       key: 'no_reg',
-      render: (row) => row.no_reg ? String(row.no_reg).padStart(3, '0') : '-',
+      render: (row) => (row.no_reg ? String(row.no_reg).padStart(3, '0') : '-'),
     },
     {
       header: 'ชื่อ',
@@ -254,8 +254,8 @@ const CourseBatchShowPage = () => {
       </div>
       <div className="space-y-4 mb-4 bg-white dark:bg-boxdark rounded-lg shadow-sm p-6 border border-gray-100 dark:border-gray-700 font-notoLoopThaiRegular">
         {/* กลุ่มจัดการนักเรียน */}
-        <div className="flex gap-2">
-          <h3 className="text-lg font-medium mb-2">จัดการนักเรียน</h3>
+        <div className="flex items-center gap-4">
+          <h3 className="text-lg font-medium mb-0 w-40">จัดการนักเรียน</h3>
           <div className="flex flex-wrap gap-2">
             <Button
               color="green"
@@ -277,8 +277,8 @@ const CourseBatchShowPage = () => {
         </div>
 
         {/* กลุ่มจัดการการเรียน */}
-        <div className="flex gap-2">
-          <h3 className="text-lg font-medium mb-2">จัดการการเรียน</h3>
+        <div className="flex items-center gap-4">
+          <h3 className="text-lg font-medium mb-0 w-40">จัดการการเรียน</h3>
           <div className="flex flex-wrap gap-2">
             <Button
               color="blue"
@@ -289,6 +289,16 @@ const CourseBatchShowPage = () => {
               className="font-notoLoopThaiRegular flex items-center gap-1"
             >
               บันทึกประวัติการเข้าเรียน
+            </Button>
+            <Button
+              color="blue"
+              size="sm"
+              className="font-notoLoopThaiRegular flex items-center gap-1"
+              onClick={() => {
+                navigate(`/courses/batchs/${id}/exams`);
+              }}
+            >
+              จัดการการสอบ
             </Button>
             <Button
               color="blue"
@@ -310,10 +320,8 @@ const CourseBatchShowPage = () => {
         </div>
 
         {/* กลุ่มจัดการการเงิน */}
-        <div className="flex gap-2">
-          <h3 className="text-lg font-medium mb-2 font-notoLoopThaiRegular">
-            จัดการการเงิน
-          </h3>
+        <div className="flex items-center gap-4">
+          <h3 className="text-lg font-medium mb-0 w-40">จัดการการเงิน</h3>
           <div className="flex flex-wrap gap-2">
             <Button
               size="sm"
@@ -324,10 +332,10 @@ const CourseBatchShowPage = () => {
             </Button>
           </div>
         </div>
-        <div className="flex gap-2">
-          <h3 className="text-lg font-medium mb-2 font-notoLoopThaiRegular">
-            ไฟล์ PDF
-          </h3>
+
+        {/* กลุ่มไฟล์ PDF */}
+        <div className="flex items-center gap-4">
+          <h3 className="text-lg font-medium mb-0 w-40">ไฟล์ PDF</h3>
           <div className="flex flex-wrap gap-2">
             <Button
               color="blue"
