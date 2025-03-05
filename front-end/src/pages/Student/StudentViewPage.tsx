@@ -78,7 +78,10 @@ const StudentViewPage = () => {
   >('address');
 
   const [isClickDownload, setIsClickDownload] = useState(false);
-  const {} = usePdfRegisterStudent(studentId, isClickDownload);
+  const { isFetching: isFetchingDownload } = usePdfRegisterStudent(
+    studentId,
+    isClickDownload,
+  );
 
   useEffect(() => {
     if (isClickDownload) {
@@ -481,12 +484,19 @@ const StudentViewPage = () => {
                 <button onClick={() => navigate(`/students/${studentId}/edit`)}>
                   <IconEdit className="w-[1.6em] h-[1.6em] cursor-pointer" />
                 </button>
-                <button onClick={() => setIsClickDownload(true)}>
-                  <OutlineFileDownload
-                    width="2em"
-                    height="2em"
-                    className="cursor-pointer"
-                  />
+                <button
+                  disabled={isFetchingDownload}
+                  onClick={() => setIsClickDownload(true)}
+                >
+                  {isFetchingDownload ? (
+                    <Spinner className="ml-2 !w-6 !h-6" />
+                  ) : (
+                    <OutlineFileDownload
+                      width="2em"
+                      height="2em"
+                      className="cursor-pointer"
+                    />
+                  )}
                 </button>
               </div>
               {/* ข้อมูลในมือถือกว้าง 4/4 คอลัมน์ ในคอมจะกว้าง 2/4 คอลัมน์ */}

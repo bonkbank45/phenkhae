@@ -10,7 +10,7 @@ use App\Models\BillInfo;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Requests\StoreBillInfoRequest;
 use App\Http\Requests\UpdateBillInfoRequest;
-
+use Mpdf\Mpdf;
 class BillInfoController extends Controller
 {
     use JsonResponseTrait;
@@ -132,5 +132,35 @@ class BillInfoController extends Controller
             return $this->successResponse(['vol' => 1, 'no' => 0], 'Get latest bill vol and no success', 200);
         }
         return $this->successResponse($billInfo, 'Get latest bill vol and no success', 200);
+    }
+
+    public function getBillInfoPaid(int $courseBatchId): JsonResponse
+    {
+        $bills = DB::table('bill_infos')
+            ->where('course_group_id', $courseBatchId)
+            ->orWhere(function ($query) use ($courseBatchId) {
+                $query->whereIn(DB::raw('(vol, no)'), function ($subQuery) use ($courseBatchId) {
+                    $subQuery->selectRaw('vol, no')
+                        ->from('bill_infos')
+                        ->where('course_group_id', $courseBatchId);
+                });
+            })
+            ->get();
+        return $this->successResponse($bills, 'Get bill info paid success', 200);
+    }
+
+    public function generatePdfBill(Request $request)
+    {
+        $mpdf = new Mpdf(config('pdf'));
+        $html = view('pdfs.bill', [
+            'vol' => $request->vol,
+            'no' => $request->no,
+        ])->render();
+        $mpdf->WriteHTML($html);
+        $mpdf->Output('bill.pdf', 'S');
+        return response($mpdf->Output('bill.pdf', 'S'), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="bill.pdf"',
+        ]);
     }
 }

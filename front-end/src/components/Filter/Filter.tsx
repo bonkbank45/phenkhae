@@ -15,6 +15,7 @@ interface FilterProps {
   showIcon?: boolean;
   disablePlaceholder?: boolean;
   isDisabled?: boolean;
+  isLoading?: boolean;
 }
 
 const Filter = ({
@@ -27,6 +28,7 @@ const Filter = ({
   showIcon = true,
   disablePlaceholder = false,
   isDisabled = false,
+  isLoading = false,
 }: FilterProps) => {
   return (
     <div className="flex items-center gap-0">
@@ -37,23 +39,32 @@ const Filter = ({
           className={`rounded-l-lg border border-stroke dark:border-strokedark ${classNameIcon}`}
         />
       )}
-      <select
-        disabled={isDisabled}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className={`${
-          showIcon ? 'rounded-r-lg' : 'rounded-lg'
-        } h-full border border-stroke bg-white px-4 py-2 focus:border-primary focus:outline-none dark:border-strokedark dark:bg-boxdark font-notoLoopThaiRegular text-sm ${className}`}
-      >
-        <option value="all" disabled>
-          {placeholder}
-        </option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
+      <div className="relative w-full">
+        <select
+          disabled={isDisabled || isLoading}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={`${
+            showIcon ? 'rounded-r-lg' : 'rounded-lg'
+          } h-full w-full border border-stroke bg-white px-4 py-2 focus:border-primary focus:outline-none dark:border-strokedark dark:bg-boxdark font-notoLoopThaiRegular text-sm ${
+            isLoading ? 'cursor-not-allowed opacity-70' : ''
+          } ${className}`}
+        >
+          <option value="all" disabled>
+            {isLoading ? 'กำลังโหลด...' : placeholder}
           </option>
-        ))}
-      </select>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        {isLoading && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-transparent"></div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

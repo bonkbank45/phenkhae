@@ -45,7 +45,14 @@ import StudentLicenseCompleteManagePage from './pages/License/LicenseComplete/St
 import AddStudentLicenseCompletePage from './pages/License/LicenseComplete/AddStudentLicenseCompletePage';
 import StudentLicensePdfPage from './pages/License/LicenseQual/StudentQualPdfPage';
 import IndexStatistic from './pages/Statistic/IndexStatistic';
-
+import CourseGraduateManagePage from './pages/Course/CourseGraduateManagePage';
+import ManageAccount from './pages/Admin/ManageAccount';
+import CreateAccount from './pages/Admin/CreateAccount';
+import SetPassword from './pages/Authentication/SetPassword';
+import CourseGraduatePdfPage from './pages/Course/CourseGraduatePdfPage';
+import CourseBatchExamPage from './pages/CourseBatch/CourseBatchExam/CourseBatchExamPage';
+import CourseBatchExamViewPage from './pages/CourseBatch/CourseBatchExam/CourseBatchExamViewPage';
+import CourseBatchBillPaidPage from './pages/CourseBatch/CourseBatchBillPaidPage';
 function App() {
   const { pathname } = useLocation();
   const { isAuthenticated, authLoading } = useAuth();
@@ -66,6 +73,15 @@ function App() {
         toastClassName="font-notoLoopThaiRegular"
       />
       <Routes>
+        <Route
+          path="/set-password"
+          element={
+            <>
+              <PageTitle title="ตั้งรหัสผ่านผู้ใช้งาน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+              <SetPassword />
+            </>
+          }
+        />
         <Route path="/auth/signin" element={<SignIn />} />
         <Route path="/auth/signup" element={<SignUp />} />
         {/* { Protect all dashboard routes} */}
@@ -84,8 +100,7 @@ function App() {
             index
             element={
               <>
-                <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <ECommerce />
+                <StudentIndexPage />
               </>
             }
           />
@@ -261,6 +276,15 @@ function App() {
             }
           />
           <Route
+            path="/courses/graduate/list"
+            element={
+              <>
+                <PageTitle title="ผู้สำเร็จหลักสูตร | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseGraduateManagePage />
+              </>
+            }
+          />
+          <Route
             path="/courses/batchs/list"
             element={
               <>
@@ -293,6 +317,24 @@ function App() {
               <>
                 <PageTitle title="เพิ่มนักเรียนเข้ารุ่น | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
                 <CourseBatchAddStudent />
+              </>
+            }
+          />
+          <Route
+            path="/courses/batchs/:id/exams"
+            element={
+              <>
+                <PageTitle title="จัดการการสอบ | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseBatchExamPage />
+              </>
+            }
+          />
+          <Route
+            path="/courses/batchs/:id/exams/:examId"
+            element={
+              <>
+                <PageTitle title="รายละเอียดการสอบ | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseBatchExamViewPage />
               </>
             }
           />
@@ -347,6 +389,15 @@ function App() {
               <>
                 <PageTitle title="การจ่ายเงิน | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
                 <CourseBatchBillPage />
+              </>
+            }
+          />
+          <Route
+            path="/courses/batchs/:id/bills/paid"
+            element={
+              <>
+                <PageTitle title="การจ่ายเงิน | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseBatchBillPaidPage />
               </>
             }
           />
@@ -410,6 +461,33 @@ function App() {
               <>
                 <PageTitle title="สถิติ | แดชบอร์ด - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
                 <IndexStatistic />
+              </>
+            }
+          />
+          <Route
+            path="/admin/manage-accounts"
+            element={
+              <>
+                <PageTitle title="จัดการผู้ใช้งาน | แดชบอร์ด - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <ManageAccount />
+              </>
+            }
+          />
+          <Route
+            path="/admin/create-account"
+            element={
+              <>
+                <PageTitle title="สร้างผู้ใช้งาน | แดชบอร์ด - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CreateAccount />
+              </>
+            }
+          />
+          <Route
+            path="/courses/graduate/list/pdf"
+            element={
+              <>
+                <PageTitle title="พิมพ์รายชื่อผู้สำเร็จหลักสูตร | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseGraduatePdfPage />
               </>
             }
           />

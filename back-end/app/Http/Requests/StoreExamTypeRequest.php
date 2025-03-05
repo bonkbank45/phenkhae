@@ -22,7 +22,14 @@ class StoreExamTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'exam_type_name' => 'required|string|max:255',
+            'exam_type_name' => 'required|string|unique:exam_types,exam_type_name|max:255',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'exam_type_name.unique' => 'ประเภทการสอบนี้มีในระบบเรียบร้อยแล้ว',
         ];
     }
 }

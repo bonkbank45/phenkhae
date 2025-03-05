@@ -14,8 +14,10 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('exam_id')->constrained('exams', 'id');
             $table->foreignId('student_id')->constrained('students', 'id');
-            $table->integer('score_real');
+            $table->integer('score_get');
             $table->dateTime('date_exam');
+
+            $table->unique(['exam_id', 'student_id']);
         });
     }
 

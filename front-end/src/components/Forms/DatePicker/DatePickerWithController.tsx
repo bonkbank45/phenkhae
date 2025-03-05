@@ -12,6 +12,7 @@ interface DatePickerWithControllerProps {
   error?: string;
   required?: boolean;
   value?: string;
+  disabled?: boolean;
 }
 
 const DatePickerWithController: React.FC<DatePickerWithControllerProps> = ({
@@ -22,6 +23,7 @@ const DatePickerWithController: React.FC<DatePickerWithControllerProps> = ({
   error = '',
   required = false,
   value = '',
+  disabled = false,
 }) => {
   const formatDateToThai = (dateString: string) => {
     if (!dateString) return '';
@@ -43,6 +45,7 @@ const DatePickerWithController: React.FC<DatePickerWithControllerProps> = ({
           defaultValue={value ? formatDateToThai(value) : ''}
           render={({ field: { onChange, value } }) => (
             <Flatpickr
+              disabled={disabled}
               options={{
                 dateFormat: 'd/m/Y',
                 locale: Thai,
@@ -64,8 +67,8 @@ const DatePickerWithController: React.FC<DatePickerWithControllerProps> = ({
                 }
               }}
               className={`w-full rounded-lg border bg-transparent py-2 pl-4 pr-10 bg-white text-black outline-none focus-visible:shadow-none dark:bg-form-input dark:text-white font-notoLoopThaiRegular ${
-                error ? 'border-red-500' : 'border-stroke'
-              }`}
+                disabled ? 'bg-gray-500' : ''
+              } ${error ? 'border-red-500' : 'border-stroke'}`}
               placeholder={placeholder}
             />
           )}

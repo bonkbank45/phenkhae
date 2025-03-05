@@ -7,14 +7,15 @@ export const useBillByCourseBatchIdData = (
   page: number,
 ) => {
   return useQuery({
-    queryKey: ['bill-info', courseBatchId],
+    queryKey: ['bill-info', courseBatchId, page],
     queryFn: async () => {
       const response = await api.get(
         `/bill_info/get-bill-info/${courseBatchId}?page=${page}`,
       );
       return response.data;
     },
-    enabled: !!courseBatchId,
+    placeholderData: (prevData) => prevData,
+    // enabled: !!courseBatchId,
   });
 };
 
@@ -88,6 +89,20 @@ export const useGetLatestBillVolData = () => {
     queryKey: ['bill-info', 'latest-bill-vol'],
     queryFn: async () => {
       const response = await api.get('/bill_info/get-latest-bill-vol');
+      return response.data;
+    },
+  });
+};
+
+export const useGetBillInfoPaidDataByCourseBatchId = (
+  courseBatchId: string | number,
+) => {
+  return useQuery({
+    queryKey: ['bill-info', 'bill-info-paid', courseBatchId],
+    queryFn: async () => {
+      const response = await api.get(
+        `/bill_info/get_bill_info_paid/course_group/${Number(courseBatchId)}`,
+      );
       return response.data;
     },
   });

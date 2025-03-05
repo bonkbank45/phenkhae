@@ -111,6 +111,68 @@ export const useGeneratePdfStudentQual = () => {
   });
 };
 
+export const useGeneratePdfStudentCertificate = (
+  courseCompletionId: string,
+  isClickDownload: boolean,
+) => {
+  return useQuery({
+    queryKey: ['pdfStudentCertificate', courseCompletionId],
+    queryFn: async () => {
+      const response = await api.get(
+        `/course_completion/pdf-student-certificate/${courseCompletionId}`,
+        { responseType: 'blob' },
+      );
+      console.log(response);
+      const filename = decodeURIComponent(
+        response.headers['content-disposition']
+          .split('filename=')[1]
+          .replace(/"/g, ''),
+      );
+      await downloadPdf(response.data, filename);
+      return response;
+    },
+    enabled: !!isClickDownload,
+  });
+};
+
+export const useGeneratePdfStudentCompletion = () => {
+  return useMutation({
+    mutationFn: async (data: any) => {
+      const response = await api.post(
+        '/course_completion/pdf-student-completion',
+        data,
+        { responseType: 'blob' },
+      );
+      const filename = response.headers['content-disposition']
+        .split('filename=')[1]
+        .replace(/"/g, '');
+      await downloadPdf(response.data, filename);
+      return response;
+    },
+    onSuccess: () => {
+      console.log('success');
+    },
+    onError: (error: ErrorResponse) => {
+      console.log(error);
+    },
+  });
+};
+
+export const useGeneratePdfBill = () => {
+  return useMutation({
+    mutationFn: async (data: any) => {
+      const response = await api.post('/bill_info/pdf-bill', data, {
+        responseType: 'blob',
+      });
+      const filename = response.headers['content-disposition']
+        .split('filename=')[1]
+        .replace(/"/g, '');
+      await downloadPdf(response.data, filename);
+      return response;
+    },
+  });
+};
+
 const downloadPdf = async (data: Blob, filename: string) => {
   const blob = new Blob([data], { type: 'application/pdf' });
   const url = window.URL.createObjectURL(blob);
