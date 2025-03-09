@@ -12,5 +12,13 @@ export const addExamSchema = yup.object().shape({
     .typeError('การสอบต้องเป็นตัวเลข')
     .required('กรุณาระบุการสอบ'),
   date_start_exam: yup.string().required('กรุณาระบุวันที่เริ่มการสอบ'),
-  score_pass: yup.number().typeError('คะแนนผ่านต้องเป็นตัวเลข').required(),
+  score_pass: yup
+    .number()
+    .typeError('คะแนนผ่านต้องเป็นตัวเลข')
+    .required('กรุณาระบุคะแนนผ่าน')
+    .max(yup.ref('score_full'), 'คะแนนผ่านต้องน้อยกว่าหรือเท่ากับคะแนนเต็ม'),
+  score_full: yup
+    .number()
+    .typeError('คะแนนเต็มต้องเป็นตัวเลข')
+    .required('กรุณาระบุคะแนนเต็ม'),
 });

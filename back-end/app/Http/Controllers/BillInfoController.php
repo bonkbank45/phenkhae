@@ -21,6 +21,26 @@ class BillInfoController extends Controller
         return $this->successResponse($billInfos, 'Get bill info success', 200);
     }
 
+    public function show($vol, $no): JsonResponse
+    {
+        $billInfo = BillInfo::with(['student', 'course_group.course'])
+            ->join('enrollments', function ($join) {
+                $join->on('bill_infos.course_group_id', '=', 'enrollments.course_group_id')
+                    ->on('bill_infos.student_id', '=', 'enrollments.student_id');
+            })
+            ->join('course_prices', 'enrollments.course_price_id', '=', 'course_prices.id')
+            ->where('bill_infos.vol', $vol)
+            ->where('bill_infos.no', $no)
+            ->select([
+                'bill_infos.*',
+                'course_prices.price as course_price',
+                'course_prices.id as course_price_id'
+            ])
+            ->orderBy('bill_infos.date_submit', 'asc')
+            ->get();
+        return $this->successResponse($billInfo, 'Get bill info success', 200);
+    }
+
     public function store(StoreBillInfoRequest $request): JsonResponse
     {
         $data = $request->all();
@@ -76,6 +96,7 @@ class BillInfoController extends Controller
         }
     }
 
+
     public function getBillInfo(Request $request, $courseBatchId): JsonResponse
     {
         $data = DB::table('courses')
@@ -127,6 +148,7 @@ class BillInfoController extends Controller
             ->orderBy('vol', 'desc')
             ->orderBy('no', 'desc')
             ->first();
+        \Log::info($billInfo);
 
         if (!$billInfo) {
             return $this->successResponse(['vol' => 1, 'no' => 0], 'Get latest bill vol and no success', 200);
@@ -137,24 +159,44 @@ class BillInfoController extends Controller
     public function getBillInfoPaid(int $courseBatchId): JsonResponse
     {
         $bills = DB::table('bill_infos')
-            ->where('course_group_id', $courseBatchId)
-            ->orWhere(function ($query) use ($courseBatchId) {
-                $query->whereIn(DB::raw('(vol, no)'), function ($subQuery) use ($courseBatchId) {
-                    $subQuery->selectRaw('vol, no')
-                        ->from('bill_infos')
-                        ->where('course_group_id', $courseBatchId);
-                });
-            })
+            ->join('students', 'bill_infos.student_id', '=', 'students.id')
+            ->join('course_groups', 'bill_infos.course_group_id', '=', 'course_groups.id')
+            ->join('courses', 'course_groups.course_id', '=', 'courses.id')
+            ->where('bill_infos.course_group_id', $courseBatchId)
+            ->orWhereRaw('(bill_infos.vol, bill_infos.no) IN (
+                SELECT vol, no FROM bill_infos WHERE course_group_id = ?
+            )', [$courseBatchId])
+            ->select(
+                'bill_infos.*',
+                'students.firstname_tha as student_firstname_tha',
+                'students.lastname_tha as student_lastname_tha',
+                'students.email as student_email',
+                'courses.course_name'
+            )
             ->get();
         return $this->successResponse($bills, 'Get bill info paid success', 200);
     }
 
     public function generatePdfBill(Request $request)
     {
+        $billInfo = BillInfo::with(['student', 'course_group.course'])
+            ->join('enrollments', function ($join) {
+                $join->on('bill_infos.course_group_id', '=', 'enrollments.course_group_id')
+                    ->on('bill_infos.student_id', '=', 'enrollments.student_id');
+            })
+            ->join('course_prices', 'enrollments.course_price_id', '=', 'course_prices.id')
+            ->where('bill_infos.vol', $request->vol)
+            ->where('bill_infos.no', $request->no)
+            ->select([
+                'bill_infos.*',
+                'course_prices.price as course_price',
+                'course_prices.id as course_price_id'
+            ])
+            ->orderBy('bill_infos.date_submit', 'asc')
+            ->get();
         $mpdf = new Mpdf(config('pdf'));
         $html = view('pdfs.bill', [
-            'vol' => $request->vol,
-            'no' => $request->no,
+            'billInfo' => $billInfo,
         ])->render();
         $mpdf->WriteHTML($html);
         $mpdf->Output('bill.pdf', 'S');

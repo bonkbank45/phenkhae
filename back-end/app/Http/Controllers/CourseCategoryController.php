@@ -9,6 +9,7 @@ use App\Traits\JsonResponseTrait;
 use App\Models\CourseCategory;
 use App\Http\Requests\StoreCourseCategoryRequest;
 use App\Http\Requests\UpdateCourseCategoryRequest;
+use Illuminate\Http\Request;
 class CourseCategoryController extends Controller
 {
     use JsonResponseTrait;
@@ -27,11 +28,12 @@ class CourseCategoryController extends Controller
             return $this->errorResponse('Course category not found', 404);
         }
     }
-    public function update(int $id, UpdateCourseCategoryRequest $request): JsonResponse
+    public function update(int $courseCategoryId, UpdateCourseCategoryRequest $request): JsonResponse
     {
         DB::beginTransaction();
+        \Log::info($request->all());
         try {
-            $courseCategory = CourseCategory::findOrFail($id);
+            $courseCategory = CourseCategory::findOrFail($courseCategoryId);
             $courseCategory->update($request->all());
             DB::commit();
             return $this->successResponse($courseCategory, 'Course category updated successfully', 200);
@@ -44,7 +46,7 @@ class CourseCategoryController extends Controller
     {
         DB::beginTransaction();
         try {
-            $courseCategory = CourseCategory::create($request->all());
+            $courseCategory = CourseCategory::create($request->validated());
             DB::commit();
             return $this->successResponse($courseCategory, 'Course category created successfully', 201);
         } catch (\Exception $e) {
@@ -64,5 +66,14 @@ class CourseCategoryController extends Controller
             DB::rollBack();
             return $this->errorResponse('Failed to delete course category', 500);
         }
+    }
+
+    public function table(Request $request): JsonResponse
+    {
+        $search = $request->input('search');
+        $courseCategories = CourseCategory::where('category_name', 'like', '%' . $search . '%')
+            ->orWhere('id', 'like', $search . '%')
+            ->paginate(10);
+        return $this->successResponse($courseCategories, 'Course categories retrieved successfully', 200);
     }
 }

@@ -22,7 +22,16 @@ class StoreOccupationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "occupation_name" => "required|string|max:255",
+            "occupation_name" => "required|string|max:255|unique:occupations,occupation_name",
+            "id" => "required|string|unique:occupations,id",
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            "occupation_name.unique" => "อาชีพนี้มีอยู่แล้ว",
+            "id.unique" => "ไอดีนี้มีอยู่แล้ว",
         ];
     }
 }

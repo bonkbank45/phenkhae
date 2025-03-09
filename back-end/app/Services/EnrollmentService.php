@@ -77,8 +77,6 @@ class enrollmentService
 
             $currentNoReg = Enrollment::whereYear('date_start', Carbon::parse($dateStart)->year)
                 ->count();
-
-            \Log::info('Current No Reg: ' . $currentNoReg);
         }
 
         foreach ($studentIds as $index => $studentId) {

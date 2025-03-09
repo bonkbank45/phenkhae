@@ -22,6 +22,15 @@ class ExamTypeController extends Controller
         $exam_type = ExamType::findOrFail($id);
         return $this->successResponse($exam_type, 'Exam type retrieved successfully', 200);
     }
+    public function table(Request $request): JsonResponse
+    {
+        $search = $request->input('search');
+        $exam_types = ExamType::where('exam_type_name', 'like', '%' . $search . '%')
+            ->orWhere('id', 'like', $search . '%')
+            ->orderBy('id', 'asc')
+            ->paginate(10);
+        return $this->successResponse($exam_types, 'Exam types retrieved successfully', 200);
+    }
     public function store(StoreExamTypeRequest $request): JsonResponse
     {
         $exam_type = ExamType::create($request->all());

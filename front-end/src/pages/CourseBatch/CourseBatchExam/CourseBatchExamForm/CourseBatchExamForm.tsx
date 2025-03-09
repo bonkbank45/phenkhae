@@ -101,6 +101,14 @@ const CourseBatchExamForm = ({
         error={errors.score_pass?.message as string}
         required={true}
       />
+      <TextField
+        label="คะแนนเต็ม"
+        name="score_full"
+        placeholder="100"
+        includeRegister={register}
+        error={errors.score_full?.message as string}
+        required={true}
+      />
       <DatePickerWithController
         label="วันที่เริ่มการสอบ"
         name="date_start_exam"

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Occupation extends Model
 {
     protected $table = 'occupations';
-    protected $fillable = ['occupation_name'];
+    protected $fillable = ['id', 'occupation_name'];
     public $incrementing = false;
     public $keyType = 'string';
     public $timestamps = false;

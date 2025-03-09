@@ -37,10 +37,9 @@
                 width: 100%;
                 height: 97.8%;
                 padding: 1px 1px;
-                background-image: url("{{ public_path('images/bg_Certificate.jpg') }}");
+                background-image: url("{{ public_path('images/bg_Certificate.png') }}");
                 background-size: cover;
                 background-repeat: no-repeat;
-                background-image-opacity: 0.5;
             }
 
             .content_in {

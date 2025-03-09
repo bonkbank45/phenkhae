@@ -28,10 +28,26 @@ const EditCourseBatchExamForm = ({
     updateExam(data, {
       onSuccess,
       onError: (error) => {
-        setError('year', { message: error.response.data.message });
-        setError('term', { message: error.response.data.message });
-        setError('exam_type_id', { message: error.response.data.message });
-        setError('exam_period', { message: error.response.data.message });
+        if (error.response.data.errors) {
+          Object.entries(error.response.data.errors).forEach(
+            ([field, messages]) => {
+              if (field === 'course_group_id') {
+                setError('year', {
+                  message: Array.isArray(messages) ? messages[0] : messages,
+                });
+                setError('term', {
+                  message: Array.isArray(messages) ? messages[0] : messages,
+                });
+              } else {
+                setError(field as keyof ExamTable, {
+                  message: Array.isArray(messages) ? messages[0] : messages,
+                });
+              }
+            },
+          );
+        } else {
+          setError('score_pass', { message: error.response.data.message });
+        }
         onError?.(error);
       },
     });

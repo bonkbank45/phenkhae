@@ -120,8 +120,9 @@ class StudentController extends Controller
             if ($request->has('course_batch_id_register')) {
                 $enrollments = [];
                 foreach ($request->course_batch_id_register as $courseBatchId) {
-                    $enrollments = $this->enrollmentService
+                    $newEnrollments = $this->enrollmentService
                         ->storeEnrollment($courseBatchId, [$student->id]);
+                    $enrollments = array_merge($enrollments, $newEnrollments);
                 }
                 Enrollment::insert($enrollments);
             }

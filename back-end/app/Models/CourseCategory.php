@@ -8,7 +8,7 @@ use JsonResponseTrait;
 class CourseCategory extends Model
 {
     protected $table = 'course_categories';
-    protected $fillable = ['category_name'];
+    protected $fillable = ['id', 'category_name'];
     public $timestamps = false;
 
     public function courses(): HasMany

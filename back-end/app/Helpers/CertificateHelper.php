@@ -46,3 +46,11 @@ if (!function_exists('formatDateBackOfPageCertificate')) {
         return 'วันที่ ' . $date->format('d') . ' เดือน ' . mapCertificateMonth($date->format('m')) . ' ปี ' . ($date->format('Y') + 543);
     }
 }
+
+if (!function_exists('formatDateBill')) {
+    function formatDateBill($date)
+    {
+        $date = new DateTime($date);
+        return 'วันที่...' . $date->format('d') . '...เดือน...' . mapCertificateMonth($date->format('m')) . '...ปี...' . ($date->format('Y') + 543) . '...';
+    }
+}

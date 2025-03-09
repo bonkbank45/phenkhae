@@ -14,6 +14,7 @@ export interface ExamTable {
   exam_type_id: number;
   exam_period: number;
   score_pass: number;
+  score_full: number;
   date_start_exam: string;
   course_group: CourseGroup;
   exam_type: ExamType;

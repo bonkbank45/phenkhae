@@ -31,19 +31,24 @@ const CourseBatchBillPaidPage = () => {
 
   const columns = [
     {
-      header: 'vol',
+      header: 'เล่มที่',
       key: 'vol',
       render: (bill) => bill.vol,
     },
     {
-      header: 'no',
+      header: 'เลขที่',
       key: 'no',
       render: (bill) => bill.no,
     },
     {
       header: 'ชื่อนักเรียน',
-      key: 'student_id',
-      render: (bill) => bill.student_id,
+      key: 'student_firstname_tha',
+      render: (bill) => bill.student_firstname_tha,
+    },
+    {
+      header: 'ชื่อหลักสูตร',
+      key: 'course_name',
+      render: (bill) => bill.course_name,
     },
     {
       header: 'วันที่จ่าย',
@@ -83,6 +88,15 @@ const CourseBatchBillPaidPage = () => {
         const existingBill = groupedMap.get(key);
         if (new Date(bill.date_submit) < new Date(existingBill.date_submit)) {
           groupedMap.set(key, { ...bill });
+        }
+
+        if (bill.course_name !== existingBill.course_name) {
+          groupedMap.set(key, {
+            ...bill,
+            course_name: [existingBill.course_name, bill.course_name].join(
+              ', ',
+            ),
+          });
         }
       }
     });

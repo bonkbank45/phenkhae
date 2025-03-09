@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExamDataByExamId } from '../../../hooks/api/useExamData';
@@ -19,11 +19,17 @@ import { ErrorResponse } from '../../../types/error_response';
 import { useExamInvidualDelete } from '../../../hooks/api/useExamInvidual';
 import DeleteCourseBatchExamView from './CourseBatchExamViewForm/DeleteCourseBatchExamView';
 import EditCourseBatchExamView from './CourseBatchExamViewForm/EditCourseBatchExamView';
+import { useGeneratePdfScore } from '../../../hooks/api/usePdfData';
 
 const CourseBatchExamViewPage = () => {
   const { examId } = useParams();
   const navigate = useNavigate();
-  const { mutate: addBulk, isPending: isAddBulkLoading } = useExamInvidual();
+  const [isClickDownload, setIsClickDownload] = useState(false);
+  const {
+    mutate: addBulk,
+    isPending: isAddBulkLoading,
+    error: addBulkError,
+  } = useExamInvidual();
   const actualExamId = examId?.split('-')[0];
   const [selectedExamInvidual, setSelectedExamInvidual] = useState<any>(null);
   const [isDeleteInvidualModalOpen, setIsDeleteInvidualModalOpen] =
@@ -34,6 +40,15 @@ const CourseBatchExamViewPage = () => {
   const [selectedStudents, setSelectedStudents] = useState<{
     [key: number]: { selected: boolean; score: string };
   }>({});
+
+  const { isFetching: isLoadingGeneratePdfScore } =
+    useGeneratePdfScore(actualExamId, isClickDownload);
+
+  useEffect(() => {
+    if (isClickDownload) {
+      setIsClickDownload(false);
+    }
+  }, [isClickDownload]);
 
   const {
     data: enrolledStudents,
@@ -188,7 +203,7 @@ const CourseBatchExamViewPage = () => {
         <input
           type="number"
           min="0"
-          max="100"
+          max={examData.data.score_full}
           className="w-20 p-1 border rounded"
           value={selectedStudents[row.id]?.score || ''}
           onChange={(e) => handleScoreChange(row.id, e.target.value)}
@@ -226,7 +241,7 @@ const CourseBatchExamViewPage = () => {
           toast.success('บันทึกคะแนนสำเร็จ');
         },
         onError: (error: ErrorResponse) => {
-          toast.error('บันทึกคะแนนไม่สำเร็จ');
+          toast.error(error.response.data.message);
           console.error(error);
         },
       },
@@ -276,7 +291,11 @@ const CourseBatchExamViewPage = () => {
                     size="sm"
                     color="blue"
                     className="flex items-center gap-2 mt-2 text-white"
-                    onClick={() => {}}
+                    onClick={() => {
+                      setIsClickDownload(true);
+                    }}
+                    disabled={isLoadingGeneratePdfScore}
+                    loading={isLoadingGeneratePdfScore}
                   >
                     ดาวน์โหลดเอกสารคะแนน
                   </Button>
@@ -299,6 +318,9 @@ const CourseBatchExamViewPage = () => {
                     คะแนน
                   </span>
                 </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  คะแนนเต็ม {examData.data.score_full} คะแนน
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">

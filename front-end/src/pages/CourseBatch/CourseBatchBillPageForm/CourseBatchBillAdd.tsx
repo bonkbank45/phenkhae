@@ -39,6 +39,8 @@ const CourseBatchBillAdd = ({
   const { data: latestBillVolData, isLoading: isLatestBillVolDataLoading } =
     useGetLatestBillVolData();
 
+  console.log(latestBillVolData);
+
   const { mutate: addBillData, isPending: isAddBillDataPending } =
     useAddBillData();
 

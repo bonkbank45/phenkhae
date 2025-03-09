@@ -23,6 +23,7 @@ class UpdateExamTypeRequest extends FormRequest
     {
         return [
             'exam_type_name' => 'required|string|unique:exam_types,exam_type_name|max:255',
+            'id' => 'required|integer|exists:exam_types,id',
         ];
     }
 
@@ -30,6 +31,7 @@ class UpdateExamTypeRequest extends FormRequest
     {
         return [
             'exam_type_name.unique' => 'ประเภทการสอบนี้มีในระบบเรียบร้อยแล้ว',
+            'id.exists' => 'ไอดีประเภทการสอบนี้ไม่มีในระบบ',
         ];
     }
 }

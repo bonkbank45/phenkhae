@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Traits\JsonResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
+    use JsonResponseTrait;
     /**
      * Display a listing of the resource.
      */
@@ -37,6 +40,14 @@ class UserController extends Controller
     public function show(User $user)
     {
         //
+    }
+
+    public function table(Request $request): JsonResponse
+    {
+        $search = $request->input('search');
+        $users = User::select('id', 'firstname', 'lastname', 'email', 'role_id', 'created_at', 'updated_at')
+            ->paginate(10);
+        return $this->successResponse($users, 'Users retrieved successfully', 200);
     }
 
     /**

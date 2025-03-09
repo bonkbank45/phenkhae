@@ -14,4 +14,9 @@ class BillInfo extends Model
     {
         return $this->belongsTo(Student::class, 'student_id');
     }
+
+    public function course_group(): BelongsTo
+    {
+        return $this->belongsTo(CourseGroup::class, 'course_group_id');
+    }
 }

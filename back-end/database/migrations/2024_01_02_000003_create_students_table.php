@@ -46,10 +46,10 @@ return new class extends Migration {
             $table->text('profile_image')->nullable();
             $table->date('date_register_from_form');
 
-            $table->foreign('edu_qual_id')->references('id')->on('education_quals')->onDelete('cascade');
-            $table->foreign('occupation_id')->references('id')->on('occupations')->onDelete('cascade');
-            $table->foreign('birth_province_id')->references('id')->on('provinces')->onDelete('cascade');
-            $table->foreign('address_subdistrict_id')->references('id')->on('subdistricts')->onDelete('cascade');
+            $table->foreign('edu_qual_id')->references('id')->on('education_quals');
+            $table->foreign('occupation_id')->references('id')->on('occupations');
+            $table->foreign('birth_province_id')->references('id')->on('provinces');
+            $table->foreign('address_subdistrict_id')->references('id')->on('subdistricts');
             $table->timestamps();
         });
     }

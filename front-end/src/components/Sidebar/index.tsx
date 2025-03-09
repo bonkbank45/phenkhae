@@ -767,31 +767,73 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           </li>
                           <li>
                             <NavLink
-                              to="/settings/datas/medical_conditions"
+                              to="/settings/datas/marital_statuses"
                               className={({ isActive }) =>
-                                'font-notoLoopThaiRegular group relative flex items-center gap-2 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                'font-notoLoopThaiRegular group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
                                 (isActive && '!text-white')
                               }
                             >
                               <svg
-                                width="18"
-                                height="18"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
+                                xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
+                                width="1em"
+                                height="1em"
                               >
-                                <path d="M12 11v4m2-2h-4m6-7V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2m10 0v14M6 6v14" />
-                                <path d="M4 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
+                                <path
+                                  fill="currentColor"
+                                  d="M11.99 2c-5.52 0-10 4.48-10 10s4.48 10 10 10s10-4.48 10-10s-4.48-10-10-10m3.61 6.34c1.07 0 1.93.86 1.93 1.93s-.86 1.93-1.93 1.93s-1.93-.86-1.93-1.93c-.01-1.07.86-1.93 1.93-1.93m-6-1.58c1.3 0 2.36 1.06 2.36 2.36s-1.06 2.36-2.36 2.36s-2.36-1.06-2.36-2.36c0-1.31 1.05-2.36 2.36-2.36m0 9.13v3.75c-2.4-.75-4.3-2.6-5.14-4.96c1.05-1.12 3.67-1.69 5.14-1.69c.53 0 1.2.08 1.9.22c-1.64.87-1.9 2.02-1.9 2.68M11.99 20c-.27 0-.53-.01-.79-.04v-4.07c0-1.42 2.94-2.13 4.4-2.13c1.07 0 2.92.39 3.84 1.15c-1.17 2.97-4.06 5.09-7.45 5.09"
+                                ></path>
                               </svg>
-                              โรคประจำตัว
+                              สถานภาพ
                             </NavLink>
                           </li>
                           <li>
                             <NavLink
-                              to="/settings/datas/course-types"
+                              to="/settings/datas/occupations"
+                              className={({ isActive }) =>
+                                'font-notoLoopThaiRegular group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                width="1em"
+                                height="1em"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="M20 7h-5V4c0-1.1-.9-2-2-2h-2c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2M9 12c.83 0 1.5.67 1.5 1.5S9.83 15 9 15s-1.5-.67-1.5-1.5S8.17 12 9 12m3 6H6v-.75c0-1 2-1.5 3-1.5s3 .5 3 1.5zm1-9h-2V4h2zm5 7.5h-4V15h4zm0-3h-4V12h4z"
+                                ></path>
+                              </svg>
+                              อาชีพ
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/settings/datas/education_quals"
+                              className={({ isActive }) =>
+                                'font-notoLoopThaiRegular group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                width="1em"
+                                height="1em"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="M6 20h7v2H6c-1.11 0-2-.89-2-2V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8.54l-1.5-.82l-.5.28V4h-5v8l-2.5-2.25L8 12V4H6zm18-3l-5.5-3l-5.5 3l5.5 3zm-9 2.09v2L18.5 23l3.5-1.91v-2L18.5 21z"
+                                ></path>
+                              </svg>
+                              วุฒิการศึกษา
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/settings/datas/course_categorys"
                               className={({ isActive }) =>
                                 'font-notoLoopThaiRegular group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
                                 (isActive && '!text-white')
@@ -806,6 +848,50 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 <path d="m19 2-5 4.5v11l5-4.5V2M6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5z" />
                               </svg>
                               ประเภทหลักสูตร
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/settings/datas/course_category_bills"
+                              className={({ isActive }) =>
+                                'font-notoLoopThaiRegular group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                width="1em"
+                                height="1em"
+                              >
+                                <path
+                                  d="M10 5a1 1 0 0 0-1-1H8V2h8v2h-1a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h1v2H8v-2h1a1 1 0 0 0 1-1V5z"
+                                  fill="currentColor"
+                                ></path>
+                              </svg>
+                              ประเภทบิลใบเสร็จ
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/settings/datas/exam_types"
+                              className={({ isActive }) =>
+                                'font-notoLoopThaiRegular group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                width="1em"
+                                height="1em"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="M4 2a2 2 0 0 0-2 2v8h2V8h2v4h2V4a2 2 0 0 0-2-2zm0 2h2v2H4m18 9.5V14a2 2 0 0 0-2-2h-4v10h4a2 2 0 0 0 2-2v-1.5a1.54 1.54 0 0 0-1.5-1.5a1.54 1.54 0 0 0 1.5-1.5M20 20h-2v-2h2zm0-4h-2v-2h2M5.79 21.61l-1.58-1.22l14-18l1.58 1.22Z"
+                                ></path>
+                              </svg>
+                              ประเภทการสอบ
                             </NavLink>
                           </li>
                         </ul>

@@ -53,6 +53,13 @@ import CourseGraduatePdfPage from './pages/Course/CourseGraduatePdfPage';
 import CourseBatchExamPage from './pages/CourseBatch/CourseBatchExam/CourseBatchExamPage';
 import CourseBatchExamViewPage from './pages/CourseBatch/CourseBatchExam/CourseBatchExamViewPage';
 import CourseBatchBillPaidPage from './pages/CourseBatch/CourseBatchBillPaidPage';
+import CourseCategoryManagePage from './pages/Manage/CourseCategoryManagePage';
+import MaritalStatusManagePage from './pages/Manage/MaritalStatusManagePage';
+import OccupationManagePage from './pages/Manage/OccupationManagePage';
+import EducationQualManagePage from './pages/Manage/EducationQualManagePage';
+import BillCategoryManagePage from './pages/Manage/BillCategoryManagePage';
+import ExamTypeManagePage from './pages/Manage/ExamTypeManagePage';
+
 function App() {
   const { pathname } = useLocation();
   const { isAuthenticated, authLoading } = useAuth();
@@ -488,6 +495,60 @@ function App() {
               <>
                 <PageTitle title="พิมพ์รายชื่อผู้สำเร็จหลักสูตร | การจัดการหลักสูตร - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
                 <CourseGraduatePdfPage />
+              </>
+            }
+          />
+          <Route
+            path="/settings/datas/course_categorys"
+            element={
+              <>
+                <PageTitle title="ประเภทหลักสูตร | การจัดการข้อมูลพื้นฐาน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <CourseCategoryManagePage />
+              </>
+            }
+          />
+          <Route
+            path="/settings/datas/marital_statuses"
+            element={
+              <>
+                <PageTitle title="สถานภาพ | การจัดการข้อมูลพื้นฐาน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <MaritalStatusManagePage />
+              </>
+            }
+          />
+          <Route
+            path="/settings/datas/occupations"
+            element={
+              <>
+                <PageTitle title="อาชีพ | การจัดการข้อมูลพื้นฐาน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <OccupationManagePage />
+              </>
+            }
+          />
+          <Route
+            path="/settings/datas/education_quals"
+            element={
+              <>
+                <PageTitle title="ระดับการศึกษา | การจัดการข้อมูลพื้นฐาน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <EducationQualManagePage />
+              </>
+            }
+          />
+          <Route
+            path="/settings/datas/course_category_bills"
+            element={
+              <>
+                <PageTitle title="ประเภทบิลใบเสร็จ | การจัดการข้อมูลพื้นฐาน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <BillCategoryManagePage />
+              </>
+            }
+          />
+          <Route
+            path="/settings/datas/exam_types"
+            element={
+              <>
+                <PageTitle title="ประเภทการสอบ | การจัดการข้อมูลพื้นฐาน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <ExamTypeManagePage />
               </>
             }
           />

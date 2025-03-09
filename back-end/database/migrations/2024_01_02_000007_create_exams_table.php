@@ -33,6 +33,7 @@ return new class extends Migration {
             $table->integer('exam_type_id');
             $table->integer('exam_period');
             $table->integer('score_pass');
+            $table->integer('score_full');
             $table->dateTime('date_start_exam');
         });
     }

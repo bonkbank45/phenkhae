@@ -22,7 +22,16 @@ class UpdateCourseCategoryBillRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_bill_name' => 'required|string|max:255',
+            'category_bill_name' => 'required|string|max:255|unique:course_category_bills,category_bill_name,' . $this->id,
+            'id' => 'nullable|integer|unique:course_category_bills,id,' . $this->id,
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'category_bill_name.unique' => 'ชื่อประเภทบิลนี้มีอยู่ในระบบแล้ว',
+            'id.unique' => 'รหัสประเภทบิลนี้มีอยู่ในระบบแล้ว',
         ];
     }
 }

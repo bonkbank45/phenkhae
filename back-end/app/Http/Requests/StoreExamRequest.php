@@ -33,8 +33,14 @@ class StoreExamRequest extends FormRequest
             'year' => 'required|integer',
             'term' => 'required|integer',
             'exam_type_id' => 'required|exists:exam_types,id',
-            'exam_period' => 'required|in:1,2,3',
-            'score_pass' => 'required|integer',
+            'exam_period' => 'required|integer',
+            'score_full' => 'required|integer|min:1',
+            'score_pass' => [
+                'required',
+                'integer',
+                'min:1',
+                'lte:score_full'
+            ],
             'date_start_exam' => 'required|date',
         ];
     }
@@ -49,7 +55,14 @@ class StoreExamRequest extends FormRequest
     public function messages()
     {
         return [
-            'course_group_id.unique' => 'มีการสร้างข้อสอบสำหรับกลุ่มวิชา ปีการศึกษา เทอม ประเภทการสอบ และช่วงสอบนี้แล้ว'
+            'course_group_id.unique' => 'มีการสร้างข้อสอบสำหรับกลุ่มวิชา ปีการศึกษา เทอม ประเภทการสอบ และช่วงสอบนี้แล้ว',
+            'score_full.required' => 'กรุณากรอกคะแนนเต็ม',
+            'score_full.integer' => 'คะแนนเต็มต้องเป็นจำนวนเต็ม',
+            'score_full.min' => 'คะแนนเต็มต้องมากกว่า 0',
+            'score_pass.required' => 'กรุณากรอกคะแนนผ่าน',
+            'score_pass.integer' => 'คะแนนผ่านต้องเป็นจำนวนเต็ม',
+            'score_pass.min' => 'คะแนนผ่านต้องมากกว่า 0',
+            'score_pass.lte' => 'คะแนนผ่านต้องน้อยกว่าคะแนนเต็ม',
         ];
     }
 }

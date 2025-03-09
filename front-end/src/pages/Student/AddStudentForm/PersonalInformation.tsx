@@ -61,9 +61,10 @@ const PersonalInformation = ({
 
   useEffect(() => {
     const fetchMaritals = async () => {
-      const response: AxiosResponse<{ id: number; marital_name: string }[]> =
-        await fetchMaritalStatuses();
-      const formattedStatuses = response.data.map((status) => ({
+      const response: AxiosResponse<{
+        data: { id: number; marital_name: string }[];
+      }> = await fetchMaritalStatuses();
+      const formattedStatuses = response.data.data.map((status) => ({
         value: status.id,
         label: status.marital_name,
       }));

@@ -10,12 +10,23 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\CourseCategoryBill;
 use App\Http\Requests\UpdateCourseCategoryBillRequest;
 use App\Http\Requests\StoreCourseCategoryBillRequest;
+use Illuminate\Http\Request;
+
 class CourseCategoryBillController extends Controller
 {
     use JsonResponseTrait;
     public function index(): JsonResponse
     {
         $courseCategoryBills = CourseCategoryBill::all();
+        return $this->successResponse($courseCategoryBills, 'Course category bills retrieved successfully', 200);
+    }
+
+    public function table(Request $request): JsonResponse
+    {
+        $search = $request->input('search');
+        $courseCategoryBills = CourseCategoryBill::where('category_bill_name', 'like', '%' . $search . '%')
+            ->orWhere('id', 'like', $search . '%')
+            ->paginate(10);
         return $this->successResponse($courseCategoryBills, 'Course category bills retrieved successfully', 200);
     }
     public function show(int $id): JsonResponse

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Exam extends Model
 {
     protected $table = 'exams';
-    protected $fillable = ['course_group_id', 'year', 'term', 'exam_type_id', 'exam_period', 'score_pass', 'date_start_exam'];
+    protected $fillable = ['course_group_id', 'year', 'term', 'exam_type_id', 'exam_period', 'score_pass', 'score_full', 'date_start_exam'];
     public $timestamps = false;
     public function course_group(): BelongsTo
     {

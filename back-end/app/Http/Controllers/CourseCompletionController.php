@@ -63,7 +63,7 @@ class CourseCompletionController extends Controller
                 ->update(['date_end' => Carbon::createFromFormat('d/m/Y', $validatedData['completion_date'])->format('Y-m-d')]);
             DB::commit();
             return $this->successResponse('Graduation statement prepared successfully', $courseCompletion);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return $this->errorResponse($e->getMessage());
         }
@@ -100,7 +100,7 @@ class CourseCompletionController extends Controller
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course completion not found', 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return $this->errorResponse($e->getMessage());
         }
@@ -118,7 +118,7 @@ class CourseCompletionController extends Controller
             return $this->successResponse(null, 'Course completion deleted successfully', 200);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse('Course completion not found', 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
     }

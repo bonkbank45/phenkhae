@@ -22,7 +22,16 @@ class UpdateCourseCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_name' => 'required|string|max:255',
+            'category_name' => 'required|string|max:255|unique:course_categories,category_name,' . $this->id,
+            'id' => 'nullable|integer|unique:course_categories,id,' . $this->id,
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'category_name.unique' => 'ชื่อประเภทหลักสูตรนี้มีอยู่ในระบบแล้ว',
+            'id.unique' => 'รหัสประเภทหลักสูตรนี้มีอยู่ในระบบแล้ว',
         ];
     }
 }

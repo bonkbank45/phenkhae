@@ -75,6 +75,11 @@ export default function CourseBatchExamPage() {
       render: (row: ExamTable) => row.score_pass,
     },
     {
+      header: 'คะแนนเต็ม',
+      key: 'score_full',
+      render: (row: ExamTable) => row.score_full,
+    },
+    {
       header: 'วันที่เริ่มการสอบ',
       key: 'date_start_exam',
       render: (row: ExamTable) =>

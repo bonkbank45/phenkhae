@@ -31,12 +31,20 @@ class OccupationController extends Controller
         //
     }
 
+    public function table(Request $request)
+    {
+        $search = $request->input('search');
+        $occupations = Occupation::where('occupation_name', 'like', '%' . $search . '%')
+            ->orWhere('id', 'like', '%' . $search . '%')->paginate(10);
+        return $this->successResponse($occupations);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreOccupationRequest $request): JsonResponse
     {
-        $occupation = Occupation::create($request->all());
+        $occupation = Occupation::create($request->validated());
         return $this->successResponse($occupation, 'Occupation created successfully', 201);
     }
 

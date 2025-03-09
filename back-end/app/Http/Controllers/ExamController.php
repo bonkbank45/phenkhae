@@ -38,6 +38,7 @@ class ExamController extends Controller
     }
     public function store(StoreExamRequest $request): JsonResponse
     {
+        \Log::info($request->all());
         $exam = Exam::create($request->all());
         return $this->successResponse($exam, 'Exam created successfully', 201);
     }
