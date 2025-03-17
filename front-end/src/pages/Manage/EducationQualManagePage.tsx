@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import PaginatedTable from '../../components/Tables/PaginatedTable';
 import Pagination from '../../components/Pagination';
 import { useEducationQualDataTable } from '../../hooks/api/basicData/useEducationQualData';
@@ -23,6 +24,7 @@ interface EducationQual {
 }
 
 const EducationQualManagePage = () => {
+  const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedEducationQual, setSelectedEducationQual] =
     useState<EducationQual | null>(null);
@@ -47,12 +49,12 @@ const EducationQualManagePage = () => {
     {
       header: 'ไอดี',
       key: 'id',
-      render: (row: EducationQual) => row.id,
+      render: (row: EducationQual) => row.id || '-',
     },
     {
       header: 'วุฒิการศึกษา',
       key: 'edu_qual_name',
-      render: (row: EducationQual) => row.edu_qual_name,
+      render: (row: EducationQual) => row.edu_qual_name || '-',
     },
     {
       header: 'วุฒิการศึกษา (อังกฤษ)',
@@ -73,14 +75,16 @@ const EducationQualManagePage = () => {
           >
             <IconEdit />
           </button>
-          <button
-            onClick={() => {
-              setSelectedEducationQual(row);
-              setIsDeleteModalOpen(true);
-            }}
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => {
+                setSelectedEducationQual(row);
+                setIsDeleteModalOpen(true);
+              }}
           >
-            <CrossCircle />
-          </button>
+              <CrossCircle />
+            </button>
+          )}
         </div>
       ),
     },

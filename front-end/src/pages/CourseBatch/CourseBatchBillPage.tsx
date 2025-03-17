@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useBillByCourseBatchIdData } from '../../hooks/api/useBillData';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@material-tailwind/react';
 import PaginatedTable from '../../components/Tables/PaginatedTable';
@@ -20,9 +21,12 @@ import RoundRemoveRedEye from '../../common/RoundRemoveRedEye';
 import CourseBatchBillView from './CourseBatchBillPageForm/CourseBatchBillView';
 
 const CourseBatchBillPage = () => {
+  const { user } = useAuth();
   const { id: courseBatchId } = useParams();
   const navigate = useNavigate();
   const [isAddBillModalOpen, setIsAddBillModalOpen] = useState(false);
+  const [isAddBillManualModalOpen, setIsAddBillManualModalOpen] =
+    useState(false);
   const [isViewBillModalOpen, setIsViewBillModalOpen] = useState(false);
   const [isEditBillModalOpen, setIsEditBillModalOpen] = useState(false);
   const [isDeleteBillModalOpen, setIsDeleteBillModalOpen] = useState(false);
@@ -146,8 +150,9 @@ const CourseBatchBillPage = () => {
               >
                 <EditPen />
               </button>
-              <button
-                className="cursor-pointer"
+              {user?.role === 'admin' && (
+                <button
+                  className="cursor-pointer"
                 onClick={() => {
                   setSelectedStudent(student);
                   setIsAddBillModalOpen(false);
@@ -156,7 +161,8 @@ const CourseBatchBillPage = () => {
                 }}
               >
                 <CrossCircle />
-              </button>
+                </button>
+              )}
             </div>
           )}
         </>
@@ -185,15 +191,26 @@ const CourseBatchBillPage = () => {
           <IconArrowLeft className="w-4 h-4 text-black dark:text-white" />{' '}
           <span className="text-black dark:text-white">ย้อนกลับ</span>
         </Button>
-        <Button
-          color="green"
-          onClick={() => {
-            navigate(`/courses/batchs/${courseBatchId}/bills/paid`);
-          }}
-          className="font-notoLoopThaiRegular"
-        >
-          เอกสารใบเสร็จ นักเรียนที่จ่ายเงินแล้ว
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            color="green"
+            onClick={() => {
+              setIsAddBillManualModalOpen(true);
+            }}
+            className="font-notoLoopThaiRegular"
+          >
+            เพิ่มข้อมูลใบเสร็จเพิ่มเติม
+          </Button>
+          <Button
+            color="blue"
+            onClick={() => {
+              navigate(`/courses/batchs/${courseBatchId}/bills/paid`);
+            }}
+            className="font-notoLoopThaiRegular"
+          >
+            เอกสารใบเสร็จ นักเรียนที่จ่ายเงินแล้ว
+          </Button>
+        </div>
       </div>
       <div className="bg-white rounded-lg shadow p-4 dark:bg-boxdark">
         <h1 className="text-2xl font-semibold dark:text-white font-notoExtraBold">
@@ -276,6 +293,18 @@ const CourseBatchBillPage = () => {
             onClose={() => setIsDeleteBillModalOpen(false)}
           />
         )}
+      </Modal>
+      <Modal
+        isOpen={isAddBillManualModalOpen}
+        onClose={() => setIsAddBillManualModalOpen(false)}
+        title="เพิ่มใบเสร็จ"
+      >
+        <CourseBatchBillAdd
+          onSuccess={handleFormSubmitSuccess}
+          onError={handleFormSubmitError}
+          courseGroupId={Number(courseBatchId)}
+          isManual={true}
+        />
       </Modal>
     </div>
   );

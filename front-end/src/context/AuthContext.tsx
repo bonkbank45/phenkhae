@@ -20,6 +20,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<string | null>;
   logout: () => void;
   authLoading: boolean;
+  fetchCurrentUser: () => Promise<void>;
 }
 
 interface ErrorResponse {
@@ -76,9 +77,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetchUser();
+      setUser(response.data.user);
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
+    }
+  };
+
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, login, logout, user, authLoading }}
+      value={{
+        isAuthenticated,
+        login,
+        logout,
+        user,
+        authLoading,
+        fetchCurrentUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

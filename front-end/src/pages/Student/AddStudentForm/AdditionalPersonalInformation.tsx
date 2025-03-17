@@ -32,11 +32,11 @@ const AdditionalPersonalInformation = () => {
     error: errorOccupation,
   } = useOccupationData();
 
-  const {
-    data: medicalConditionData,
-    isLoading: isLoadingMedicalCondition,
-    error: errorMedicalCondition,
-  } = useMedicalConditionData();
+  // const {
+  //   data: medicalConditionData,
+  //   isLoading: isLoadingMedicalCondition,
+  //   error: errorMedicalCondition,
+  // } = useMedicalConditionData();
 
   const { data: educationQualData, isLoading: isLoadingEducationQual } =
     useEducationQual();
@@ -53,11 +53,11 @@ const AdditionalPersonalInformation = () => {
       label: occupation.occupation_name,
     })) || [];
 
-  const formattedMedicalConditions =
-    medicalConditionData?.data?.map((medicalCondition) => ({
-      value: medicalCondition.id,
-      label: medicalCondition.name,
-    })) || [];
+  // const formattedMedicalConditions =
+  //   medicalConditionData?.data?.map((medicalCondition) => ({
+  //     value: medicalCondition.id,
+  //     label: medicalCondition.name,
+  //   })) || [];
 
   const [medicalConditionCheckBox, setMedicalConditionCheckBox] =
     useState<string>('ไม่มี');
@@ -105,10 +105,10 @@ const AdditionalPersonalInformation = () => {
         </h1>
         <div className="mt-4 md:grid grid-cols-2 gap-4">
           <TextField
-            label="อีเมล์นักเรียน"
+            label="อีเมลนักเรียน"
             name="email"
-            placeholder="อีเมล์นักเรียน"
-            required={true}
+            placeholder="example@gmail.com"
+            required={false}
             includeRegister={register}
             error={errors.email?.message as string}
           />
@@ -193,7 +193,16 @@ const AdditionalPersonalInformation = () => {
               setValue('has_medical_condition', 'มี');
             }}
           />
-          <DropdownSearchWithController<SelectOptionMedicalCondition['value']>
+          <TextField
+            label="โรคประจำตัว"
+            name="medical_condition"
+            className={medicalConditionCheckBox === 'ไม่มี' ? 'hidden' : 'mt-4'}
+            placeholder="โรคเบาหวาน"
+            required={true}
+            includeRegister={register}
+            error={errors.medical_condition?.message as string}
+          />
+          {/* <DropdownSearchWithController<SelectOptionMedicalCondition['value']>
             label="โรคประจำตัว"
             name="medical_condition"
             className={medicalConditionCheckBox === 'ไม่มี' ? 'hidden' : 'mt-4'}
@@ -204,7 +213,7 @@ const AdditionalPersonalInformation = () => {
             isLoading={isLoadingMedicalCondition}
             placeholder="โปรดเลือกโรคประจำตัว"
             error={errors.medical_condition?.message as string}
-          />
+          /> */}
         </div>
       </div>
       <div className="mt-4">

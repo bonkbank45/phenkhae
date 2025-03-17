@@ -6,6 +6,7 @@ import CloseIcon from '../../../common/CloseIcon';
 import Modal from '../../../components/Modal';
 import Button from '@material-tailwind/react/components/Button';
 import { Spinner } from '@material-tailwind/react';
+import { useAuth } from '../../../context/AuthContext';
 const UploadImage = ({
   haveProfileImage = false,
   isEditMode = false,
@@ -15,6 +16,7 @@ const UploadImage = ({
   isEditMode: boolean;
   studentId: string;
 }) => {
+  const { user } = useAuth();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { setValue } = useFormContext();
@@ -76,13 +78,15 @@ const UploadImage = ({
               alt="Image Preview"
               className="w-100 h-100 object-cover rounded-lg"
             />
+            {user?.role === 'admin' && (
             <button
               type="button"
               className="absolute top-0 right-0 text-red-500 font-notoRegular"
               onClick={() => setIsModalOpen(true)}
             >
-              <CloseIcon w={40} h={40} />
-            </button>
+                <CloseIcon w={40} h={40} />
+              </button>
+            )}
           </div>
         ) : (
           <IconBxsUserCircle height="20em" width="20em" />

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExamDataByExamId } from '../../../hooks/api/useExamData';
@@ -22,7 +23,8 @@ import EditCourseBatchExamView from './CourseBatchExamViewForm/EditCourseBatchEx
 import { useGeneratePdfScore } from '../../../hooks/api/usePdfData';
 
 const CourseBatchExamViewPage = () => {
-  const { examId } = useParams();
+  const { user } = useAuth();
+  const { id, examId } = useParams();
   const navigate = useNavigate();
   const [isClickDownload, setIsClickDownload] = useState(false);
   const {
@@ -41,8 +43,10 @@ const CourseBatchExamViewPage = () => {
     [key: number]: { selected: boolean; score: string };
   }>({});
 
-  const { isFetching: isLoadingGeneratePdfScore } =
-    useGeneratePdfScore(actualExamId, isClickDownload);
+  const { isFetching: isLoadingGeneratePdfScore } = useGeneratePdfScore(
+    actualExamId,
+    isClickDownload,
+  );
 
   useEffect(() => {
     if (isClickDownload) {
@@ -55,7 +59,7 @@ const CourseBatchExamViewPage = () => {
     isLoading: isEnrolledStudentsLoading,
     error: enrolledStudentsError,
   } = useEnrolledStudentsByBatchId({
-    courseBatchId: Number(actualExamId),
+    courseBatchId: Number(id),
     searchTerm: '',
     page: currentAddStudentPage,
     ageRange: 'all',
@@ -133,15 +137,17 @@ const CourseBatchExamViewPage = () => {
             >
               <IconEdit className="w-4 h-4 text-gray-600 dark:text-gray-300" />
             </button>
-            <button
-              onClick={() => {
-                setSelectedExamInvidual(row);
-                setIsDeleteInvidualModalOpen(true);
-                console.log(row);
-              }}
-            >
-              <IconCrossCircled className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-            </button>
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => {
+                  setSelectedExamInvidual(row);
+                  setIsDeleteInvidualModalOpen(true);
+                  console.log(row);
+                }}
+              >
+                <IconCrossCircled className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+              </button>
+            )}
           </div>
         );
       },
@@ -241,7 +247,11 @@ const CourseBatchExamViewPage = () => {
           toast.success('บันทึกคะแนนสำเร็จ');
         },
         onError: (error: ErrorResponse) => {
-          toast.error(error.response.data.message);
+          if (error.response.data.message.includes('score_get')) {
+            toast.error('กรุณากรอกคะแนนให้ถูกต้อง');
+          } else {
+            toast.error(error.response.data.message);
+          }
           console.error(error);
         },
       },
@@ -287,18 +297,20 @@ const CourseBatchExamViewPage = () => {
                   >
                     เพิ่มนักเรียนที่ทำการสอบ
                   </Button>
-                  <Button
-                    size="sm"
-                    color="blue"
-                    className="flex items-center gap-2 mt-2 text-white"
-                    onClick={() => {
-                      setIsClickDownload(true);
-                    }}
-                    disabled={isLoadingGeneratePdfScore}
-                    loading={isLoadingGeneratePdfScore}
-                  >
-                    ดาวน์โหลดเอกสารคะแนน
-                  </Button>
+                  {examData.data.exam_invidual.length > 0 && (
+                    <Button
+                      size="sm"
+                      color="blue"
+                      className="flex items-center gap-2 mt-2 text-white"
+                      onClick={() => {
+                        setIsClickDownload(true);
+                      }}
+                      disabled={isLoadingGeneratePdfScore}
+                      loading={isLoadingGeneratePdfScore}
+                    >
+                      ดาวน์โหลดเอกสารคะแนน
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

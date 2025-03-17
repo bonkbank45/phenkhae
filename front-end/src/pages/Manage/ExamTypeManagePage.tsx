@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import PaginatedTable from '../../components/Tables/PaginatedTable';
 import Pagination from '../../components/Pagination';
 import { useExamTypeDataTable } from '../../hooks/api/basicData/useExamTypeData';
@@ -21,6 +22,7 @@ interface ExamType {
 }
 
 const ExamTypeManagePage = () => {
+  const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedExamType, setSelectedExamType] = useState<ExamType | null>(
     null,
@@ -46,12 +48,12 @@ const ExamTypeManagePage = () => {
     {
       header: 'ไอดี',
       key: 'id',
-      render: (row: ExamType) => row.id,
+      render: (row: ExamType) => row.id || '-',
     },
     {
       header: 'ชื่อประเภทการสอบ',
       key: 'exam_type_name',
-      render: (row: ExamType) => row.exam_type_name,
+      render: (row: ExamType) => row.exam_type_name || '-',
     },
     {
       header: 'จัดการ',
@@ -66,14 +68,16 @@ const ExamTypeManagePage = () => {
           >
             <IconEdit />
           </button>
-          <button
-            onClick={() => {
-              setSelectedExamType(row);
-              setIsDeleteModalOpen(true);
-            }}
-          >
-            <CrossCircle />
-          </button>
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => {
+                setSelectedExamType(row);
+                setIsDeleteModalOpen(true);
+              }}
+            >
+              <CrossCircle />
+            </button>
+          )}
         </div>
       ),
     },

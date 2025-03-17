@@ -3,6 +3,7 @@ import { useSetPassword } from '../../hooks/api/useUserData';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { ErrorResponse } from '../../types/error_response';
 
 const SetPassword = () => {
   const [searchParams] = useSearchParams();
@@ -48,10 +49,12 @@ const SetPassword = () => {
         {
           onSuccess: () => {
             toast.success('ตั้งรหัสผ่านเรียบร้อย');
-            navigate('/sign-in');
+            navigate('/auth/signin');
           },
-          onError: (error: any) => {
-            toast.error(error.response.data.message);
+          onError: (error: ErrorResponse) => {
+            toast.error(
+              'เกิดข้อผิดพลาดในการตั้งรหัสผ่าน: ' + error.response.data.message,
+            );
           },
         },
       );

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import PaginatedTable from '../../components/Tables/PaginatedTable';
 import Pagination from '../../components/Pagination';
 import { useOccupationDataTable } from '../../hooks/api/basicData/useOccupationData';
@@ -22,6 +23,7 @@ interface Occupation {
 }
 
 const OccupationManagePage = () => {
+  const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOccupation, setSelectedOccupation] =
     useState<Occupation | null>(null);
@@ -46,12 +48,12 @@ const OccupationManagePage = () => {
     {
       header: 'ไอดี',
       key: 'id',
-      render: (row: Occupation) => row.id,
+      render: (row: Occupation) => row.id || '-',
     },
     {
       header: 'อาชีพ',
       key: 'occupation_name',
-      render: (row: Occupation) => row.occupation_name,
+      render: (row: Occupation) => row.occupation_name || '-',
     },
     {
       header: 'จัดการ',
@@ -66,14 +68,16 @@ const OccupationManagePage = () => {
           >
             <IconEdit />
           </button>
-          <button
-            onClick={() => {
-              setSelectedOccupation(row);
-              setIsDeleteModalOpen(true);
-            }}
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => {
+                setSelectedOccupation(row);
+                setIsDeleteModalOpen(true);
+              }}
           >
-            <CrossCircle />
-          </button>
+              <CrossCircle />
+            </button>
+          )}
         </div>
       ),
     },

@@ -17,3 +17,41 @@ export const useUserDataTable = (search: string, page: number) => {
     placeholderData: (previousData) => previousData,
   });
 };
+
+export const useEditUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: {
+      id: string;
+      firstname: string;
+      lastname: string;
+    }) => {
+      const response = await api.put(`/user/${data.id}`, data);
+      return response.data;
+    },
+    onSuccess: () => {
+      console.log('Edit user complete');
+      queryClient.invalidateQueries({ queryKey: ['user_data'] });
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+};
+
+export const useDeleteUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await api.delete(`/user/${id}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      console.log('Deleted user complete');
+      queryClient.invalidateQueries({ queryKey: ['user_data'] });
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+};

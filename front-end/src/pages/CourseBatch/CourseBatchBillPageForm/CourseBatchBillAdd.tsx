@@ -13,17 +13,22 @@ import { BillInfoForm } from '../../../types/bill_info';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup.js';
 import { addBillInfoSchema } from '../../../schema/billInfo/addBillInfo';
 import { ErrorResponse } from '../../../types/error_response';
+import TextArea from '../../../components/Forms/TextArea';
+import { useEnrollmentStudentStatusByCourseGroupIdAll } from '../../../hooks/api/useEnrollmentData';
+import DropdownSearchWithController from '../../../components/Forms/DropdownSearchWithController';
 
 const CourseBatchBillAdd = ({
   onSuccess,
   onError,
   courseGroupId,
   studentId,
+  isManual = false,
 }: {
   onSuccess: () => void;
   onError: (error: string) => void;
   courseGroupId: number;
-  studentId: number;
+  studentId?: number;
+  isManual?: boolean;
 }) => {
   const {
     register,
@@ -31,6 +36,7 @@ const CourseBatchBillAdd = ({
     control,
     reset,
     setValue,
+    watch,
     setError,
     formState: { errors },
   } = useForm({
@@ -38,8 +44,6 @@ const CourseBatchBillAdd = ({
   });
   const { data: latestBillVolData, isLoading: isLatestBillVolDataLoading } =
     useGetLatestBillVolData();
-
-  console.log(latestBillVolData);
 
   const { mutate: addBillData, isPending: isAddBillDataPending } =
     useAddBillData();
@@ -51,14 +55,34 @@ const CourseBatchBillAdd = ({
     }
   }, [latestBillVolData, isLatestBillVolDataLoading]);
 
+  const { data: enrollmentData, isLoading: isEnrollmentDataLoading } =
+    useEnrollmentStudentStatusByCourseGroupIdAll(courseGroupId);
+
+  const formattedStudentList = enrollmentData?.data.map((enrollment) => ({
+    value: enrollment.student_id,
+    label:
+      enrollment.student.firstname_tha + ' ' + enrollment.student.lastname_tha,
+  }));
+
   const onSubmitForm = (data: BillInfoForm) => {
+    let selectedStudentId = studentId;
+
+    if (isManual) {
+      selectedStudentId = watch('student_id');
+    }
+
     console.log({
       ...data,
       course_group_id: courseGroupId,
-      student_id: studentId,
+      student_id: selectedStudentId,
     });
+
     addBillData(
-      { ...data, course_group_id: courseGroupId, student_id: studentId },
+      {
+        ...data,
+        course_group_id: courseGroupId,
+        student_id: selectedStudentId,
+      },
       {
         onSuccess: () => {
           console.log('success');
@@ -72,7 +96,8 @@ const CourseBatchBillAdd = ({
             errorMessages = Object.entries(error.response.data.errors)
               .map(([_, value]) => value[0])
               .join(', ');
-          } else if (error.response.data.message.includes('Duplicate entry')) {
+          }
+          if (error.response.data.message.includes('Duplicate entry')) {
             const duplicateMessage =
               'เลขที่บิลนี้ถูกใช้งานแล้ว กรุณาตรวจสอบเลข Vol และ No อีกครั้ง';
             setError('bill_infos_vol', {
@@ -84,6 +109,14 @@ const CourseBatchBillAdd = ({
               message: duplicateMessage,
             });
             errorMessages = duplicateMessage;
+          } if (error.response.data.errors?.student_id) {
+            const studentIdMessage =
+              'กรุณาเลือกนักเรียนจากรายชื่อนักเรียนที่สมัครเรียนในคอร์สนี้';
+            setError('student_id', {
+              type: 'manual',
+              message: studentIdMessage,
+            });
+            errorMessages = studentIdMessage;
           } else {
             console.error(error);
             errorMessages = error.response.data.message;
@@ -94,16 +127,28 @@ const CourseBatchBillAdd = ({
     );
   };
 
+  console.log(formattedStudentList);
+
   return (
     <>
       <div className="flex flex-col gap-2 mb-4">
-        {isLatestBillVolDataLoading && (
-          <div className="flex items-center gap-2">
-            <Spinner className="!w-4 !h-4" />
-            <span className="text-sm text-gray-500 font-notoLoopThaiRegular">
-              กำลังดึงข้อมูล... vol, no สูงสุด จากฐานข้อมูล
-            </span>
-          </div>
+        {isLatestBillVolDataLoading ||
+          (isEnrollmentDataLoading && (
+            <div className="flex items-center gap-2">
+              <Spinner className="!w-4 !h-4" />
+              <span className="text-sm text-gray-500 font-notoLoopThaiRegular">
+                กำลังดึงข้อมูล... vol, no สูงสุด จากฐานข้อมูล
+              </span>
+            </div>
+          ))}
+        {isManual && (
+          <DropdownSearchWithController
+            label="นักเรียน"
+            name="student_id"
+            options={formattedStudentList}
+            control={control}
+            error={errors.student_id?.message as string}
+          />
         )}
         <TextField
           label="Vol"
@@ -128,11 +173,13 @@ const CourseBatchBillAdd = ({
           includeRegister={register}
           error={errors.bill_infos_receiver?.message as string}
         />
-        <TextField
-          label="หมายเหตุ"
+        <TextArea
           name="bill_infos_note"
+          label="หมายเหตุ"
           placeholder="หมายเหตุ"
+          maxLength={60}
           required={false}
+          control={control}
           includeRegister={register}
           error={errors.bill_infos_note?.message as string}
         />

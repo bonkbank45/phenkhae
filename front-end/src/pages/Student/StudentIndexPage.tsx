@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import {
   useStudentData,
   useStudentCount,
@@ -47,6 +48,7 @@ export interface SelectedBatch {
 }
 
 const StudentIndexPage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [basicInfoPage, setBasicInfoPage] = useState<number>(1);
   const [courseBatchPage, setCourseBatchPage] = useState<number>(1);
@@ -272,14 +274,16 @@ const StudentIndexPage = () => {
           <button onClick={() => navigate(`/students/${student.id}/edit`)}>
             <IconEdit className="cursor-pointer w-5 h-5" />
           </button>
-          <button
-            onClick={() => {
-              setIsDeleteModalOpen(true);
-              setSelectedStudent(student);
-            }}
-          >
-            <IconCrossCircled className="cursor-pointer w-5 h-5" />
-          </button>
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => {
+                setIsDeleteModalOpen(true);
+                setSelectedStudent(student);
+              }}
+            >
+              <IconCrossCircled className="cursor-pointer w-5 h-5" />
+            </button>
+          )}
         </div>
       ),
     },
@@ -340,14 +344,16 @@ const StudentIndexPage = () => {
             >
               <IconEdit className="cursor-pointer w-5 h-5" />
             </button>
-            <button
-              onClick={() => {
-                setIsDeleteModalOpen(true);
-                setSelectedStudentCourseBatch(student);
-              }}
-            >
-              <IconCrossCircled className="cursor-pointer w-5 h-5" />
-            </button>
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => {
+                  setIsDeleteModalOpen(true);
+                  setSelectedStudentCourseBatch(student);
+                }}
+              >
+                <IconCrossCircled className="cursor-pointer w-5 h-5" />
+              </button>
+            )}
           </div>
         ),
       },

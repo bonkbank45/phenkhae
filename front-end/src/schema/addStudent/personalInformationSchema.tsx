@@ -9,6 +9,19 @@ const englishCharacterPattern = /^[A-Za-z\s]+$/;
 // Regular expression to match numeric characters
 const numericPattern = /^[0-9]+$/;
 
+// ฟังก์ชันตรวจสอบเลขบัตรประชาชน
+const validateThaiCitizenId = (id: string) => {
+  if (id.length !== 13) return false;
+
+  let sum = 0;
+  for (let i = 0; i < 12; i++) {
+    sum += parseInt(id.charAt(i)) * (13 - i);
+  }
+
+  const checkDigit = (11 - (sum % 11)) % 10;
+  return checkDigit === parseInt(id.charAt(12));
+};
+
 export const personalInformationSchema = yup.object().shape({
   date_register_from_form: yup
     .string()
@@ -33,7 +46,8 @@ export const personalInformationSchema = yup.object().shape({
     .required('กรุณากรอกนามสกุล'),
   citizenid_card: yup
     .string()
-    .matches(numericPattern, 'รหัสประชาชนต้องเป็นตัวเลข')
+    .matches(/^\d{13}$/, 'รหัสประชาชนต้องเป็นตัวเลข 13 หลัก')
+    .test('valid-thai-id', 'รหัสประชาชนไม่ถูกต้อง', validateThaiCitizenId)
     .required('กรุณากรอกรหัสประชาชน'),
   birthdate: yup.string().required('กรุณากรอกวันเกิด'),
   marital_status: yup

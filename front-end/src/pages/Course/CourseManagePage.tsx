@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@material-tailwind/react/components/Button';
@@ -20,6 +21,7 @@ import EditCourse from './CourseManageForm/EditCourse';
 import DeleteCourse from './CourseManageForm/DeleteCourse';
 
 const CourseManagePage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [courseCategoryId, setCourseCategoryId] = useState<string>('all');
@@ -105,14 +107,16 @@ const CourseManagePage = () => {
           >
             <IconEdit className="cursor-pointer w-5 h-5" />
           </button>
-          <button
-            onClick={() => {
-              setIsDeleteModal(true);
-              setSelectedCourse(item);
-            }}
-          >
-            <IconCrossCircled className="cursor-pointer w-5 h-5" />
-          </button>
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => {
+                setIsDeleteModal(true);
+                setSelectedCourse(item);
+              }}
+            >
+              <IconCrossCircled className="cursor-pointer w-5 h-5" />
+            </button>
+          )}
         </div>
       ),
     },

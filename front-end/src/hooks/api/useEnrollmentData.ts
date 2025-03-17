@@ -106,6 +106,20 @@ export const useEnrollmentStudentStatusByCourseGroupId = (
   });
 };
 
+export const useEnrollmentStudentStatusByCourseGroupIdAll = (
+  courseGroupId: number,
+) => {
+  return useQuery({
+    queryKey: ['enrollments', courseGroupId, 'all'],
+    queryFn: async () => {
+      const response = await api.get(
+        `/enrollment/course_group/${courseGroupId}/all`,
+      );
+      return response.data;
+    },
+  });
+};
+
 export const useAddEnrolledStudents = () => {
   const queryClient = useQueryClient();
   // Reminder: add api.post<HERE> later

@@ -19,7 +19,7 @@ const CheckboxFour = ({
             type="checkbox"
             name={name}
             id={`checkboxLabelFour-${label}`}
-            className="sr-only"
+            className="absolute w-5 h-5 opacity-0 cursor-pointer"
             checked={isChecked}
             onChange={onChange}
           />

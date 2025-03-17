@@ -35,7 +35,7 @@ class Student extends Model
         'phonenumber',
         'email',
         'occupation_id',
-        'medical_condition_id',
+        'medical_condition',
         'surgery_history',
         'edu_qual_id',
         'edu_ins',

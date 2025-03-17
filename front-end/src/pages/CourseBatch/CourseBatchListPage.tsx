@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { FiPlus } from 'react-icons/fi';
 import { Button } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
@@ -21,6 +22,7 @@ import DeleteCourseBatchForm from './DeleteCourseBatchForm';
 
 const CourseBatchListPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [courseId, setCourseId] = useState<string>('all');
@@ -225,6 +227,7 @@ const CourseBatchListPage = () => {
                   onCloseBatch={handleCloseBatch}
                   onEditBatch={handleEditBatch}
                   onDeleteBatch={handleDeleteBatch}
+                  user={user}
                 />
               ))
             )}

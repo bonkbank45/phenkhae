@@ -195,7 +195,7 @@ class BillInfoController extends Controller
             ->orderBy('bill_infos.date_submit', 'asc')
             ->get();
         $mpdf = new Mpdf(config('pdf'));
-        $html = view('pdfs.bill', [
+        $html = view('pdfs.bill_new', [
             'billInfo' => $billInfo,
         ])->render();
         $mpdf->WriteHTML($html);

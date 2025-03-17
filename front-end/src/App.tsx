@@ -8,16 +8,8 @@ import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
-import Calendar from './pages/Calendar';
-import Chart from './pages/Chart';
-import ECommerce from './pages/Dashboard/ECommerce';
-import FormElements from './pages/Form/FormElements';
-import FormLayout from './pages/Form/FormLayout';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
-import Tables from './pages/Tables';
-import Alerts from './pages/UiElements/Alerts';
-import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
 import AddStudent from './pages/Student/AddStudentPage';
 import Prename from './pages/Manage/PrenameManagePage';
@@ -59,6 +51,7 @@ import OccupationManagePage from './pages/Manage/OccupationManagePage';
 import EducationQualManagePage from './pages/Manage/EducationQualManagePage';
 import BillCategoryManagePage from './pages/Manage/BillCategoryManagePage';
 import ExamTypeManagePage from './pages/Manage/ExamTypeManagePage';
+import Setting from './pages/User/setting';
 
 function App() {
   const { pathname } = useLocation();
@@ -89,8 +82,11 @@ function App() {
             </>
           }
         />
-        <Route path="/auth/signin" element={<SignIn />} />
-        <Route path="/auth/signup" element={<SignUp />} />
+        <Route
+          path="/auth/signin"
+          element={isAuthenticated ? <Navigate to="/" replace /> : <SignIn />}
+        />
+        {/* <Route path="/auth/signup" element={<SignUp />} /> */}
         {/* { Protect all dashboard routes} */}
         <Route
           element={
@@ -105,18 +101,11 @@ function App() {
         >
           <Route
             index
+            path="/"
             element={
               <>
+                <PageTitle title="รายชื่อนักเรียน | การจัดการนักเรียน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
                 <StudentIndexPage />
-              </>
-            }
-          />
-          <Route
-            path="/calendar"
-            element={
-              <>
-                <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Calendar />
               </>
             }
           />
@@ -130,65 +119,11 @@ function App() {
             }
           />
           <Route
-            path="/forms/form-elements"
-            element={
-              <>
-                <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <FormElements />
-              </>
-            }
-          />
-          <Route
-            path="/forms/form-layout"
-            element={
-              <>
-                <PageTitle title="Form Layout | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <FormLayout />
-              </>
-            }
-          />
-          <Route
-            path="/tables"
-            element={
-              <>
-                <PageTitle title="Tables | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Tables />
-              </>
-            }
-          />
-          <Route
             path="/settings"
             element={
               <>
                 <PageTitle title="Settings | TailAdmin - Tailwind CSS Admin Dashboard Template" />
                 <Settings />
-              </>
-            }
-          />
-          <Route
-            path="/chart"
-            element={
-              <>
-                <PageTitle title="Basic Chart | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Chart />
-              </>
-            }
-          />
-          <Route
-            path="/ui/alerts"
-            element={
-              <>
-                <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Alerts />
-              </>
-            }
-          />
-          <Route
-            path="/ui/buttons"
-            element={
-              <>
-                <PageTitle title="Buttons | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Buttons />
               </>
             }
           />
@@ -549,6 +484,15 @@ function App() {
               <>
                 <PageTitle title="ประเภทการสอบ | การจัดการข้อมูลพื้นฐาน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
                 <ExamTypeManagePage />
+              </>
+            }
+          />
+          <Route
+            path="/user/settings"
+            element={
+              <>
+                <PageTitle title="ตั้งค่าบัญชีผู้ใช้งาน | การจัดการผู้ใช้งาน - โรงเรียนเพ็ญแขแพทย์แผนไทย" />
+                <Setting />
               </>
             }
           />

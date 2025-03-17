@@ -196,7 +196,11 @@ class EnrollmentController extends Controller
             $query->whereIn('course_groups.id', $batchIds);
         }
 
-        $students = $query->paginate(10);
+        if ($request->has('no_pagination') && $request->no_pagination == 'true') {
+            $students = $query->get();
+        } else {
+            $students = $query->paginate(10);
+        }
 
         return $this->successResponse($students, 'Enrolled students retrieved successfully', 200);
     }
@@ -351,5 +355,13 @@ class EnrollmentController extends Controller
                 ];
             });
         return $this->successResponse($enrollmentStatusGraduate, 'Enrollment status retrieved successfully', 200);
+    }
+
+    public function getAllEnrollmentByCourseGroupId(int $courseGroupId): JsonResponse
+    {
+        $enrollment = Enrollment::where('course_group_id', $courseGroupId)
+            ->with('student', 'course_group', 'course_group.course')
+            ->get();
+        return $this->successResponse($enrollment, 'Enrollment retrieved successfully', 200);
     }
 }

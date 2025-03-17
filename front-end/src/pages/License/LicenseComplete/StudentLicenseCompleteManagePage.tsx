@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../../context/AuthContext';
 import PaginatedTable from '../../../components/Tables/PaginatedTable';
 import Pagination from '../../../components/Pagination';
 import { LicenseCompleteTable } from '../../../types/license_complete';
@@ -26,6 +27,7 @@ import { ErrorResponse } from '../../../types/error_response';
 import DateRangePicker from '../../../components/DateRange/DateRangePicker';
 
 const StudentLicenseCompleteManagePage = () => {
+  const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [courseId, setCourseId] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -96,14 +98,16 @@ const StudentLicenseCompleteManagePage = () => {
           >
             <IconEdit />
           </button>
-          <button
-            onClick={() => {
-              setSelectedLicenseCompleteStudent(row);
-              setIsDeleteLicenseCompleteModalOpen(true);
-            }}
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => {
+                setSelectedLicenseCompleteStudent(row);
+                setIsDeleteLicenseCompleteModalOpen(true);
+              }}
           >
-            <IconCrossCircled />
-          </button>
+              <IconCrossCircled />
+            </button>
+          )}
         </div>
       ),
     },

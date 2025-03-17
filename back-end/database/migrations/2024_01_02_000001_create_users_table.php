@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('password')->nullable();
             $table->string('firstname');
             $table->string('lastname');
+            $table->string('profile_img')->nullable();
             $table->foreignId('role_id');
             $table->timestamps();
         });

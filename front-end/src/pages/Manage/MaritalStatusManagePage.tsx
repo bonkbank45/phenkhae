@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import PaginatedTable from '../../components/Tables/PaginatedTable';
 import Pagination from '../../components/Pagination';
 import { useMaritalDataTable } from '../../hooks/api/basicData/useMaritalData';
@@ -22,6 +23,7 @@ interface MaritalStatus {
 }
 
 const MaritalStatusManagePage = () => {
+  const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedMaritalStatus, setSelectedMaritalStatus] =
     useState<MaritalStatus | null>(null);
@@ -44,12 +46,12 @@ const MaritalStatusManagePage = () => {
     {
       header: 'ไอดี',
       key: 'id',
-      render: (row: MaritalStatus) => row.id,
+      render: (row: MaritalStatus) => row.id || '-',
     },
     {
       header: 'สถานะภาพ',
       key: 'marital_name',
-      render: (row: MaritalStatus) => row.marital_name,
+      render: (row: MaritalStatus) => row.marital_name || '-',
     },
     {
       header: 'จัดการ',
@@ -64,14 +66,16 @@ const MaritalStatusManagePage = () => {
           >
             <IconEdit />
           </button>
-          <button
-            onClick={() => {
-              setSelectedMaritalStatus(row);
-              setIsDeleteModalOpen(true);
-            }}
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => {
+                setSelectedMaritalStatus(row);
+                setIsDeleteModalOpen(true);
+              }}
           >
             <CrossCircle />
-          </button>
+            </button>
+          )}
         </div>
       ),
     },

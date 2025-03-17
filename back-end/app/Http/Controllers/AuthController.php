@@ -35,6 +35,7 @@ class AuthController extends Controller
                     'firstname' => $user->firstname,
                     'lastname' => $user->lastname,
                     'role' => Role::find($user->role_id)->name,
+                    'profile_img' => $user->profile_img,
                 ],
                 'token' => $token,
             ]);
@@ -81,6 +82,7 @@ class AuthController extends Controller
                 'firstname' => $user->firstname,
                 'lastname' => $user->lastname,
                 'role' => Role::find($user->role_id)->name,
+                'profile_img' => $user->profile_img,
             ]
         ], 200);
     }

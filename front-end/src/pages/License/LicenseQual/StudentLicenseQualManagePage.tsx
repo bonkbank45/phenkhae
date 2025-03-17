@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
 import PaginatedTable from '../../../components/Tables/PaginatedTable';
 import Pagination from '../../../components/Pagination';
@@ -25,6 +26,7 @@ import { Button } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 
 const StudentLicenseQualManagePage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [isSelectedCourse, setIsSelectedCourse] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -161,14 +163,16 @@ const StudentLicenseQualManagePage = () => {
           >
             <IconEdit />
           </button>
-          <button
-            onClick={() => {
-              setSelectedLicenseQualStudent(row);
-              setIsDeleteLicenseQualModalOpen(true);
-            }}
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => {
+                setSelectedLicenseQualStudent(row);
+                setIsDeleteLicenseQualModalOpen(true);
+              }}
           >
             <IconCrossCircled />
-          </button>
+            </button>
+          )}
         </div>
       ),
     },

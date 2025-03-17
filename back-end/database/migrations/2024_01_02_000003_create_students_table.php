@@ -33,9 +33,9 @@ return new class extends Migration {
             $table->integer('address_subdistrict_id');
             $table->string('address_zip_code');
             $table->string('phonenumber');
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->string('occupation_id')->constrained('occupations', 'id');
-            $table->foreignId('medical_condition_id')->nullable()->constrained('medical_conditions', 'id');
+            $table->string('medical_condition')->nullable();
             $table->string('surgery_history')->nullable();
             $table->string('edu_qual_id');
             $table->string('edu_ins')->nullable();

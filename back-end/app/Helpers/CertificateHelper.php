@@ -4,7 +4,7 @@ if (!function_exists('formatDateCertificate')) {
     function formatDateCertificate($date)
     {
         $date = new DateTime($date);
-        return $date->format('d') . ' ' . mapCertificateMonth($date->format('m')) . ' ' . ($date->format('Y') + 543);
+        return intval($date->format('d')) . ' ' . mapCertificateMonth($date->format('m')) . ' ' . ($date->format('Y') + 543);
     }
 }
 

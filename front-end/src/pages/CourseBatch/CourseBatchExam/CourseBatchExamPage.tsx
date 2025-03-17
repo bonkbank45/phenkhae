@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button } from '@material-tailwind/react';
@@ -23,6 +24,7 @@ import AddCourseBatchExamForm from './CourseBatchExamForm/AddCourseBatchExamForm
 import AddExamTypePage from '../../Exam/AddExamTypeForm';
 
 export default function CourseBatchExamPage() {
+  const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
@@ -113,16 +115,18 @@ export default function CourseBatchExamPage() {
           >
             <IconEdit />
           </button>
-          <button
-            title="ลบข้อมูลการสอบนี้"
+          {user?.role === 'admin' && (
+            <button
+              title="ลบข้อมูลการสอบนี้"
             onClick={() => {
               console.log(row);
               setSelectedExam(row);
               setIsDeleteModalOpen(true);
             }}
           >
-            <IconCrossCircled />
-          </button>
+              <IconCrossCircled />
+            </button>
+          )}
         </div>
       ),
     },

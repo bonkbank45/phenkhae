@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 import { Button } from '@material-tailwind/react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -28,6 +29,7 @@ const StyleWrapper = styled.div`
 `;
 
 const CourseBatchAttendencePage = () => {
+  const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const {
@@ -267,13 +269,15 @@ const CourseBatchAttendencePage = () => {
               <h3>จัดการวันที่เรียน</h3>
               <p>{selectedEvent.start.toLocaleDateString('th-TH')}</p>
               <div className="flex justify-end gap-2 mt-4">
-                <Button
-                  color="red"
-                  onClick={handleDelete}
-                  loading={isLoadingDeleteCourseAttendence}
-                >
-                  ลบวันที่เรียน
-                </Button>
+                {user?.role === 'admin' && (
+                  <Button
+                    color="red"
+                    onClick={handleDelete}
+                    loading={isLoadingDeleteCourseAttendence}
+                  >
+                    ลบวันที่เรียน
+                  </Button>
+                )}
                 <Button
                   color="blue"
                   onClick={() =>

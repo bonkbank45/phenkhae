@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Button, Spinner } from '@material-tailwind/react';
@@ -23,6 +24,7 @@ const EditCourseBatchForm = ({
   onSuccess?: () => void;
   onError?: (error: ErrorResponse) => void;
 }) => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [serverErrors, setServerErrors] = useState<{ [key: string]: string }>(
     {},
@@ -161,14 +163,16 @@ const EditCourseBatchForm = ({
             >
               เพิ่มนักเรียน
             </Button>
-            <Button
-              color="red"
-              onClick={() => {
-                navigate(`/courses/batchs/${initialData.id}/remove-students`);
-              }}
-            >
-              ลบนักเรียน
-            </Button>
+            {user?.role === 'admin' && (
+              <Button
+                color="red"
+                onClick={() => {
+                  navigate(`/courses/batchs/${initialData.id}/remove-students`);
+                }}
+              >
+                ลบนักเรียน
+              </Button>
+            )}
           </div>
         </div>
         <div className="mt-4 h-10 flex justify-start gap-4">

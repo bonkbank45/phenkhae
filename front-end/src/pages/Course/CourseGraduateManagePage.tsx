@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useCourseCompletionTable } from '../../hooks/api/useCourseCompletion';
@@ -26,6 +27,7 @@ import EditCourseGraduateForm from './CourseGraduateManageForm/EditCourseGraduat
 import { ErrorResponse } from '../../types/error_response';
 
 const CourseGraduateManagePage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -209,14 +211,16 @@ const CourseGraduateManagePage = () => {
           >
             <IconEdit />
           </button>
-          <button
-            title="ลบข้อมูล"
+          {user?.role === 'admin' && (
+            <button
+              title="ลบข้อมูล"
             onClick={() => {
               handleDeleteCompletion(completion);
             }}
           >
             <IconCrossCircled />
-          </button>
+            </button>
+          )}
         </div>
       ),
     },

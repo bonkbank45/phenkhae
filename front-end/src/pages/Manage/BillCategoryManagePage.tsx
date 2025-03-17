@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import PaginatedTable from '../../components/Tables/PaginatedTable';
 import Pagination from '../../components/Pagination';
 import { useBillCategoryDataTable } from '../../hooks/api/basicData/useBillCategoryData';
@@ -21,6 +22,7 @@ interface BillCategory {
 }
 
 const BillCategoryManagePage = () => {
+  const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<BillCategory | null>(
     null,
@@ -46,12 +48,12 @@ const BillCategoryManagePage = () => {
     {
       header: 'ไอดี',
       key: 'id',
-      render: (row: BillCategory) => row.id,
+      render: (row: BillCategory) => row.id || '-',
     },
     {
       header: 'ชื่อประเภทบิล',
       key: 'category_bill_name',
-      render: (row: BillCategory) => row.category_bill_name,
+      render: (row: BillCategory) => row.category_bill_name || '-',
     },
     {
       header: 'จัดการ',
@@ -66,14 +68,16 @@ const BillCategoryManagePage = () => {
           >
             <IconEdit />
           </button>
-          <button
-            onClick={() => {
-              setSelectedCategory(row);
-              setIsDeleteModalOpen(true);
-            }}
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => {
+                setSelectedCategory(row);
+                setIsDeleteModalOpen(true);
+              }}
           >
-            <CrossCircle />
-          </button>
+              <CrossCircle />
+            </button>
+          )}
         </div>
       ),
     },

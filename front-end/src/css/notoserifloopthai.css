@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Noto Sans Thai Looped Regular';
-  src: url('../fonts/NotoSansThaiLooped-Regular.ttf') format('truetype');
-  font-weight: 400;
+  src: url('../fonts/testNotoLooped.woff') format('woff');
+  font-weight: 800;
   font-style: normal;
 }

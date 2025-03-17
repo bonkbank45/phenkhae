@@ -63,12 +63,11 @@
         <?php
 $No = 0;
 $rowsPerPage = 20;
-$data = [
-    ["id" => 1165304620001, "fname" => "ทำงาน ", "lname" => "การบ้านงานหนัก", "execute" => 89, "status" => 1],
-    ["id" => 1165304620002, "fname" => "เค้าแมว ", "lname" => "ไงจั๊ฟ", "execute" => 50, "status" => 0],
-    ["id" => 1165304620003, "fname" => "จีจี้ ", "lname" => "มาแล้ว", "execute" => 70, "status" => 1],
-    ["id" => 1165304620004, "fname" => "พรพิมาน ", "lname" => "ปานตะวัน", "execute" => 44, "status" => 0],
 
+$periodMap = [
+    1 => 'กลางภาค',
+    2 => 'ปลายภาค',
+    3 => 'พิเศษ',
 ];
 
 $totalRows = count($examInviduals);
@@ -81,7 +80,7 @@ for ($page = 0; $page < $pages; $page++) {
     }
 
     echo "<div class=\"header\">
-                    <h1>คะแนนสอบ" . $exam->course_group->course->course_name . " นักเรียน รุ่นที่ " . $exam->course_group->batch . " ปี " . $exam->year . " เทอม " . $exam->term . "</h1>
+                    <h1>คะแนนสอบ" . $exam->course_group->course->course_name . " (" . $exam->exam_type->exam_type_name . "/" . $periodMap[$exam->exam_period] . ") นักเรียน รุ่นที่ " . $exam->course_group->batch . " ปี " . $exam->year . " เทอม " . $exam->term . "</h1>
                     <h1>สอบวันที่ " . Carbon\Carbon::parse($exam->date_start_exam)->format('d/m/') . (Carbon\Carbon::parse($exam->date_start_exam)->format('Y') + 543) . "</h1>
                   </div>";
 

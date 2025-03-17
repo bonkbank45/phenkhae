@@ -29,14 +29,14 @@ const AddEducationQualForm = ({
         edu_qual_name: yup
           .string()
           .matches(
-            /^[ก-๙0-9\s]+$/,
+            /^[ก-๙0-9/\.\s]+$/,
             'กรุณากรอกชื่อวุฒิการศึกษาภาษาไทยให้ถูกต้อง',
           )
           .required('กรุณากรอกชื่อวุฒิการศึกษาภาษาไทย'),
         edu_qual_eng: yup
           .string()
           .matches(
-            /^[A-Za-z0-9\s]+$/,
+            /^[A-Za-z0-9/\.\s]+$/,
             'กรุณากรอกชื่อวุฒิการศึกษาภาษาอังกฤษให้ถูกต้อง',
           )
           .optional()

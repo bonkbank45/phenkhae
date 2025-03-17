@@ -7,11 +7,23 @@ module.exports = {
   darkMode: 'class',
   theme: {
     fontFamily: {
-      notoRegular: ['Noto Serif Thai Regular', 'sans-serif'],
-      notoExtraBold: ['Noto Serif Thai ExtraBold', 'sans-serif'],
-      notoLoopThaiRegular: ['Noto Sans Thai Looped Regular', 'sans-serif'],
-      notoBold: ['Noto Sans Thai Looped Bold', 'sans-serif'],
-      satoshi: ['Satoshi', 'sans-serif'],
+      notoRegular: ['Noto Serif Thai Regular', 'Noto Serif Thai', 'sans-serif'],
+      notoExtraBold: [
+        'Noto Serif Thai ExtraBold',
+        'Noto Serif Thai',
+        'sans-serif',
+      ],
+      notoLoopThaiRegular: [
+        'Noto Sans Thai Looped Regular',
+        'Noto Sans Thai Looped',
+        'sans-serif',
+      ],
+      notoBold: [
+        'Noto Sans Thai Looped Bold',
+        'Noto Sans Thai Looped',
+        'sans-serif',
+      ],
+      // satoshi: ['Satoshi', 'sans-serif'],
     },
     screens: {
       '2xsm': '375px',

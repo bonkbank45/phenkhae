@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import PaginatedTable from '../../components/Tables/PaginatedTable';
 import Pagination from '../../components/Pagination';
 import { useCourseCategoryDataTable } from '../../hooks/api/basicData/useCourseCategoryData';
@@ -22,6 +23,7 @@ interface CourseCategory {
 }
 
 const CourseCategoryManagePage = () => {
+  const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] =
     useState<CourseCategory | null>(null);
@@ -46,12 +48,12 @@ const CourseCategoryManagePage = () => {
     {
       header: 'ไอดี',
       key: 'id',
-      render: (row: CourseCategory) => row.id,
+      render: (row: CourseCategory) => row.id || '-',
     },
     {
       header: 'ชื่อประเภทหลักสูตร',
       key: 'category_name',
-      render: (row: CourseCategory) => row.category_name,
+      render: (row: CourseCategory) => row.category_name || '-',
     },
     {
       header: 'จัดการ',
@@ -66,14 +68,16 @@ const CourseCategoryManagePage = () => {
           >
             <IconEdit />
           </button>
-          <button
-            onClick={() => {
-              setSelectedCategory(row);
-              setIsDeleteModalOpen(true);
-            }}
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => {
+                setSelectedCategory(row);
+                setIsDeleteModalOpen(true);
+              }}
           >
-            <CrossCircle />
-          </button>
+              <CrossCircle />
+            </button>
+          )}
         </div>
       ),
     },

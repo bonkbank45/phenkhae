@@ -2,8 +2,8 @@ import * as yup from 'yup';
 
 export default yup.object().shape({
   batch: yup.number().typeError('กรุณากรอกหลักสูตรรุ่นที่'),
-  course_price: yup.number().typeError('กรุณากรอกราคาหลักสูตร'),
-  max_students: yup.number().typeError('กรุณากรอกจำนวนนักเรียนที่รับเข้า'),
+  course_price: yup.number().typeError('กรุณากรอกราคาหลักสูตร').min(0, 'ไม่สามารถกรอกราคาต่ำกว่า 0 ได้'),
+  max_students: yup.number().typeError('กรุณากรอกจำนวนนักเรียนที่รับเข้า').min(0, 'ไม่สามารถกรอกจำนวนต่ำกว่า 0 ได้'),
   date_start: yup
     .date()
     .typeError('กรุณากรอกวันที่เริ่มหลักสูตร')

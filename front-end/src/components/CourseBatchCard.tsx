@@ -1,8 +1,10 @@
 import React from 'react';
+import { useAuth } from '../context/AuthContext';
 import { FiEdit, FiEye, FiX } from 'react-icons/fi';
 import { format } from 'date-fns';
 import { removeTime } from '../utils/datetime';
 import { CourseGroup, Status } from '../types/course_group';
+
 interface Props {
   batch: CourseGroup;
   getStatusColor: (status: Status) => string;
@@ -22,6 +24,7 @@ export const CourseBatchCard = ({
   onEditBatch,
   onDeleteBatch,
 }: Props) => {
+  const { user } = useAuth();
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 dark:bg-boxdark border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow duration-200 font-notoLoopThaiRegular">
       <h3 className="text-lg font-semibold mb-2">{batch.course.course_name}</h3>
@@ -66,12 +69,14 @@ export const CourseBatchCard = ({
             <FiX /> ลบ
           </button>
         )} */}
-        <button
-          className="flex items-center gap-1 px-3 py-1 border rounded-lg text-red-600 hover:bg-red-50"
-          onClick={() => onDeleteBatch?.(batch.id)}
-        >
-          <FiX /> ลบ
-        </button>
+        {user?.role === 'admin' && (
+          <button
+            className="flex items-center gap-1 px-3 py-1 border rounded-lg text-red-600 hover:bg-red-50"
+            onClick={() => onDeleteBatch?.(batch.id)}
+          >
+            <FiX /> ลบ
+          </button>
+        )}
       </div>
     </div>
   );

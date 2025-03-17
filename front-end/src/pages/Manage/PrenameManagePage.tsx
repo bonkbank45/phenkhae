@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import Button from '@material-tailwind/react/components/Button';
@@ -28,6 +29,7 @@ interface Prename {
 
 const Prename = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [showStatus, setShowStatus] = useState('all');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -121,14 +123,16 @@ const Prename = () => {
           >
             <IconEdit className="cursor-pointer w-5 h-5" />
           </button>
-          <button
+          {user?.role === 'admin' && (
+            <button
             onClick={() => {
               setIsDeleteModal(true);
               setSelectedPrename(item);
             }}
           >
             <IconCrossCircled className="cursor-pointer w-5 h-5" />
-          </button>
+            </button>
+          )}
         </div>
       ),
     },

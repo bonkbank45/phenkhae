@@ -189,17 +189,7 @@ $data = [
             </div>
             <p>
                 ได้รับเงินจาก ชื่อ........{{ $billInfo[0]->student->firstname_tha
-
-
-
-
-
                 }}.......นามสกุล........{{ $billInfo[0]->student->lastname_tha
-
-
-
-
-
                 }}........
             </p>
             <hr />

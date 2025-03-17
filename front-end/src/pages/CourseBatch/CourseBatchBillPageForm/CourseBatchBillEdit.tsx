@@ -12,6 +12,7 @@ import { ErrorResponse } from '../../../types/error_response';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup.js';
 import { editBillInfoSchema } from '../../../schema/billInfo/editBillInfo';
 import { format } from 'date-fns';
+import TextArea from '../../../components/Forms/TextArea';
 
 const CourseBatchBillEdit = ({
   onSuccess,
@@ -73,12 +74,13 @@ const CourseBatchBillEdit = ({
           defaultValue={studentBillInfo.bill_infos_receiver}
           error={errors.bill_infos_receiver?.message as string}
         />
-        <TextField
+        <TextArea
           label="หมายเหตุ"
           name="bill_infos_note"
           placeholder="หมายเหตุ"
+          maxLength={60}
           includeRegister={register}
-          defaultValue={studentBillInfo.bill_infos_note}
+          control={control}
           error={errors.bill_infos_note?.message as string}
         />
         <DatePickerWithController

@@ -175,12 +175,14 @@ Route::group(['middleware' => ['api']], function () {
         Route::post('/', [EnrollmentController::class, 'store']);
         Route::get('/course-batches', [EnrollmentController::class, 'getEnrolledStudentsByBatchIds']);
         Route::get('/course-batch/{courseBatchId}', [EnrollmentController::class, 'getEnrolledStudentsByBatchId']);
+        Route::get('/course_group/{courseGroupId}/all', [EnrollmentController::class, 'getAllEnrollmentByCourseGroupId']); // No pagination
         Route::get('/{enrollment}', [EnrollmentController::class, 'show']);
         Route::patch('/{enrollment}-{studentId}', [EnrollmentController::class, 'update']);
         Route::delete('/{enrollment}', [EnrollmentController::class, 'destroy']);
         Route::get('/course_group/{courseGroupId}/graduate', [EnrollmentController::class, 'getEnrollmentStatusGraduateByBatchId']);
         Route::get('/course_group/{courseGroupId}', [EnrollmentController::class, 'getEnrollmentStudentStatusByCourseGroupId']);
     });
+
 
     Route::prefix('exam')->group(function () {
         Route::get('/', [ExamController::class, 'index']);
@@ -276,8 +278,12 @@ Route::group(['middleware' => ['api']], function () {
 
     Route::prefix('user')->group(function () {
         Route::get('/table', [UserController::class, 'table']);
+        Route::get('/{user}', [UserController::class, 'show']);
+        Route::put('/{user}', [UserController::class, 'update']);
+        Route::delete('/{user}', [UserController::class, 'destroy']);
     });
 
     Route::post('/employees', [EmployeeController::class, 'store']);
     Route::post('/set-password', [SetPasswordController::class, 'setPassword']);
+    Route::post('/reset-password', [EmployeeController::class, 'resetPassword']);
 });

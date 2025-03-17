@@ -290,7 +290,7 @@ class CourseGroupController extends Controller
                 ];
             })->values()->all();
 
-            $html = view('pdfs.std_card', [
+            $html = view('pdfs.std_card_fix_bug', [
                 'students' => $students,
             ])->render();
 

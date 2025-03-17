@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useStudentDataById } from '../../hooks/api/useStudentData';
 import { format } from 'date-fns';
@@ -35,6 +36,7 @@ import DeleteLicenseQual from '../License/LicenseQual/LicenseQualManageForm/Dele
 import DeleteLicenseComplete from '../License/LicenseComplete/LicenseCompleteManageForm/DeleteLicenseComplete';
 
 const StudentViewPage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { id: studentId } = useParams();
   const [selectedCourseGroupId, setSelectedCourseGroupId] = useState<
@@ -193,14 +195,16 @@ const StudentViewPage = () => {
           >
             <IconEdit className="cursor-pointer w-5 h-5" />
           </button>
-          <button
-            onClick={() => {
-              setSelectedEnrollment(courseBatch);
-              setIsModalEnrollmentDelete(true);
-            }}
-          >
-            <IconCrossCircled className="cursor-pointer w-5 h-5" />
-          </button>
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => {
+                setSelectedEnrollment(courseBatch);
+                setIsModalEnrollmentDelete(true);
+              }}
+            >
+              <IconCrossCircled className="cursor-pointer w-5 h-5" />
+            </button>
+          )}
         </div>
       ),
     },
@@ -300,16 +304,18 @@ const StudentViewPage = () => {
               >
                 <IconEdit className="cursor-pointer w-5 h-5" />
               </button>
-              <button
-                onClick={() => {
-                  setSelectedLicenseQualStudent(
-                    certificateAfterEnd.license_qual_student_data,
-                  );
-                  setIsModalDeleteLicenseQual(true);
-                }}
-              >
-                <IconCrossCircled className="cursor-pointer w-5 h-5" />
-              </button>
+              {user?.role === 'admin' && (
+                <button
+                  onClick={() => {
+                    setSelectedLicenseQualStudent(
+                      certificateAfterEnd.license_qual_student_data,
+                    );
+                    setIsModalDeleteLicenseQual(true);
+                  }}
+                >
+                  <IconCrossCircled className="cursor-pointer w-5 h-5" />
+                </button>
+              )}
             </div>
           ) : (
             <div className="flex items-center gap-2">
@@ -399,14 +405,16 @@ const StudentViewPage = () => {
               >
                 <IconEdit className="cursor-pointer w-5 h-5" />
               </button>
-              <button
-                onClick={() => {
-                  getSelectedStudentBillInfo(enrollment.course_group_id);
-                  setIsModalDeleteBill(true);
-                }}
-              >
-                <IconCrossCircled className="cursor-pointer w-5 h-5" />
-              </button>
+              {user?.role === 'admin' && (
+                <button
+                  onClick={() => {
+                    getSelectedStudentBillInfo(enrollment.course_group_id);
+                    setIsModalDeleteBill(true);
+                  }}
+                >
+                  <IconCrossCircled className="cursor-pointer w-5 h-5" />
+                </button>
+              )}
             </>
           ) : (
             <button
@@ -556,7 +564,7 @@ const StudentViewPage = () => {
                 <p className="col-span-2 xl:col-span-1">โรคประจำตัว</p>
                 <p className="col-span-2 xl:col-span-3 break-words font-bold">
                   {studentData?.data.medical_condition
-                    ? studentData?.data.medical_condition.name
+                    ? studentData?.data.medical_condition
                     : '-'}
                 </p>
               </div>
@@ -564,7 +572,7 @@ const StudentViewPage = () => {
               <div className="grid grid-cols-4 col-span-4 gap-2">
                 <p className="col-span-2 xl:col-span-1">อีเมล์</p>
                 <p className="col-span-2 xl:col-span-3 break-words font-bold">
-                  {studentData?.data.email}
+                  {studentData?.data.email ? studentData?.data.email : '-'}
                 </p>
               </div>
               {/* ข้อมูลในมือถือกว้าง 4/4 คอลัมน์ ในคอมจะกว้าง 2/4 คอลัมน์ */}
@@ -660,7 +668,7 @@ const StudentViewPage = () => {
               >
                 การชำระเงิน
               </button>
-              <button
+              {/* <button
                 type="button"
                 className={`px-4 hover:text-slate-500 ${
                   selectedMenu === 'bill'
@@ -670,7 +678,7 @@ const StudentViewPage = () => {
                 onClick={() => setSelectedMenu('bill')}
               >
                 เอกสารใบเสร็จ
-              </button>
+              </button> */}
             </div>
             <div className="mt-4">
               <Table

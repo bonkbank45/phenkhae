@@ -3,11 +3,21 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
+import { useNavigate } from 'react-router-dom';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   console.log(user);
+
+  const imageUrl = user?.profile_img
+    ? `${import.meta.env.VITE_API_URL}/storage/profiles/users/${
+        user.profile_img
+      }.jpg?t=${new Date().getTime()}`
+    : `${
+        import.meta.env.VITE_API_URL
+      }/storage/profiles/users/default-profile.png`;
 
   const handleLogout = async () => {
     const response = await logout();
@@ -25,11 +35,17 @@ const DropdownUser = () => {
           <span className="block text-sm font-medium text-black dark:text-white">
             {user?.firstname} {user?.lastname}
           </span>
-          <span className="block text-xs">{user?.role.toUpperCase()}</span>
+          <span className="block text-xs">
+            {user?.role === 'admin' ? 'ผู้ดูแลระบบ' : 'พนักงาน'}
+          </span>
         </span>
 
-        <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+        <span className="h-12 w-12">
+          <img
+            src={imageUrl}
+            alt="User"
+            className="w-full h-full rounded-full object-cover"
+          />
         </span>
 
         <svg
@@ -127,6 +143,25 @@ const DropdownUser = () => {
               </Link>
             </li>
           </ul> */}
+          <button
+            onClick={() => navigate('/user/settings')}
+            className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="1.2em"
+              height="1.2em"
+            >
+              <path
+                fill="currentColor"
+                d="M12 14v2a6 6 0 0 0-6 6H4a8 8 0 0 1 8-8m0-1c-3.315 0-6-2.685-6-6s2.685-6 6-6s6 2.685 6 6s-2.685 6-6 6m0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4s-4 1.79-4 4s1.79 4 4 4m2.595 7.811a3.5 3.5 0 0 1 0-1.622l-.992-.573l1-1.732l.992.573A3.5 3.5 0 0 1 17 14.645V13.5h2v1.145c.532.158 1.012.44 1.405.812l.992-.573l1 1.732l-.991.573a3.5 3.5 0 0 1 0 1.622l.991.573l-1 1.732l-.992-.573a3.5 3.5 0 0 1-1.405.812V22.5h-2v-1.145a3.5 3.5 0 0 1-1.405-.812l-.992.573l-1-1.732zM18 19.5a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3"
+              ></path>
+            </svg>
+            <span className="text-sm font-notoLoopThaiRegular">
+              ตั้งค่าบัญชีผู้ใช้
+            </span>
+          </button>
           <button
             onClick={handleLogout}
             className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"

@@ -26,7 +26,7 @@ export interface AddStudentData {
   marital_status: number;
   learn_massage_description: string | null;
   work_massage_description: string | null;
-  medical_condition: number | null;
+  medical_condition: string | null;
   mother_fname: string;
   mother_lname: string;
   prename_tha: number;

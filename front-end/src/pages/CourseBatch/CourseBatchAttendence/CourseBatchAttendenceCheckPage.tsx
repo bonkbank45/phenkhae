@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../../context/AuthContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@material-tailwind/react';
 import IconArrowLeft from '../../../common/ArrowLeft';
@@ -16,12 +17,16 @@ import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 import Modal from '../../../components/Modal';
 import CourseBatchAttendenceCheckDelete from './CourseBatchAttendenceCheckDelete';
-import { usePdfStudentEmptyList, usePdfStudentList } from '../../../hooks/api/usePdfData';
+import {
+  usePdfStudentEmptyList,
+  usePdfStudentList,
+} from '../../../hooks/api/usePdfData';
 
 const CourseBatchAttendenceCheckPage = () => {
   const { id, attendenceId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [selectedStudentAttendence, setSelectedStudentAttendence] = useState(
     {},
@@ -45,7 +50,8 @@ const CourseBatchAttendenceCheckPage = () => {
   const [isClickDownload, setIsClickDownload] = useState(false);
   const {} = usePdfStudentList(id, attendenceId, isClickDownload);
 
-  const [isClickDownloadEmptyList, setIsClickDownloadEmptyList] = useState(false);
+  const [isClickDownloadEmptyList, setIsClickDownloadEmptyList] =
+    useState(false);
   const {} = usePdfStudentEmptyList(id, attendenceId, isClickDownloadEmptyList);
 
   useEffect(() => {
@@ -205,7 +211,7 @@ const CourseBatchAttendenceCheckPage = () => {
       key: 'action',
       render: (row) => (
         <>
-          {row.status === 1 || row.status === 0 ? (
+          {user?.role === 'admin' && (row.status === 1 || row.status === 0) ? (
             <button
               onClick={() => {
                 setIsOpenDeleteModal(true);

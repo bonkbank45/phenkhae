@@ -43,6 +43,12 @@ class SetPasswordController extends Controller
             ->where('token', $request->token)
             ->delete();
 
+        // ลบ personal access tokens ทั้งหมดของ user
+        DB::table('personal_access_tokens')
+            ->where('tokenable_id', $user->id)
+            ->where('tokenable_type', User::class)
+            ->delete();
+
         return response()->json([
             'message' => 'ตั้งรหัสผ่านเรียบร้อยแล้ว'
         ]);

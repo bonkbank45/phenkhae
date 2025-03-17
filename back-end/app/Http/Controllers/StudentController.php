@@ -162,7 +162,6 @@ class StudentController extends Controller
                     $query->select(['id', 'edu_qual_name', 'edu_qual_eng']);
                 },
                 'marital_status',
-                'medical_condition',
                 'enrollments',
                 'enrollments.course_group',
                 'enrollments.course_group.course',

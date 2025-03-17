@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { Button } from '@material-tailwind/react';
 import IconArrowLeft from '../../common/ArrowLeft';
 import { format } from 'date-fns';
@@ -23,6 +24,7 @@ import { transformToStudentCourseDataTable } from '../../utils/enrollment';
 const CourseBatchShowPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedEnrollment, setSelectedEnrollment] = useState(null);
   const [isModalEnrollmentEdit, setIsModalEnrollmentEdit] = useState(false);
@@ -48,6 +50,7 @@ const CourseBatchShowPage = () => {
     if (isClickDownload) {
       handleDownloadStudentCard();
     }
+    setIsClickDownload(false);
   }, [isClickDownload]);
 
   if (isCourseBatchDataLoading || isEnrollmentStudentStatusLoading) {
@@ -113,11 +116,6 @@ const CourseBatchShowPage = () => {
       render: (row) => row.student.id,
     },
     {
-      header: 'ลำดับ',
-      key: 'no_reg',
-      render: (row) => (row.no_reg ? String(row.no_reg).padStart(3, '0') : '-'),
-    },
-    {
       header: 'ชื่อ',
       key: 'firstname_tha',
       render: (row) => row.student.firstname_tha,
@@ -179,14 +177,16 @@ const CourseBatchShowPage = () => {
           >
             <IconEdit className="cursor-pointer w-5 h-5" />
           </button>
-          <button
-            onClick={() => {
-              setSelectedEnrollment(row);
-              setIsModalEnrollmentDelete(true);
-            }}
-          >
-            <IconCrossCircled className="cursor-pointer w-5 h-5" />
-          </button>
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => {
+                setSelectedEnrollment(row);
+                setIsModalEnrollmentDelete(true);
+              }}
+            >
+              <IconCrossCircled className="cursor-pointer w-5 h-5" />
+            </button>
+          )}
         </div>
       ),
     },
@@ -265,14 +265,16 @@ const CourseBatchShowPage = () => {
             >
               เพิ่มนักเรียนเข้ารุ่น
             </Button>
-            <Button
-              color="red"
-              size="sm"
-              onClick={handleRemoveStudent}
-              className="font-notoLoopThaiRegular flex items-center gap-1"
-            >
-              ลบนักเรียนออกจากรุ่น
-            </Button>
+            {user?.role === 'admin' && (
+              <Button
+                color="red"
+                size="sm"
+                onClick={handleRemoveStudent}
+                className="font-notoLoopThaiRegular flex items-center gap-1"
+              >
+                ลบนักเรียนออกจากรุ่น
+              </Button>
+            )}
           </div>
         </div>
 

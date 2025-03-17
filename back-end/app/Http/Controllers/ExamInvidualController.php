@@ -16,6 +16,9 @@ class ExamInvidualController extends Controller
 
     public function addBulk(Request $request)
     {
+        $request->validate([
+            'score' => 'integer|min:0',
+        ]);
         try {
             $examId = $request->input('id');
             $exam = Exam::findOrFail($examId);
@@ -55,6 +58,9 @@ class ExamInvidualController extends Controller
 
     public function update(Request $request, ExamInvidual $examInvidual)
     {
+        $request->validate([
+            'score' => 'integer|min:0',
+        ]);
         $examInvidual->update($request->all());
         return $this->successResponse('บันทึกคะแนนสำเร็จ', 200);
     }
