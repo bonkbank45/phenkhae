@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TextField from '../../../components/Forms/TextField';
 import { useFormContext } from 'react-hook-form';
-import DatePickerOne from '../../../components/Forms/DatePicker/DatePickerOne';
+import DatePickerWithController from '../../../components/Forms/DatePicker/DatePickerWithController';
 import { useCourseData } from '../../../hooks/api/useCourseData';
 
 import Modal from '../../../components/Modal';
@@ -15,6 +15,7 @@ const BatchInformation = () => {
     register,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useFormContext();
   const { data: courseData } = useCourseData();
@@ -94,10 +95,10 @@ const BatchInformation = () => {
               : ''
           }
         />
-        <DatePickerOne
+        <DatePickerWithController
           label="วันที่เริ่มหลักสูตร (สามารถเปลื่ยนแปลงในภายหลังได้)"
           name="date_start"
-          includeRegister={register}
+          control={control}
           placeholder="วันเริ่มหลักสูตร"
           required={true}
           error={
@@ -106,10 +107,10 @@ const BatchInformation = () => {
               : ''
           }
         />
-        <DatePickerOne
+        <DatePickerWithController
           label="วันที่สิ้นสุดหลักสูตร (สามารถเปลื่ยนแปลงในภายหลังได้)"
           name="date_end"
-          includeRegister={register}
+          control={control}
           placeholder="วันสิ้นสุดหลักสูตร"
           required={true}
           error={

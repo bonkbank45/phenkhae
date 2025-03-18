@@ -24,8 +24,10 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->primary(["course_group_id", "student_id"]);
-            $table->foreign("course_group_id")->references("id")->on("course_groups")->onDelete("cascade");
-            $table->foreign("student_id")->references("id")->on("students")->onDelete("cascade");
+            // $table->foreign("course_group_id")->references("id")->on("course_groups")->onDelete("cascade");
+            // $table->foreign("student_id")->references("id")->on("students")->onDelete("cascade");
+            $table->foreign("course_group_id")->references("id")->on("course_groups");
+            $table->foreign("student_id")->references("id")->on("students");
         });
     }
 

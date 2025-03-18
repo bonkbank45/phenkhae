@@ -1,29 +1,24 @@
 import { AxiosResponse } from 'axios';
 import api from './axios/axiosClient';
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 export const login = (email: string, password: string) => {
   return api.post('/login', { email, password });
 };
 
 export const logout = () => {
-  const token = localStorage.getItem('authToken');
-  return api.post(
-    '/logout',
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
+  return api.post('/logout', {});
 };
 
 export const fetchUser = () => {
-  const token = localStorage.getItem('authToken');
-  return api.get('/user', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return api.get('/user');
 };
 
 export const fetchMaritalStatuses = () => {

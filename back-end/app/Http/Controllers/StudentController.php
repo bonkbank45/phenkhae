@@ -243,8 +243,13 @@ class StudentController extends Controller
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse($e->getMessage() . " - Student not found", 404);
-        } catch (Exception $e) {
+        } catch (\PDOException $e) {
             DB::rollBack();
+            if ($e->getCode() == 23000) {
+                if (str_contains($e->getMessage(), 'enrollments')) {
+                    return $this->errorResponse('ไม่สามารถลบข้อมูลได้เนื่องจากมีการลงทะเบียนของนักเรียนที่เกี่ยวข้อง กรุณาลบข้อมูลการลงทะเบียนของนักเรียนก่อน', 409);
+                }
+            }
             return $this->errorResponse($e->getMessage() . " - Error deleting student", 500);
         }
     }

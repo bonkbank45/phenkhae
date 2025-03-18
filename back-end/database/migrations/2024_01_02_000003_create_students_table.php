@@ -21,10 +21,10 @@ return new class extends Migration {
             $table->string('citizenid_card')->unique();
             $table->date('birthdate');
             $table->integer('birth_province_id');
-            $table->string('father_fname');
-            $table->string('father_lname');
-            $table->string('mother_fname');
-            $table->string('mother_lname');
+            $table->string('father_fname')->nullable();
+            $table->string('father_lname')->nullable();
+            $table->string('mother_fname')->nullable();
+            $table->string('mother_lname')->nullable();
             $table->foreignId('marital_id')->constrained('marital_statuses', 'id');
             $table->string('address_num')->nullable();
             $table->string('address_moo')->nullable();

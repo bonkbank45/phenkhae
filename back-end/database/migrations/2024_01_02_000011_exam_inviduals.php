@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('exam_inviduals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('exam_id')->constrained('exams', 'id');
-            $table->foreignId('student_id')->constrained('students', 'id');
+            $table->foreignId('exam_id')->constrained('exams', 'id')->onDelete('cascade');
+            $table->foreignId('student_id')->constrained('students', 'id')->onDelete('cascade');
             $table->integer('score_get');
             $table->dateTime('date_exam');
 

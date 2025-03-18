@@ -98,11 +98,15 @@ class StudentApplicationFormPresenter
             $this->student->birth_province->name_in_thai
         );
 
-        //Father name
+        //Father or Mother name
         $html .= $this->createPositionedDivAddSpace(
             FormLayoutConfig::POSITION['FOURTH_LINE_Y'],
             FormLayoutConfig::THAI_TEXT['FATHER_NAME_X'],
-            $this->student->father_fname . '&nbsp;&nbsp;&nbsp;&nbsp;' . $this->student->father_lname
+            $this->student->father_fname ?
+            $this->student->father_fname . '&nbsp;&nbsp;&nbsp;&nbsp;' . $this->student->father_lname :
+            ($this->student->mother_fname ?
+                $this->student->mother_fname . '&nbsp;&nbsp;&nbsp;&nbsp;' . $this->student->mother_lname :
+                '-')
         );
 
         // Marital status

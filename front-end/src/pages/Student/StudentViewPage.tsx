@@ -602,7 +602,7 @@ const StudentViewPage = () => {
               <div className="grid grid-cols-4 col-span-4 gap-2">
                 <p className="col-span-2 xl:col-span-1">จากสถานศึกษา</p>
                 <p className="col-span-2 xl:col-span-3 break-words font-bold">
-                  {studentData?.data.edu_ins}
+                  {studentData?.data.edu_ins || '-'}
                 </p>
               </div>
               {/* ข้อมูลในมือถือกว้าง 4/4 คอลัมน์ ในคอมจะกว้าง 4/4 คอลัมน์ */}

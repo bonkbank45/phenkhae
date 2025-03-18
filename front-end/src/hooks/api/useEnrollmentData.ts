@@ -214,6 +214,14 @@ export const useRemoveEnrollment = () => {
         exact: false,
       });
       queryClient.invalidateQueries({
+        queryKey: ['course_group_data'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['course_batch_data'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
         queryKey: ['students'],
         exact: false,
       });

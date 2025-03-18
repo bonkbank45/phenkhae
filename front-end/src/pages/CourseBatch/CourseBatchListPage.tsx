@@ -131,6 +131,7 @@ const CourseBatchListPage = () => {
           .join(', ') || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง',
       );
     }
+    setIsOpenDeleteModal(false);
   };
 
   if (isLoading)

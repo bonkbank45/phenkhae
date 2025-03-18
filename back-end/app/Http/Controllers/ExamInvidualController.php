@@ -51,7 +51,7 @@ class ExamInvidualController extends Controller
             ExamInvidual::insert($bulkData);
             return $this->successResponse('บันทึกคะแนนสำเร็จ', 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->errorResponse('เกิดข้อผิดพลาด: ' . $e->getMessage(), 500);
         }
     }
@@ -59,8 +59,16 @@ class ExamInvidualController extends Controller
     public function update(Request $request, ExamInvidual $examInvidual)
     {
         $request->validate([
-            'score' => 'integer|min:0',
+            'score_get' => 'integer|min:0',
+        ], [
+            'score_get.min' => 'ไม่สามารถรับคะแนนต่ำกว่า 0 ได้',
         ]);
+
+        $exam = Exam::findOrFail($examInvidual->exam_id);
+        if ($request->input('score_get') > $exam->score_full) {
+            return $this->errorResponse('คะแนนที่รับเข้ามาเกินคะแนนเต็ม (' . $exam->score_full . ' คะแนน)', 400);
+        }
+
         $examInvidual->update($request->all());
         return $this->successResponse('บันทึกคะแนนสำเร็จ', 200);
     }

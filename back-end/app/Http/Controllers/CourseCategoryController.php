@@ -62,6 +62,12 @@ class CourseCategoryController extends Controller
             $courseCategory->delete();
             DB::commit();
             return $this->successResponse($courseCategory, 'Course category deleted successfully', 200);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            if ($e->getCode() == 23000) {
+                return $this->errorResponse('ไม่สามารถลบข้อมูลได้เนื่องจากมีการใช้งานในหลักสูตรอยู่', 409);
+            }
+            return $this->errorResponse($e->getMessage(), 409);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse('Failed to delete course category', 500);

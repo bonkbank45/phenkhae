@@ -159,6 +159,7 @@ const CurrentAddress = ({
             placeholder="วุฒิการศึกษาสูงสุด"
             options={formattedEducationQual || []}
             control={control}
+            required={true}
             error={errors.edu_qual?.message as string}
           />
           <TextField

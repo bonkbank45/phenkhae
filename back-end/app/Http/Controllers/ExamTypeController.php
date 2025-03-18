@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use App\Models\ExamType;
 use App\Http\Requests\StoreExamTypeRequest;
 use App\Http\Requests\UpdateExamTypeRequest;
-
+use Illuminate\Support\Facades\DB;
 class ExamTypeController extends Controller
 {
     use JsonResponseTrait;
@@ -44,8 +44,21 @@ class ExamTypeController extends Controller
     }
     public function destroy(int $id): JsonResponse
     {
-        $exam_type = ExamType::findOrFail($id);
-        $exam_type->delete();
-        return $this->successResponse(null, 'Exam type deleted successfully', 200);
+        DB::beginTransaction();
+        try {
+            $exam_type = ExamType::findOrFail($id);
+            $exam_type->delete();
+            DB::commit();
+            return $this->successResponse(null, 'Exam type deleted successfully', 200);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            if ($e->getCode() == 23000) {
+                return $this->errorResponse('ไม่สามารถลบข้อมูลได้เนื่องจากมีการใช้งานในกำหนดข้อมูลการสอบอยู่', 409);
+            }
+            return $this->errorResponse($e->getMessage(), 409);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage(), 409);
+        }
     }
 }

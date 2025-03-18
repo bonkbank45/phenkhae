@@ -36,5 +36,5 @@ export const currentAddressSchema = yup.object().shape({
     .required('กรุณาเลือกตำบล'),
   address_zip_code: yup.string().required('กรุณากรอกรหัสไปรษณีย์'),
   edu_qual: yup.number().required('กรุณาเลือกวุฒิการศึกษาสูงสุด'),
-  edu_ins: yup.string().required('กรุณากรอกสถานศึกษา'),
+  edu_ins: yup.string().nullable(),
 });

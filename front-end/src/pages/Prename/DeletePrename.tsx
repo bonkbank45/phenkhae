@@ -26,7 +26,7 @@ const DeletePrename = ({ id, prenameThai, onSuccess }: DeletePrenameProps) => {
       },
       onError: (error: Error) => {
         toast.error(
-          error.message ||
+          error.response.data.message ||
             'ไม่สามารถลบคำนำหน้าชื่อนี้ได้เนื่องจากมีการใช้งานอยู่',
         );
       },

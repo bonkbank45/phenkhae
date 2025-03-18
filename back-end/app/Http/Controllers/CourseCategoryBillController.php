@@ -70,10 +70,16 @@ class CourseCategoryBillController extends Controller
             $courseCategoryBill = CourseCategoryBill::findOrFail($id);
             $courseCategoryBill->delete();
             DB::commit();
-            return $this->successResponse(null, 'Course category bill deleted successfully', 200);
-        } catch (ModelNotFoundException $e) {
+            return $this->successResponse(null, 'ลบข้อมูลประเภทบิลใบเสร็จสำเร็จ', 200);
+        } catch (\PDOException $e) {
             DB::rollBack();
-            return $this->errorResponse('Failed to delete course category bill', 500);
+            if ($e->getCode() == 23000) {
+                return $this->errorResponse('ไม่สามารถลบข้อมูลได้เนื่องจากมีการใช้งานในหลักสูตรอยู่', 409);
+            }
+            return $this->errorResponse($e->getMessage(), 409);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse('ไม่พบข้อมูลประเภทบิลใบเสร็จ', 409);
         }
     }
 }

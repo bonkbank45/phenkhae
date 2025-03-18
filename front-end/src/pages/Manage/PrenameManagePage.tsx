@@ -17,6 +17,7 @@ import Filter from '../../components/Filter/Filter';
 import useDebounce from '../../hooks/useDebounce';
 import PlusCircle from '../../common/PlusCircle';
 import { filterOptions } from '../../constants/filterOptions';
+import api from '../../services/api';
 
 interface Prename {
   id: number;
@@ -47,12 +48,7 @@ const Prename = () => {
         ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
         ...(showStatus && { show_status: showStatus }),
       });
-      const { data } = await axios
-        .create({
-          baseURL: 'http://localhost:8000/api',
-          withCredentials: true,
-        })
-        .get(`prename/table?${params}`);
+      const { data } = await api.get(`prename/table?${params}`);
       setHasLoadedOnce(true);
       return data;
     },
@@ -125,12 +121,12 @@ const Prename = () => {
           </button>
           {user?.role === 'admin' && (
             <button
-            onClick={() => {
-              setIsDeleteModal(true);
-              setSelectedPrename(item);
-            }}
-          >
-            <IconCrossCircled className="cursor-pointer w-5 h-5" />
+              onClick={() => {
+                setIsDeleteModal(true);
+                setSelectedPrename(item);
+              }}
+            >
+              <IconCrossCircled className="cursor-pointer w-5 h-5" />
             </button>
           )}
         </div>

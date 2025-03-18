@@ -30,7 +30,7 @@ return new class extends Migration {
             $table->foreignId('course_group_id')->constrained('course_groups', 'id');
             $table->integer('year');
             $table->tinyInteger('term');
-            $table->integer('exam_type_id');
+            $table->foreignId('exam_type_id')->constrained('exam_types', 'id');
             $table->integer('exam_period');
             $table->integer('score_pass');
             $table->integer('score_full');

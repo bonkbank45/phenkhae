@@ -18,7 +18,13 @@ interface EmployeeFormData {
 const schema = yup.object({
   firstName: yup.string().required('กรุณากรอกชื่อ'),
   lastName: yup.string().required('กรุณากรอกนามสกุล'),
-  email: yup.string().email('อีเมลไม่ถูกต้อง').required('กรุณากรอกอีเมล'),
+  email: yup
+    .string()
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      'รูปแบบอีเมล์ไม่ถูกต้อง',
+    )
+    .required('กรุณากรอกอีเมล์'),
 });
 
 export const CreateAccount = () => {

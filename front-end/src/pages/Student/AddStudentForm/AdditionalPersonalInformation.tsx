@@ -115,7 +115,7 @@ const AdditionalPersonalInformation = () => {
           <TextField
             label="เบอร์โทรศัพท์นักเรียน"
             name="phone_number"
-            placeholder="เบอร์โทรศัพท์นักเรียน"
+            placeholder="0812345678"
             required={true}
             includeRegister={register}
             error={errors.phone_number?.message as string}
@@ -139,7 +139,7 @@ const AdditionalPersonalInformation = () => {
             label="ชื่อบิดา"
             name="father_fname"
             placeholder="ชื่อบิดา"
-            required={true}
+            required={false}
             includeRegister={register}
             error={errors.father_fname?.message as string}
           />
@@ -148,7 +148,7 @@ const AdditionalPersonalInformation = () => {
             name="father_lname"
             placeholder="นามสกุลบิดา"
             includeRegister={register}
-            required={true}
+            required={false}
             error={errors.father_lname?.message as string}
           />
           <TextField
@@ -156,7 +156,7 @@ const AdditionalPersonalInformation = () => {
             name="mother_fname"
             placeholder="ชื่อมารดา"
             includeRegister={register}
-            required={true}
+            required={false}
             error={errors.mother_fname?.message as string}
           />
           <TextField
@@ -164,7 +164,7 @@ const AdditionalPersonalInformation = () => {
             name="mother_lname"
             placeholder="นามสกุลมารดา"
             includeRegister={register}
-            required={true}
+            required={false}
             error={errors.mother_lname?.message as string}
           />
         </div>

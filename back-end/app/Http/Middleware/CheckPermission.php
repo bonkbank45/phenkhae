@@ -21,13 +21,9 @@ class CheckPermission
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, string $permission): Response
     {
         try {
-            // Debug เพื่อดูว่ามี token หรือไม่
-            \Log::info('Token: ' . $request->bearerToken());
-            \Log::info('User: ' . auth()->user());
-
             if (!auth()->check()) {
                 return response()->json([
                     'message' => 'กรุณาเข้าสู่ระบบก่อน',
@@ -36,24 +32,14 @@ class CheckPermission
             }
 
             $user = auth()->user();
+            $role = $user->role;
 
-            if (!$user || !$user->role) {
-                return response()->json([
-                    'message' => 'ไม่พบข้อมูลสิทธิ์การใช้งาน',
-                    'error' => 'No role found'
-                ], 403);
-            }
-
-            $requiredPermission = $this->actionMap[$request->method()] ?? null;
-
-            if (!$requiredPermission || !$user->role->$requiredPermission) {
-                return response()->json([
-                    'message' => "คุณไม่มีสิทธิ์ในการ{$this->getThaiAction($requiredPermission)}ข้อมูล",
-                    'error' => 'Permission denied'
-                ], 403);
+            if (!$role || !$role->{$permission}) {
+                return response()->json(['status' => false, 'message' => 'Permission denied'], 401);
             }
 
             return $next($request);
+
         } catch (\Exception $e) {
             \Log::error('Permission Check Error: ' . $e->getMessage());
             return response()->json([

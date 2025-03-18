@@ -43,12 +43,15 @@ class PrenameController extends Controller
 
     public function destroy($id)
     {
-        $prefixName = Prename::find($id);
-        if ($prefixName->students()->exists()) {
-            return response()->json(['message' => 'Prefix name cannot be deleted because it is associated with students'], 409);
+        try {
+            $prefixName = Prename::find($id);
+            if ($prefixName->students()->exists()) {
+                return response()->json(['message' => 'ไม่สามารถลบคำนำหน้าชื่อนี้ได้เนื่องจากมีการใช้งานอยู่'], 409);
+            }
+            $prefixName->delete();
+            return response()->json(['message' => 'ลบคำนำหน้าชื่อสำเร็จ']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'ไม่สามารถลบคำนำหน้าชื่อนี้ได้เนื่องจากมีการใช้งานอยู่'], 409);
         }
-
-        $prefixName->delete();
-        return response()->json(['message' => 'Prefix name deleted successfully']);
     }
 }

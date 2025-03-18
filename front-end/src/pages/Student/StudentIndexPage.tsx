@@ -279,6 +279,7 @@ const StudentIndexPage = () => {
               onClick={() => {
                 setIsDeleteModalOpen(true);
                 setSelectedStudent(student);
+                setSelectedStudentCourseBatch(null);
               }}
             >
               <IconCrossCircled className="cursor-pointer w-5 h-5" />
@@ -348,6 +349,7 @@ const StudentIndexPage = () => {
               <button
                 onClick={() => {
                   setIsDeleteModalOpen(true);
+                  setSelectedStudent(null);
                   setSelectedStudentCourseBatch(student);
                 }}
               >
@@ -553,7 +555,9 @@ const StudentIndexPage = () => {
               setSelectedStudent(null);
             }}
             onError={(error) => {
-              toast.error(error.message + ' - ลบรายชื่อนักเรียนไม่สำเร็จ');
+              toast.error(
+                error.response.data.message + ' - ลบรายชื่อนักเรียนไม่สำเร็จ',
+              );
             }}
             onClose={() => {
               setIsDeleteModalOpen(false);
@@ -570,7 +574,9 @@ const StudentIndexPage = () => {
               setSelectedStudentCourseBatch(null);
             }}
             onError={(error) => {
-              toast.error(error.message + ' - ลบรายชื่อนักเรียนไม่สำเร็จ');
+              toast.error(
+                error.response.data.message + ' - ลบรายชื่อนักเรียนไม่สำเร็จ',
+              );
             }}
             onClose={() => {
               setIsDeleteModalOpen(false);

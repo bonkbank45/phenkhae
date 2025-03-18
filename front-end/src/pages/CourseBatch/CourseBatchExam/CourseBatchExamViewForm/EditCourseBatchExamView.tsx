@@ -16,6 +16,7 @@ const EditCourseBatchExamView = ({
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(
@@ -23,7 +24,8 @@ const EditCourseBatchExamView = ({
         score_get: yup
           .number()
           .typeError('กรุณากรอกคะแนน')
-          .required('กรุณากรอกคะแนน'),
+          .required('กรุณากรอกคะแนน')
+          .min(0, 'คะแนนต้องมากกว่า 0'),
       }),
     ),
     defaultValues: {
@@ -43,6 +45,7 @@ const EditCourseBatchExamView = ({
           onSuccess();
         },
         onError: (error: ErrorResponse) => {
+          setError('score_get', { message: error.response.data.message });
           onError(error);
         },
       },

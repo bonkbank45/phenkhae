@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 use Mpdf\Mpdf;
 use App\Models\CourseAttendence;
 use Carbon\Carbon;
-
+use Illuminate\Database\IntegrityConstraintViolationException;
 class CourseGroupController extends Controller
 {
     use JsonResponseTrait;
@@ -213,6 +213,18 @@ class CourseGroupController extends Controller
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->errorResponse('Course group not found', 404);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            if ($e->getCode() == 23000) {
+                if (str_contains($e->getMessage(), 'enrollments')) {
+                    return $this->errorResponse('ไม่สามารถลบข้อมูลได้เนื่องจากมีการลงทะเบียนของนักเรียนที่เกี่ยวข้อง กรุณาลบข้อมูลการลงทะเบียนของนักเรียนก่อน', 409);
+                }
+                if (str_contains($e->getMessage(), 'exams')) {
+                    return $this->errorResponse('ไม่สามารถลบข้อมูลได้เนื่องจากมีการข้อมูลสอบ กรุณาลบข้อมูลการสอบก่อน', 409);
+                }
+                return $this->errorResponse('ไม่สามารถลบข้อมูลได้เนื่องจากมีการใช้งานอยู่ในส่วนอื่น', 409);
+            }
+            return $this->errorResponse('เกิดข้อผิดพลาดในการลบข้อมูล', 500);
         }
     }
 

@@ -43,6 +43,7 @@ const DeleteStudentForm = ({
                 onSuccess?.();
               },
               onError: (error: ErrorResponse) => {
+                console.error(error);
                 onError?.(error);
               },
             });
