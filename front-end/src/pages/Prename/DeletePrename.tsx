@@ -1,5 +1,6 @@
 import { useDeletePrename } from '../../hooks/api/usePrenameData';
 import { toast } from 'react-toastify';
+import { ErrorResponse } from '../../types/error_response';
 
 interface DeletePrenameProps {
   id: number;
@@ -24,7 +25,7 @@ const DeletePrename = ({ id, prenameThai, onSuccess }: DeletePrenameProps) => {
         toast.success('ลบคำนำหน้าชื่อสำเร็จ');
         onSuccess?.();
       },
-      onError: (error: Error) => {
+      onError: (error: ErrorResponse) => {
         toast.error(
           error.response.data.message ||
             'ไม่สามารถลบคำนำหน้าชื่อนี้ได้เนื่องจากมีการใช้งานอยู่',

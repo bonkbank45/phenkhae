@@ -235,6 +235,13 @@ const CourseBatchExamViewPage = () => {
       from: enrolledStudents?.data?.from || 1,
       to: enrolledStudents?.data?.to || 1,
       total: enrolledStudents?.data?.total || 1,
+      current_page: currentAddStudentPage,
+      first_page_url: enrolledStudents?.data?.first_page_url || null,
+      last_page: enrolledStudents?.data?.last_page || 1,
+      last_page_url: enrolledStudents?.data?.last_page_url || null,
+      path: enrolledStudents?.data?.path || '',
+      per_page: enrolledStudents?.data?.per_page || 10,
+      links: enrolledStudents?.data?.links || [],
     },
   };
 

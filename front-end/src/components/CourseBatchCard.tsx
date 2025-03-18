@@ -13,6 +13,7 @@ interface Props {
   onCloseBatch?: (id: number) => void;
   onEditBatch?: (id: number) => void;
   onDeleteBatch?: (id: number) => void;
+  user: any;
 }
 
 export const CourseBatchCard = ({
@@ -23,8 +24,9 @@ export const CourseBatchCard = ({
   onCloseBatch,
   onEditBatch,
   onDeleteBatch,
+  user,
 }: Props) => {
-  const { user } = useAuth();
+  const { user: authUser } = useAuth();
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 dark:bg-boxdark border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow duration-200 font-notoLoopThaiRegular">
       <h3 className="text-lg font-semibold mb-2">{batch.course.course_name}</h3>
@@ -69,7 +71,7 @@ export const CourseBatchCard = ({
             <FiX /> ลบ
           </button>
         )} */}
-        {user?.role === 'admin' && (
+        {authUser?.role === 'admin' && (
           <button
             className="flex items-center gap-1 px-3 py-1 border rounded-lg text-red-600 hover:bg-red-50"
             onClick={() => onDeleteBatch?.(batch.id)}
