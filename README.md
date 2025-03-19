@@ -3,13 +3,13 @@
 Final Project - @CPE RMUTT
 ## Tech Stack
 
-**Client:** React, TailwindCSS
+**Front-end:** React, TailwindCSS
 
-**Server:** Laravel 11
+**Back-end:** Laravel 11
 
+**Database:** MySQL
 
 ## Authors
 
 - [@bonkBANK](https://github.com/bonkbank45)
 - [@GODEV01](https://github.com/GODEV01)
-- [@Boss](https://www.youtube.com/watch?v=5TlGWHU_SQc)
